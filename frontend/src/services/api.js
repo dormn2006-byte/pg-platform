@@ -11,8 +11,10 @@ const API = axios.create({
   },
 
 });
+const API_URL = import.meta.env.VITE_API_URL || "";
+
 export const IMAGE_BASE_URL =
-  import.meta.env.VITE_API_URL.replace("/api", "");
+  API_URL ? API_URL.replace("/api", "") : "";
   
 // Add token automatically
 API.interceptors.request.use((req) => {
