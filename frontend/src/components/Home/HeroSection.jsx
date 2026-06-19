@@ -57,8 +57,9 @@ console.log("Hero PGs:", pgs);
   return (
     <section className="relative overflow-hidden px-4 pb-8 pt-4 sm:px-5 sm:pb-10 sm:pt-6 md:px-8 md:pb-16 md:pt-10 lg:px-12">
       {/* Background Glow */}
-      <div className="absolute left-[-120px] top-[-100px] h-80 w-80 rounded-full bg-pink-500/20 blur-3xl"></div>
-      <div className="absolute right-[-120px] top-[80px] h-96 w-96 rounded-full bg-cyan-500/20 blur-3xl"></div>
+      <div className="pointer-events-none absolute left-[-50px] top-[-50px] h-40 w-40 rounded-full bg-pink-500/35 blur-3xl md:left-[-120px] md:top-[-100px] md:h-80 md:w-80"></div>
+
+      <div className="pointer-events-none absolute right-[-15px] top-[80px] h-44 w-44 rounded-full bg-cyan-500/35 blur-3xl md:right-[-120px] md:h-96 md:w-96"></div>
 
       <Container className="relative grid items-center gap-8 sm:gap-10 md:gap-14 lg:grid-cols-2">
         {/* Left Content */}

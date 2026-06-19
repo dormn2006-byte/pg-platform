@@ -7,3 +7,25 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  html,
+body,
+#root {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+html,
+body,
+#root {
+  overflow-x: hidden;
+  max-width: 100%;
+  background: #0b1020;
+}
+
+body {
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+}
+.no-horizontal-scroll {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}

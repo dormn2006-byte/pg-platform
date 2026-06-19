@@ -67,12 +67,12 @@ const Home = () => {
 
   return (
     <PublicLayout>
-      {/* Floating Background */}
-      <div className="absolute left-[-100px] top-[-100px] h-80 w-80 rounded-full bg-pink-500/20 blur-3xl"></div>
+      {/* Floating Background - mobile safe */}
+      <div className="pointer-events-none absolute left-[-60px] top-[-60px] h-40 w-40 md:left-[-100px] md:top-[-100px] md:h-80 md:w-80 rounded-full bg-pink-500/30 blur-3xl"></div>
 
-      <div className="absolute right-[-100px] top-[200px] h-96 w-96 rounded-full bg-cyan-500/20 blur-3xl"></div>
+      <div className="pointer-events-none absolute right-[-10px] top-[1px] h-96 w-9 md:right-[-120px] md:top-[80px] md:h-96 md:w-96 rounded-full bg-cyan-500/30 blur-3xl"></div>
 
-      <div className="absolute bottom-[-150px] left-[20%] h-96 w-96 rounded-full bg-violet-500/20 blur-3xl"></div>
+      <div className="pointer-events-none absolute bottom-[-150px] left-[20%] h-96 w-9 md:h-96 md:w-96 rounded-full bg-violet-500/30 blur-3xl"></div>
 
       <HeroSection />
 
