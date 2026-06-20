@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   Building2,
   CheckCircle,
@@ -13,6 +12,7 @@ import {
 } from "lucide-react";
 import AdminCard from "../shared/AdminCard";
 import { AuthContext } from "../../context/AuthContext";
+import API from "../../services/api";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -24,8 +24,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/superadmin/dashboard-stats",
+        const response = await API.get(
+          "/superadmin/dashboard-stats",
           {
             headers: {
               Authorization: `Bearer ${token}`,

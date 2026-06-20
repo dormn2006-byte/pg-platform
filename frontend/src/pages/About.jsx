@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import API from "../services/api";
 import PublicLayout from "../layouts/PublicLayout";
 import Container from "../layouts/Container";
 
@@ -51,7 +51,7 @@ const About = () => {
   useEffect(() => {
     const loadAboutStats = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/pgs');
+        const res = await API.get('/pg/all');
 
         const pgs = res.data?.pgs || [];
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
 import {
   Mail,
   Phone,
@@ -10,6 +9,7 @@ import {
   BookOpenCheck,
   Calendar,
 } from "lucide-react";
+import API from "../../services/api";
 
 const StudentDetails = () => {
   const [searchParams] = useSearchParams();
@@ -29,20 +29,13 @@ const StudentDetails = () => {
     setError("");
     const token = localStorage.getItem("token");
 
-axios.get(
-
-  `http://localhost:8000/api/superadmin/student/${studentId}`,
-
+API.get(
+  `/superadmin/student/${studentId}`,
   {
-
     headers: {
-
       Authorization: `Bearer ${token}`,
-
     },
-
   }
-
 )
       .then((response) => {
         setStudent(response.data.student || response.data.data || response.data);
