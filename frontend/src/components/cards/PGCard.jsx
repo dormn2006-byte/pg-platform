@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import { IMAGE_BASE_URL } from "../../services/api";
 
 const PGCard = ({ pg }) => {
   const imageUrl = pg?.profile_image
-    ? `http://localhost:8000/uploads/${pg.profile_image}`
-    : pg?.image;
+  ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
+  : pg?.image;
 
   const location = [pg?.area, pg?.city].filter(Boolean).join(", ");
 

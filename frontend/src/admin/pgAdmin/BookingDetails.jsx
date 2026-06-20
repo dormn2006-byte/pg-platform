@@ -1,7 +1,7 @@
 import Topbar from "./components/Topbar";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../../services/api";
+import api, { IMAGE_BASE_URL } from "../../services/api";
 import {
   Phone,
   Mail,
@@ -62,7 +62,7 @@ const BookingDetails = () => {
             <div className="flex flex-col gap-5 lg:gap-8 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-col gap-6 md:flex-row md:items-center">
                 <img
-                  src={pg.profile_image ? 'http://localhost:8000/uploads/' + pg.profile_image : 'https://via.placeholder.com/300'}
+                  src={pg.profile_image ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}` : 'https://via.placeholder.com/300'}
                   alt={pg.title}
                   className="mx-auto h-24 w-24 rounded-[1.5rem] object-cover sm:h-28 sm:w-28 lg:h-32 lg:w-32 sm:rounded-[2rem] md:mx-0"
                 />

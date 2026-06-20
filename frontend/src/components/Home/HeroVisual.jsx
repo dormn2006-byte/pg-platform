@@ -1,6 +1,8 @@
+import { IMAGE_BASE_URL } from "../../services/api";
+
 const HeroVisual = ({ featuredPG }) => {
   const imageUrl = featuredPG?.profile_image
-    ? `http://localhost:8000/uploads/${featuredPG.profile_image}`
+    ? `${IMAGE_BASE_URL}/uploads/${featuredPG.profile_image}`
     : "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1000&auto=format&fit=crop";
   return (
     <div className="relative mx-auto w-full max-w-[320px] overflow-hidden select-none sm:max-w-[340px] md:max-w-none">
