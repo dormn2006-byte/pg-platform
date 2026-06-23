@@ -12,7 +12,13 @@ import superAdminRoutes from "./routes/superAdminRoutes.js";
 dotenv.config();
 
 const app = express();
-
+app.get("/deployment-test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Deployment is working",
+    timestamp: new Date()
+  });
+});
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
