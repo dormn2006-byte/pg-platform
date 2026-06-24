@@ -22,7 +22,6 @@ router.get("/deployment-test", (req, res) => {
   res.json({
     success: true,
     message: "Latest code deployed successfully",
-    time: new Date()
   });
 });
 // Register Route

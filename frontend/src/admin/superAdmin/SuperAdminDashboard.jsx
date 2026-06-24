@@ -24,8 +24,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        const API_BASE_URL =
+          import.meta.env.VITE_API_URL || "https://api.dormn.com/api";
+
         const response = await axios.get(
-          "http://localhost:8000/api/superadmin/dashboard-stats",
+          `${API_BASE_URL}/superadmin/dashboard-stats`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
