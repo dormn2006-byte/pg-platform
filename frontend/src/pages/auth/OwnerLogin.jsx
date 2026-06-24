@@ -91,7 +91,7 @@ const OwnerLogin = () => {
 
             <div>
               <h1 className="text-xl font-black tracking-tight md:text-2xl">
-                PGVerse
+                Dormn
               </h1>
               <p className="text-xs text-gray-400">
                 Owner Management Portal
@@ -159,7 +159,7 @@ const OwnerLogin = () => {
               </h2>
 
               <p className="mt-3 text-center text-gray-400">
-                Access your PGVerse owner account.
+                Access your Dormn owner account.
               </p>
 
               {/* Form */}

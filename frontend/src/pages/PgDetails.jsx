@@ -99,7 +99,7 @@ const handleWhatsAppOwner = () => {
   }
 
   const message = encodeURIComponent(
-    `Hello, I am interested in ${pg?.title}. I found your PG on PGVerse.`
+    `Hello, I am interested in ${pg?.title}. I found your PG on Dormn.`
   );
 
   window.open(`https://wa.me/${phone}?text=${message}`, "_blank");

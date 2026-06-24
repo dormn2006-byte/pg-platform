@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 
 const faqs = [
   {
-    question: "How does PGVerse verify PG listings?",
+    question: "How does Dormn verify PG listings?",
     answer:
       "Every PG goes through an admin approval process before becoming visible on the platform. Owners must upload room details, photos and location information for verification.",
     color: "from-pink-500/20 to-pink-500/5",
@@ -35,7 +35,7 @@ const faqs = [
   {
     question: "Will online booking be available later?",
     answer:
-      "Yes. Future versions of PGVerse will include secure online booking systems and digital payment management.",
+      "Yes. Future versions of Dormn will include secure online booking systems and digital payment management.",
     color: "from-emerald-500/20 to-emerald-500/5",
     border: "border-emerald-500/20",
   },
@@ -47,7 +47,7 @@ const faqs = [
     border: "border-yellow-500/20",
   },
   {
-    question: "Does PGVerse support sponsored listings?",
+    question: "Does Dormn support sponsored listings?",
     answer:
       "Yes. PG owners can promote premium or sponsored listings for better visibility in explore pages and search results.",
     color: "from-rose-500/20 to-rose-500/5",
@@ -61,7 +61,7 @@ const faqs = [
     border: "border-sky-500/20",
   },
   {
-    question: "Will PGVerse launch a mobile app?",
+    question: "Will Dormn launch a mobile app?",
     answer:
       "Yes. Mobile applications for Android and iOS are part of our future roadmap for easier access and booking.",
     color: "from-indigo-500/20 to-indigo-500/5",
@@ -104,7 +104,7 @@ const FAQ = () => {
             Everything You Need To Know About
             <span className="bg-gradient-to-r from-pink-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
               {" "}
-              PGVerse
+              Dormn
             </span>
           </h1>
 

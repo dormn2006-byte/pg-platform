@@ -119,7 +119,7 @@ const About = () => {
             </h1>
 
             <p className="mt-4 max-w-2xl text-sm leading-6 text-gray-300 sm:text-base sm:leading-7 md:text-lg md:leading-8">
-              PGVerse is a growing student accommodation platform powered by real PG listings, verified owners and live accommodation data from our platform database.
+              Dormn is a growing student accommodation platform powered by real PG listings, verified owners and live accommodation data from our platform database.
             </p>
 
             <p className="mt-4 max-w-2xl text-sm leading-6 text-gray-300 sm:text-base sm:leading-7 md:text-lg md:leading-8">
@@ -180,7 +180,7 @@ const About = () => {
                 </p>
 
                 <p className="mt-4 text-sm leading-6 text-gray-300 sm:text-base sm:leading-7 md:text-lg md:leading-8">
-                  PGVerse solves this by creating a centralized platform where students can explore verified accommodations with room photos, amenities, pricing, rules, location details and direct owner communication.
+                  Dormn solves this by creating a centralized platform where students can explore verified accommodations with room photos, amenities, pricing, rules, location details and direct owner communication.
                 </p>
 
                 <p className="mt-4 text-sm leading-6 text-gray-300 sm:text-base sm:leading-7 md:text-lg md:leading-8">
@@ -209,7 +209,7 @@ const About = () => {
             </p>
 
             <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl md:mt-5 md:text-6xl">
-              Why PGVerse Is Different
+              Why Dormn Is Different
             </h2>
           </div>
 
@@ -265,7 +265,7 @@ const About = () => {
             </p>
 
             <p className="mt-6 text-lg leading-8 text-gray-300">
-              In the future, PGVerse will expand into smart booking systems, AI-powered recommendations, student communities and digital PG management solutions.
+              In the future, Dormn will expand into smart booking systems, AI-powered recommendations, student communities and digital PG management solutions.
             </p>
           </div>
         </Container>
@@ -285,13 +285,13 @@ const About = () => {
               </h2>
 
               <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-gray-300">
-                PGVerse is evolving into a complete smart accommodation ecosystem for students and PG owners.
+                Dormn is evolving into a complete smart accommodation ecosystem for students and PG owners.
               </p>
             </div>
 
             <div className="mb-8 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-5 text-center">
               <p className="text-cyan-200 font-medium">
-                Current roadmap items will gradually move from planning to live platform features as PGVerse expands across more cities and owners.
+                Current roadmap items will gradually move from planning to live platform features as Dormn expands across more cities and owners.
               </p>
             </div>
 
@@ -333,7 +333,7 @@ const About = () => {
               </h2>
 
               <p className="mt-4 text-sm leading-6 text-gray-200 sm:text-base sm:leading-7 md:mt-7 md:text-lg md:leading-8">
-                Whether you are a student searching for accommodation or a PG owner looking to grow your reach, PGVerse is built for you.
+                Whether you are a student searching for accommodation or a PG owner looking to grow your reach, Dormn is built for you.
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4">

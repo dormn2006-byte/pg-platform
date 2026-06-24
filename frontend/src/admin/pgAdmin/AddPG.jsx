@@ -148,7 +148,7 @@ const AddPG = () => {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-600">
-              PGVERSE OWNER PANEL
+              Dormn OWNER PANEL
             </p>
 
             <h1 className="mt-3 text-4xl font-black tracking-tight text-black md:text-5xl">

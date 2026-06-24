@@ -72,7 +72,7 @@ const Sidebar = () => {
 
         <div>
           <h1 className="text-2xl font-black tracking-tight text-gray-900">
-            PGVerse
+            Dormn
           </h1>
 
           <p className="text-sm text-gray-500">

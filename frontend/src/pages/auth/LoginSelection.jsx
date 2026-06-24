@@ -28,7 +28,7 @@ const LoginSelection = () => {
 
             <div>
               <h1 className="text-xl font-black tracking-tight md:text-2xl">
-                PGVerse
+                Dormn
               </h1>
               <p className="text-xs text-gray-400">
                 Next Gen Student Housing
