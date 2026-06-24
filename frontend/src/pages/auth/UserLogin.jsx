@@ -64,7 +64,7 @@ const UserLogin = () => {
             <h1 className="text-4xl font-black leading-tight md:text-6xl">
               Welcome to
               <span className="block bg-gradient-to-r from-pink-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                PGVerse
+                Dormn
               </span>
             </h1>
 
@@ -111,7 +111,7 @@ const UserLogin = () => {
                 </h2>
 
                 <p className="mt-2 text-sm text-gray-400">
-                  Access your PGVerse account.
+                  Access your Dormn account.
                 </p>
               </div>
 
@@ -168,7 +168,7 @@ const UserLogin = () => {
                   disabled={loading}
                   className="w-full rounded-2xl bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-500 px-6 py-4 text-sm font-bold shadow-xl shadow-pink-500/20 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {loading ? "Logging In..." : "Login to PGVerse"}
+                  {loading ? "Logging In..." : "Login to Dormn"}
                 </button>
               </form>
 

@@ -35,7 +35,7 @@ const Footer = () => {
 
               <div>
                 <h2 className="text-xl font-black tracking-tight sm:text-2xl">
-                  PGVerse
+                  Dormn
                 </h2>
 
                 <p className="hidden text-sm text-gray-400 sm:block">
@@ -87,7 +87,7 @@ const Footer = () => {
         <div className="flex flex-col gap-3 pt-4 text-center md:flex-row md:items-center md:justify-between md:text-left">
           <div>
             <p className="text-sm text-gray-400">
-              © 2026 PGVerse • Student Housing Platform
+              © 2026 Dormn • Student Housing Platform
             </p>
           </div>
 

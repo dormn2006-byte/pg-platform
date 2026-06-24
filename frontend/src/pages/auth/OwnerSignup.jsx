@@ -82,7 +82,7 @@ const OwnerSignup = () => {
 
             <div>
               <h1 className="text-xl font-black tracking-tight md:text-2xl">
-                PGVerse
+                Dormn
               </h1>
               <p className="text-xs text-gray-400">
                 Owner Registration Portal
@@ -107,7 +107,7 @@ const OwnerSignup = () => {
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-2 backdrop-blur-2xl">
               <div className="h-2 w-2 animate-pulse rounded-full bg-green-400"></div>
               <p className="text-sm font-semibold text-cyan-200">
-                Join PGVerse Owner Network
+                Join Dormn Owner Network
               </p>
             </div>
 
@@ -153,7 +153,7 @@ const OwnerSignup = () => {
               </h2>
 
               <p className="mt-3 text-center text-gray-400">
-                Create your PGVerse owner account.
+                Create your Dormn owner account.
               </p>
 
               {/* Form */}

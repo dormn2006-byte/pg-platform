@@ -68,7 +68,7 @@ const UserSignup = () => {
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-xl">
               <div className="h-2 w-2 rounded-full bg-green-400"></div>
               <p className="text-sm font-semibold text-cyan-200">
-                Join PGVerse Community
+                Join Dormn Community
               </p>
             </div>
 
@@ -77,7 +77,7 @@ const UserSignup = () => {
             </h1>
 
             <p className="mt-6 max-w-md text-lg leading-8 text-gray-300">
-              Join PGVerse and start exploring verified student accommodations near your college.
+              Join Dormn and start exploring verified student accommodations near your college.
             </p>
 
             <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
@@ -109,7 +109,7 @@ const UserSignup = () => {
                 </h2>
 
                 <p className="mt-3 text-sm leading-6 text-gray-400">
-                  Create your PGVerse account.
+                  Create your Dormn account.
                 </p>
               </div>
 

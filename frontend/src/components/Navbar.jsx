@@ -47,7 +47,7 @@ const Navbar = () => {
 
           <div>
             <h1 className="text-lg font-black tracking-tight text-white sm:text-xl md:text-2xl">
-              PGVerse
+              Dormn
             </h1>
 
             <p className="hidden sm:block text-xs text-gray-400">

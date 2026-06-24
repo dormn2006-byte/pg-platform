@@ -82,7 +82,7 @@ const AdminSidebar = ({ closeSidebar }) => {
 
           <div>
             <h2 className="text-xl font-black tracking-tight">
-              PGVerse
+              Dormn
             </h2>
 
             <p className="text-xs text-gray-400">
