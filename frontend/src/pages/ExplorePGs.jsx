@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PublicLayout from "../layouts/PublicLayout";
 import Container from "../layouts/Container";
-import API from "../services/api";
-import  { IMAGE_BASE_URL } from "../../services/api";
+import API, { IMAGE_BASE_URL } from "../services/api";
 
 const filters = [
   "All",
