@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../services/api";
+import api, { IMAGE_BASE_URL } from "../../services/api";
 
 const Bookings = () => {
   const navigate = useNavigate();
@@ -93,7 +93,11 @@ const Bookings = () => {
             >
               <div className="flex items-center gap-4 lg:w-[320px]">
                 <img
-                  src={pg.profile_image ? `http://localhost:8000/uploads/${pg.profile_image}` : "https://via.placeholder.com/150"}
+                  src={
+                    pg.profile_image
+                      ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
+                      : "https://via.placeholder.com/150"
+                  }
                   alt={pg.title}
                   className="h-20 w-20 rounded-2xl object-cover"
                 />

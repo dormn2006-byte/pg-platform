@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../../services/api";
+import api, { IMAGE_BASE_URL } from "../../services/api";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -91,7 +91,7 @@ const Students = () => {
             >
               <div className="flex items-center gap-4 lg:w-[320px]">
                 <img
-                  src={student.profile_image ? `http://localhost:8000/uploads/${student.profile_image}` : "https://via.placeholder.com/150"}
+                  src={student.profile_image ? `${IMAGE_BASE_URL}/uploads/${student.profile_image}` : "https://via.placeholder.com/150"}
                   alt={student.title}
                   className="h-20 w-20 rounded-2xl object-cover"
                 />
