@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PublicLayout from "../layouts/PublicLayout";
 import Container from "../layouts/Container";
-import API from "../services/api";
+import API , { IMAGE_BASE_URL } from "../../services/api";
 
 const filters = [
   "All",
@@ -249,7 +249,7 @@ const ExplorePGs = () => {
 <div className="relative h-[180px] overflow-hidden sm:h-[240px] md:h-[320px]">                  <img
                     src={
                       pg.profile_image
-                        ? `http://localhost:8000/uploads/${pg.profile_image}`
+                        ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
                         : "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"
                     }
                     alt={pg.title}

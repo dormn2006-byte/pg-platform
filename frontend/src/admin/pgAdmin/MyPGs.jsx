@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../services/api";
-
+import api, { IMAGE_BASE_URL } from "../../services/api";
 const statusStyles = {
   approved: "bg-green-100 text-green-700 border-green-200",
   pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
@@ -164,7 +163,7 @@ const MyPGs = () => {
               <img
                 src={
                   pg.profile_image
-                    ? `http://localhost:8000/uploads/${pg.profile_image}`
+                    ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
                     : "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"
                 }
                 alt={pg.title}
