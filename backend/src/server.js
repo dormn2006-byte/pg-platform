@@ -36,7 +36,11 @@ app.use("/api/superadmin", superAdminRoutes);
 app.get("/", (req, res) => {
   res.send("PG Platform Backend Running");
 });
-
+app.get("/test-upload-path", (req, res) => {
+  res.json({
+    uploadFolder: path.join(__dirname, "uploads"),
+  });
+});
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
