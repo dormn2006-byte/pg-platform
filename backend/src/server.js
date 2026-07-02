@@ -32,6 +32,11 @@ app.use(
 
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/superadmin", superAdminRoutes);
+app.get("/test-upload-path", (req,res)=>{
+  res.json({
+      uploadPath:path.join(__dirname,"uploads")
+  });
+});
 app.get("/", (req, res) => {
   res.send("PG Platform Backend Running");
 });
