@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import pgRoutes from "./routes/pgRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js";
+import fs from "fs";
 
 
 // deployment test
@@ -32,6 +33,25 @@ app.use(
 
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/superadmin", superAdminRoutes);
+app.get("/debug/uploads", (req, res) => {
+
+  const uploadPath = path.join(__dirname, "uploads");
+
+  res.json({
+
+    uploadPath,
+
+    exists: fs.existsSync(uploadPath),
+
+    files: fs.existsSync(uploadPath)
+
+      ? fs.readdirSync(uploadPath)
+
+      : [],
+
+  });
+
+});
 
 app.get("/", (req, res) => {
   res.send("PG Platform Backend Running");
