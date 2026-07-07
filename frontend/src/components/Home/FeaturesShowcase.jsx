@@ -1,68 +1,44 @@
-import { useEffect, useState } from "react";
 import { featureSlides } from "../../data/homeData";
 
 const FeaturesShowcase = () => {
-  const [activeFeature, setActiveFeature] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveFeature((prev) =>
-        prev === featureSlides.length - 1 ? 0 : prev + 1
-      );
-    }, 2200);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <section className="mx-auto max-w-5xl px-4 pb-14 sm:px-5 sm:pb-16 md:px-8 md:pb-20 lg:pb-24">
-      <div className="mb-6 text-center sm:mb-8 md:mb-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-pink-300 sm:text-sm sm:tracking-[0.25em]">
-          Why Students Love Us
-        </p>
-
-        <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl md:mt-4 md:text-5xl">
-          Everything You Need
+    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      {/* Header - Balanced and clean */}
+      <div className="mb-10 text-center">
+        <h2 className="text-3xl md:text-4xl font-black text-[#3A2935] tracking-tight mb-3">
+          Why Students <span className="text-[#E56A54]">Love Us</span>
         </h2>
+        <p className="text-sm md:text-base text-gray-500 font-medium">
+          Everything you need for a safe and hassle-free stay.
+        </p>
       </div>
 
-      <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-2xl sm:p-6 md:rounded-[3rem] md:p-10">
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${featureSlides[activeFeature].color} opacity-70 transition-all duration-700`}
-        ></div>
-
-        <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="mb-3 rounded-full bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-300 sm:hidden">
-            Feature Highlights
-          </div>
+      {/* Horizontal Snap-Slider (Space Efficient) */}
+      <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide [-webkit-overflow-scrolling:touch] cursor-grab active:cursor-grabbing">
+        {featureSlides.map((feature, index) => (
           <div
-            className={`mb-4 flex h-16 w-16 items-center justify-center rounded-[1.25rem] border ${featureSlides[activeFeature].border} bg-white/10 text-3xl shadow-2xl ${featureSlides[activeFeature].glow} backdrop-blur-2xl transition-all duration-700 sm:mb-6 sm:h-20 sm:w-20 sm:text-4xl md:h-24 md:w-24 md:rounded-[2rem] md:text-5xl`}
+            key={index}
+            className="group flex flex-col min-w-[260px] sm:min-w-[300px] md:min-w-[320px] rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm snap-start transition-all duration-300 hover:border-[#E56A54]/30 hover:shadow-lg hover:-translate-y-1"
           >
-            {featureSlides[activeFeature].icon}
+            {/* Zesty Icon with Hover Animation */}
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 border-2 border-gray-100 text-2xl group-hover:bg-[#E56A54] group-hover:text-white transition-all duration-300">
+              {feature.icon}
+            </div>
+
+            {/* Content */}
+            <h3 className="text-lg font-black text-[#3A2935] tracking-tight mb-2">
+              {feature.title}
+            </h3>
+            <p className="text-xs md:text-sm font-medium leading-relaxed text-gray-500 line-clamp-3">
+              {feature.description}
+            </p>
+            
+            {/* Subtle Accent Line */}
+            <div className="mt-auto pt-6">
+               <div className="h-1 w-8 bg-gray-100 rounded-full group-hover:bg-[#E56A54] transition-colors duration-300"></div>
+            </div>
           </div>
-
-          <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl md:text-5xl">
-            {featureSlides[activeFeature].title}
-          </h3>
-
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-300 sm:mt-4 sm:text-base sm:leading-7 md:mt-6 md:text-xl md:leading-8">
-            {featureSlides[activeFeature].description}
-          </p>
-
-          <div className="mt-5 flex items-center gap-2 sm:mt-8 sm:gap-3 md:mt-10">
-            {featureSlides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveFeature(index)}
-                className={`transition-all duration-500 ${
-                  activeFeature === index
-                    ? "h-2.5 w-10 rounded-full bg-gradient-to-r from-pink-500 to-cyan-400 sm:h-3 sm:w-14"
-                    : "h-2.5 w-2.5 rounded-full bg-white/20 sm:h-3 sm:w-3"
-                }`}
-              ></button>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );

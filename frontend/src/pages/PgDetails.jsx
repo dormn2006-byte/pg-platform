@@ -9,9 +9,9 @@ const PgDetails = () => {
   const [pg, setPg] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-const [activeImage, setActiveImage] = useState(
-  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop"
-);
+  const [activeImage, setActiveImage] = useState(
+    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop"
+  );
 
   useEffect(() => {
     const fetchPG = async () => {
@@ -19,13 +19,7 @@ const [activeImage, setActiveImage] = useState(
         setLoading(true);
 
         const res = await API.get(`/pg/${id}`);
-
-        console.log("PG API Response:", res.data);
-
         const pgData = res.data?.pg;
-
-        console.log("PG Object:", pgData);
-
         setPg(pgData);
 
         if (pgData?.profile_image) {
@@ -43,17 +37,28 @@ const [activeImage, setActiveImage] = useState(
   }, [id]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#0b1020] text-white">Loading PG Details...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF9F5] text-[#3A2935] text-lg font-bold">
+        Loading PG Details...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#0b1020] text-red-400">{error}</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF9F5] text-red-500 font-bold text-lg">
+        {error}
+      </div>
+    );
   }
 
   if (!pg) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#0b1020] text-yellow-400">PG Not Found</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF9F5] text-orange-500 font-bold text-lg">
+        PG Not Found
+      </div>
+    );
   }
-  
 
   const amenities = typeof pg.amenities === "string"
     ? pg.amenities.split(",").map((a) => a.trim())
@@ -72,150 +77,131 @@ const [activeImage, setActiveImage] = useState(
       ? `http://localhost:8000/uploads/${pg.profile_image}`
       : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop",
   ];
-const handleBookVisit = async () => {
-  try {
-    await API.post("/bookings/create", {
-      pg_id: Number(id),
-      message: "Interested in booking a visit",
-    });
 
-    alert("Booking request sent successfully!");
-  } catch (error) {
-    console.error("Booking Error:", error);
+  const handleBookVisit = async () => {
+    try {
+      await API.post("/bookings/create", {
+        pg_id: Number(id),
+        message: "Interested in booking a visit",
+      });
+      alert("Booking request sent successfully!");
+    } catch (error) {
+      console.error("Booking Error:", error);
+      alert(error?.response?.data?.message || "Failed to create booking");
+    }
+  };
 
-    alert(
-      error?.response?.data?.message ||
-      "Failed to create booking"
-    );
-  }
-};
+  const handleWhatsAppOwner = () => {
+    const phone = pg?.owner_phone || pg?.phone;
+    if (!phone) {
+      alert("Owner phone number not available");
+      return;
+    }
+    const message = encodeURIComponent(`Hello, I am interested in ${pg?.title}. I found your PG on Dormn.`);
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+  };
 
-const handleWhatsAppOwner = () => {
-  const phone = pg?.owner_phone || pg?.phone;
-
-  if (!phone) {
-    alert("Owner phone number not available");
-    return;
-  }
-
-  const message = encodeURIComponent(
-    `Hello, I am interested in ${pg?.title}. I found your PG on Dormn.`
-  );
-
-  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-};
-
-const handleCallOwner = () => {
-  const phone = pg?.owner_phone || pg?.phone;
-
-  if (!phone) {
-    alert("Owner phone number not available");
-    return;
-  }
-
-  window.location.href = `tel:${phone}`;
-};
+  const handleCallOwner = () => {
+    const phone = pg?.owner_phone || pg?.phone;
+    if (!phone) {
+      alert("Owner phone number not available");
+      return;
+    }
+    window.location.href = `tel:${phone}`;
+  };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#0b1020] text-white">
-      {/* Background */}
-      <div className="absolute left-[-120px] top-[-120px] h-96 w-96 rounded-full bg-pink-500/20 blur-3xl"></div>
-      <div className="absolute right-[-100px] top-[200px] h-96 w-96 rounded-full bg-cyan-500/20 blur-3xl"></div>
-
+    <div className="min-h-screen overflow-x-hidden bg-[#FAF9F5] text-[#3A2935] font-sans selection:bg-[#E56A54] selection:text-white">
       {/* Navbar */}
       <Navbar />
-      
 
       {/* Main Layout */}
-      <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-10">
-        <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-          {/* LEFT SIDE */}
-          <div>
-            {/* Gallery */}
-            <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/5 backdrop-blur-2xl">
-              <img
-                src={activeImage || galleryImages[0]}
-                alt="PG"
-                className="h-[280px] w-full object-cover md:h-[520px]"
-              />
+      <section className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 md:px-8 md:py-12">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
+          
+          {/* LEFT SIDE: Details & Gallery */}
+          <div className="flex flex-col gap-8">
+            
+            {/* Gallery (Bento Box Style) */}
+            <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-2 shadow-sm md:rounded-[2.5rem] md:p-3">
+              <div className="overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
+                <img
+                  src={activeImage || galleryImages[0]}
+                  alt="PG"
+                  className="h-[300px] w-full object-cover transition-transform duration-700 hover:scale-105 md:h-[480px]"
+                />
+              </div>
 
-              <div className="grid grid-cols-4 gap-3 p-4 md:p-5">
+              <div className="mt-2 grid grid-cols-4 gap-2 md:mt-3 md:gap-3">
                 {galleryImages.map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setActiveImage(img)}
-                    className={`overflow-hidden rounded-2xl border transition ${
+                    className={`overflow-hidden rounded-xl border-2 transition-all duration-300 ${
                       activeImage === img
-                        ? "border-cyan-400"
-                        : "border-white/10"
+                        ? "border-[#E56A54] shadow-md opacity-100"
+                        : "border-transparent opacity-70 hover:opacity-100"
                     }`}
                   >
                     <img
                       src={img}
                       alt="preview"
-                      className="h-20 w-full object-cover md:h-24"
+                      className="h-16 w-full object-cover sm:h-20 md:h-24"
                     />
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* About */}
-            <div className="mt-8 rounded-[2.5rem] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl md:p-8">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full bg-cyan-500/10 px-4 py-2 text-xs font-bold text-cyan-300">
-                  Verified
+            {/* About / Header Section */}
+            <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm md:rounded-[2.5rem] md:p-10">
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="rounded-lg bg-green-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-green-700">
+                  Verified Stay
                 </span>
 
                 {pg.sponsored && (
-                  <span className="rounded-full bg-pink-500/10 px-4 py-2 text-xs font-bold text-pink-300">
+                  <span className="rounded-lg bg-orange-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#E56A54]">
                     Sponsored
                   </span>
                 )}
-
-                <span className="rounded-full bg-green-500/10 px-4 py-2 text-xs font-bold text-green-300">
-                  {pg.status}
+                
+                <span className="rounded-lg bg-gray-100 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-600">
+                  {pg.status || "Active"}
                 </span>
               </div>
 
-              <h1 className="mt-5 text-4xl font-black tracking-tight md:text-6xl">
+              <h1 className="text-3xl font-black tracking-tight text-[#3A2935] md:text-5xl">
                 {pg.title}
               </h1>
 
-              <p className="mt-4 text-lg text-gray-300">
-                📍 {`${pg.area || ""}, ${pg.city || ""}`}
+              <p className="mt-3 text-sm font-medium text-gray-500 md:text-base flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-[#E56A54]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                {`${pg.area || ""}, ${pg.city || ""}`}
               </p>
 
-              <div className="mt-5 flex flex-wrap gap-3">
-                <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-cyan-200 backdrop-blur-xl">
-                  📌 {pg.address || pg.city}
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2 rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-2.5 text-sm font-bold text-[#3A2935]">
+                  <span className="text-[#E56A54]">★</span> {pg.rating || "New"} Ratings
+                </div>
+                <div className="flex items-center gap-2 rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-2.5 text-sm font-bold text-[#3A2935]">
+                  <span className="text-xl">🏠</span> {pg.pg_type || "PG Type"}
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center gap-4">
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-xl">
-                  ⭐ {pg.rating} Ratings
-                </div>
-
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-xl">
-                  🏠 {pg.pg_type}
-                </div>
-              </div>
-
-              <p className="mt-8 text-base leading-8 text-gray-300 md:text-lg">
-                {pg.description}
+              <p className="mt-8 text-sm leading-relaxed text-gray-600 md:text-base md:leading-8">
+                {pg.description || "No description provided for this listing."}
               </p>
             </div>
 
-            {/* Amenities */}
-            <div className="mt-8 rounded-[2.5rem] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl md:p-8">
-              <h2 className="text-3xl font-black">Amenities</h2>
-
-              <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+            {/* Amenities Section */}
+            <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm md:rounded-[2.5rem] md:p-10">
+              <h2 className="text-2xl font-black text-[#3A2935]">What this place offers</h2>
+              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
                 {amenities.map((item) => (
                   <div
                     key={item}
-                    className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-gray-300"
+                    className="rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:border-gray-200 hover:bg-gray-100"
                   >
                     {item}
                   </div>
@@ -223,123 +209,113 @@ const handleCallOwner = () => {
               </div>
             </div>
 
-            {/* Rules */}
-            <div className="mt-8 rounded-[2.5rem] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl md:p-8">
-              <h2 className="text-3xl font-black">Rules & Policies</h2>
-
-              <div className="mt-6 space-y-4">
+            {/* Rules Section */}
+            <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm md:rounded-[2.5rem] md:p-10">
+              <h2 className="text-2xl font-black text-[#3A2935]">Rules & Policies</h2>
+              <div className="mt-6 space-y-3">
                 {rules.map((rule, index) => (
                   <div
                     key={index}
-                    className="rounded-2xl border border-white/10 bg-white/5 p-4 text-gray-300"
+                    className="flex items-center gap-3 rounded-xl bg-gray-50 px-5 py-4 text-sm font-medium text-gray-700"
                   >
-                    • {rule}
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#E56A54] flex-shrink-0"></span>
+                    {rule}
                   </div>
                 ))}
               </div>
             </div>
-
           </div>
 
-          {/* RIGHT SIDE */}
-          <div className="space-y-8">
-            {/* Price Cards */}
-            <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl md:p-8">
-              <h2 className="text-3xl font-black">Room Pricing</h2>
-
-              <div className="mt-6 space-y-5">
-                <div className="rounded-[2rem] border border-white/10 bg-white/5 p-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="text-xl font-black">{pg.pg_type?.toUpperCase()} PG</h3>
-                      <p className="mt-2 text-sm text-gray-400">
-                        Available Rooms: {pg.available_rooms || 0}
-                      </p>
-                    </div>
-
-                    <h4 className="text-xl font-black text-cyan-300">
-                      ₹{pg.price}/month
+          {/* RIGHT SIDE: Booking & Actions */}
+          <div className="space-y-6">
+            
+            {/* Sticky Container for right sidebar */}
+            <div className="sticky top-[100px] space-y-6">
+              
+              {/* Pricing & Booking Card */}
+              <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:rounded-[2.5rem] md:p-8">
+                <div className="flex items-end justify-between border-b-2 border-gray-100 pb-6">
+                  <div>
+                    <h4 className="text-3xl font-black text-[#E56A54]">
+                      ₹{Number(pg.price || 0).toLocaleString()}
                     </h4>
+                    <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mt-1">Per Month</p>
+                  </div>
+                  <div className="text-right">
+                    <h3 className="text-sm font-bold text-[#3A2935]">{pg.pg_type?.toUpperCase()} PG</h3>
+                    <p className="mt-1 text-xs font-medium text-gray-500">
+                      Rooms Left: <span className="font-bold text-[#3A2935]">{pg.available_rooms || 0}</span>
+                    </p>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Contact Box */}
-            <div className="rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-pink-500/10 via-violet-500/10 to-cyan-500/10 p-6 backdrop-blur-2xl md:p-8">
-              <h2 className="text-3xl font-black">
-                Interested?
-              </h2>
+                <div className="mt-6 space-y-3">
+                  <button
+                    onClick={handleBookVisit}
+                    className="w-full rounded-2xl bg-[#E56A54] px-5 py-4 text-sm font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-[#d65a45]"
+                  >
+                    Request a Visit
+                  </button>
 
-              <p className="mt-4 leading-7 text-gray-300">
-                Contact the PG owner directly or schedule a property visit.
-              </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={handleWhatsAppOwner}
+                      className="w-full rounded-xl border-2 border-green-100 bg-green-50 px-3 py-3.5 text-xs font-bold text-green-700 transition hover:bg-green-100"
+                    >
+                      WhatsApp
+                    </button>
 
-              <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-gray-300">
-  Owner Contact: {pg?.owner_phone || pg?.phone || "Not Available"}
-</div>
-
-              <div className="mt-8 space-y-4">
-              <button
-  onClick={handleBookVisit}
-  className="w-full rounded-2xl bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-500 px-5 py-4 font-bold shadow-xl shadow-pink-500/20 transition hover:scale-[1.02]"
->
-  Book Visit
-</button>
-
-                <button
-  onClick={handleWhatsAppOwner}
-  className="w-full rounded-2xl border border-white/10 bg-white/5 px-5 py-4 font-semibold backdrop-blur-xl transition hover:bg-white/10"
->
-  WhatsApp Owner
-</button>
-
-                <button
-  onClick={handleCallOwner}
-  className="w-full rounded-2xl border border-white/10 bg-white/5 px-5 py-4 font-semibold backdrop-blur-xl transition hover:bg-white/10"
->
-  Call Owner
-</button>
-              </div>
-            </div>
-
-            {/* Map */}
-            <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
-              <h3 className="text-2xl font-black">Location</h3>
-
-              <p className="mt-3 text-gray-300">
-                {pg.address || `${pg.area || ""}, ${pg.city || ""}`}
-              </p>
-
-              {pg.google_map_link ? (
-                <a
-                  href={pg.google_map_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-500 px-5 py-4 font-bold text-white shadow-xl shadow-pink-500/20 transition hover:scale-[1.02]"
-                >
-                  📍 Open in Google Maps
-                </a>
-              ) : (
-                <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-gray-400">
-                  Location not available
+                    <button
+                      onClick={handleCallOwner}
+                      className="w-full rounded-xl border-2 border-gray-200 bg-white px-3 py-3.5 text-xs font-bold text-[#3A2935] transition hover:bg-gray-50"
+                    >
+                      Call Owner
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
+                
+                <div className="mt-6 rounded-xl bg-gray-50 p-4 text-center text-xs font-medium text-gray-500">
+                  Owner Contact: <span className="font-bold text-[#3A2935]">{pg?.owner_phone || pg?.phone || "Not Available"}</span>
+                </div>
+              </div>
 
-            {/* Ad Box */}
-            <div className="rounded-[2.5rem] border border-dashed border-white/10 bg-white/5 p-8 text-center backdrop-blur-2xl">
-              <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
-                Advertisement Space
-              </p>
+              {/* Map / Location Card */}
+              <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm md:rounded-[2.5rem] md:p-8">
+                <h3 className="text-xl font-black text-[#3A2935]">Exact Location</h3>
+                <p className="mt-3 text-sm font-medium leading-relaxed text-gray-600">
+                  {pg.address || `${pg.area || ""}, ${pg.city || ""}`}
+                </p>
 
-              <h3 className="mt-4 text-3xl font-black">
-                Promote Your PG Here
-              </h3>
+                {pg.google_map_link ? (
+                  <a
+                    href={pg.google_map_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-gray-800"
+                  >
+                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    Open Google Maps
+                  </a>
+                ) : (
+                  <div className="mt-5 rounded-xl border-2 border-gray-100 bg-gray-50 p-3.5 text-center text-sm font-bold text-gray-400">
+                    Map not available
+                  </div>
+                )}
+              </div>
 
-              <button className="mt-6 rounded-2xl bg-white px-6 py-3 font-bold text-black transition hover:scale-105">
-                Run Sponsorship
-              </button>
+              {/* Advertisement Space */}
+              <div className="rounded-[2rem] border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center transition-colors hover:border-gray-400">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                  Advertisement
+                </p>
+                <h3 className="mt-2 text-xl font-black text-[#3A2935]">
+                  Promote Your PG
+                </h3>
+                <button className="mt-4 rounded-xl border-2 border-[#3A2935] bg-white px-5 py-2.5 text-xs font-bold text-[#3A2935] transition hover:bg-[#3A2935] hover:text-white">
+                  Learn More
+                </button>
+              </div>
+
             </div>
           </div>
         </div>

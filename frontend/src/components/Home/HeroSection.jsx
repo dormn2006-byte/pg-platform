@@ -16,16 +16,7 @@ const HeroSection = () => {
     const fetchStats = async () => {
       try {
         const res = await API.get("/pg/all");
-
-console.log("Hero PG Response:", res.data);
-
-const pgs =
-  res.data?.pgs ||
-  res.data?.data ||
-  res.data ||
-  [];
-
-console.log("Hero PGs:", pgs);
+        const pgs = res.data?.pgs || res.data?.data || res.data || [];
 
         if (Array.isArray(pgs) && pgs.length > 0) {
           setFeaturedPG(pgs[0]);
@@ -45,9 +36,8 @@ console.log("Hero PGs:", pgs);
             label: "Owners",
           },
         ]);
-      }catch (error) {
+      } catch (error) {
         console.error("Hero stats load failed:", error);
-        console.error("Hero API Error:", error?.response?.data);
       }
     };
 
@@ -55,76 +45,92 @@ console.log("Hero PGs:", pgs);
   }, []);
 
   return (
-    <section className="relative overflow-hidden px-4 pb-8 pt-4 sm:px-5 sm:pb-10 sm:pt-6 md:px-8 md:pb-16 md:pt-10 lg:px-12">
-      {/* Background Glow */}
-      <div className="pointer-events-none absolute left-[-50px] top-[-50px] h-40 w-40 rounded-full bg-pink-500/35 blur-3xl md:left-[-120px] md:top-[-100px] md:h-80 md:w-80"></div>
+    <>
+      {/* Injecting a bold, trendy Gen Z font directly into the component */}
+      <style>
+        {`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&display=swap');`}
+      </style>
 
-      <div className="pointer-events-none absolute right-[-15px] top-[80px] h-44 w-44 rounded-full bg-cyan-500/35 blur-3xl md:right-[-120px] md:h-96 md:w-96"></div>
+      <section className="relative overflow-hidden bg-[#FAF9F5] px-4 pb-12 pt-6 sm:px-5 sm:pb-16 sm:pt-8 md:px-8 md:pb-20 md:pt-12 lg:px-12">
+        <Container className="relative grid items-center gap-12 sm:gap-14 md:gap-16 lg:grid-cols-2">
+          
+          {/* Left Content */}
+          <div className="z-10 mt-4 md:mt-0">
+            
+            {/* Top Badge - Structured Bento Style */}
+            <div className="inline-flex max-w-full items-center gap-2.5 rounded-full border-2 border-gray-200 bg-white px-4 py-2 shadow-sm transition-transform hover:-translate-y-0.5">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E56A54] opacity-75"></span>
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#E56A54]"></span>
+              </span>
+              <p className="text-xs font-bold tracking-wide text-[#3A2935] sm:text-sm">
+                Trusted Student Housing
+              </p>
+            </div>
 
-      <Container className="relative grid items-center gap-8 sm:gap-10 md:gap-14 lg:grid-cols-2">
-        {/* Left Content */}
-        <div>
-          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-xl sm:px-4 md:px-5">
-            <span className="h-2 w-2 rounded-full bg-green-400"></span>
+            {/* Bold Premium Heading with Z-Gen Highlight */}
+            <h1
+              style={{ fontFamily: "'Outfit', sans-serif" }}
+              className="mt-6 text-[3rem] font-black leading-[1.05] tracking-tight text-[#3A2935] sm:text-[4rem] md:mt-8 md:text-[4.8rem] md:leading-[1.05]"
+            >
+              Find Your <br />
+              <span className="relative mt-2 inline-block">
+                {/* Trendy Angled Highlight Box */}
+                <span className="absolute inset-0 -rotate-2 rounded-2xl bg-[#E56A54]"></span>
+                <span className="relative inline-block -rotate-2 px-4 py-1 text-white">
+                  Dream PG
+                </span>
+              </span>
+              <br className="hidden md:block" />
+              <span className="mt-2 inline-block">In Minutes.</span>
+            </h1>
 
-            <p className="text-xs font-semibold text-gray-200 sm:text-sm">
-              Trusted Student Accommodation Platform
+            <p className="mt-6 max-w-xl text-base font-medium leading-relaxed text-gray-600 sm:text-lg sm:leading-8 md:mt-8 md:max-w-2xl md:text-lg">
+              Explore premium student stays, modern hostels, and affordable PGs curated for your lifestyle.
             </p>
-          </div>
 
-          <h1 className="mt-4 text-[2.9rem] font-black leading-[0.92] tracking-tight text-white sm:text-[3.6rem] md:mt-7 md:text-7xl md:leading-[0.95]">
-            Find Your Dream
-            <span className="bg-gradient-to-r from-pink-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
-              {" "}
-              PG
-            </span>
-            <br />
-            In Minutes.
-          </h1>
-
-          <p className="mt-4 max-w-xl text-sm leading-6 text-gray-300 sm:text-base sm:leading-7 md:mt-7 md:max-w-2xl md:text-lg md:leading-8">
-            Explore premium student stays, modern hostels and affordable PGs near top colleges and universities.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 md:mt-10 md:gap-5">
-            <Link
-              to="/pgs"
-              className="w-full rounded-2xl bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-500 px-6 py-3.5 text-center text-sm font-black text-white shadow-xl shadow-pink-500/20 transition duration-300 hover:scale-105 sm:w-auto md:px-8 md:py-4"
-            >
-              Explore Now
-            </Link>
-
-            <Link
-              to="/signup/owner"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-3.5 text-center text-sm font-semibold text-white backdrop-blur-xl transition duration-300 hover:bg-white/10 sm:w-auto md:px-8 md:py-4"
-            >
-              Become Owner
-            </Link>
-          </div>
-
-          {/* Stats */}
-          <div className="mt-8 grid grid-cols-3 gap-3 md:mt-12 md:flex md:flex-wrap md:gap-5">
-            {stats.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-[1.2rem] border border-white/10 bg-white/5 px-3 py-3 text-center shadow-2xl backdrop-blur-2xl md:rounded-[2rem] md:px-7 md:py-5"
+            {/* CTA Buttons - Soft Neo-Brutalism Style */}
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 md:mt-10">
+              <Link
+                to="/pgs"
+                className="w-full rounded-2xl border-2 border-[#3A2935] bg-[#3A2935] px-8 py-4 text-center text-sm font-bold text-white shadow-[4px_4px_0px_#E56A54] transition-all duration-300 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#E56A54] sm:w-auto md:text-base"
               >
-                <h3 className="bg-gradient-to-r from-pink-400 to-cyan-400 bg-clip-text text-2xl font-black text-transparent sm:text-3xl md:text-4xl">
-                  {item.number}
-                </h3>
+                Explore Now
+              </Link>
 
-                <p className="mt-1 text-[10px] text-gray-300 sm:text-xs md:mt-2 md:text-sm">
-                  {item.label}
-                </p>
-              </div>
-            ))}
+              <Link
+                to="/signup/owner"
+                className="w-full rounded-2xl border-2 border-gray-200 bg-white px-8 py-4 text-center text-sm font-bold text-[#3A2935] shadow-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-50 sm:w-auto md:text-base"
+              >
+                Become an Owner
+              </Link>
+            </div>
+
+            {/* Stats - Bento Box Grid with Borders */}
+            <div className="mt-10 grid grid-cols-3 gap-3 md:mt-14 md:gap-5">
+              {stats.map((item) => (
+                <div
+                  key={item.label}
+                  className="group flex flex-col items-center justify-center rounded-[1.5rem] border-2 border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E56A54]/40 hover:shadow-md md:rounded-[2rem] md:p-6"
+                >
+                  <h3
+                    style={{ fontFamily: "'Outfit', sans-serif" }}
+                    className="text-2xl font-black text-[#3A2935] transition-colors group-hover:text-[#E56A54] sm:text-3xl md:text-4xl"
+                  >
+                    {item.number}
+                  </h3>
+                  <p className="mt-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-gray-400 sm:text-xs">
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <HeroVisual featuredPG={featuredPG} />
-      </Container>
-    </section>
+          <HeroVisual featuredPG={featuredPG} />
+        </Container>
+      </section>
+    </>
   );
 };
 
