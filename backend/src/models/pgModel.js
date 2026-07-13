@@ -81,20 +81,44 @@ export const getAllPGs = async () => {
 
 // Get Single PG By ID
 export const getPGById = async (id) => {
-  const query = `
-   SELECT
-    pgs.*,
-    users.full_name AS owner_name,
-    users.email AS owner_email,
-    users.phone AS owner_phone
-FROM pgs
-JOIN users ON pgs.owner_id = users.id
-WHERE pgs.id = ?
+  // Fetch PG details
+  const pgQuery = `
+    SELECT
+      pgs.*,
+      users.full_name AS owner_name,
+      users.email AS owner_email,
+      users.phone AS owner_phone
+    FROM pgs
+    JOIN users ON pgs.owner_id = users.id
+    WHERE pgs.id = ?
   `;
 
-  const [rows] = await db.execute(query, [id]);
+  const [pgRows] = await db.execute(pgQuery, [id]);
 
-  return rows[0];
+  if (pgRows.length === 0) {
+    return null;
+  }
+
+  const pg = pgRows[0];
+
+  // Fetch gallery images
+  const imageQuery = `
+    SELECT
+      id,
+      image_url,
+      display_order,
+      is_cover
+    FROM pg_images
+    WHERE pg_id = ?
+    ORDER BY display_order ASC
+  `;
+
+  const [images] = await db.execute(imageQuery, [id]);
+
+  // Attach gallery to PG object
+  pg.gallery = images;
+
+  return pg;
 };
 
 // Get PGs By Owner
@@ -174,4 +198,30 @@ export const deletePG = async (id) => {
   const [result] = await db.execute(query, [id]);
 
   return result;
+};
+
+// Save Multiple PG Images
+export const savePGImages = async (pgId, images) => {
+  if (!images || images.length === 0) {
+    return;
+  }
+
+  const query = `
+    INSERT INTO pg_images (
+      pg_id,
+      image_url,
+      display_order,
+      is_cover
+    )
+    VALUES (?, ?, ?, ?)
+  `;
+
+  for (let i = 0; i < images.length; i++) {
+    await db.execute(query, [
+      pgId,
+      images[i],
+      i + 1,
+      i === 0 ? 1 : 0,
+    ]);
+  }
 };

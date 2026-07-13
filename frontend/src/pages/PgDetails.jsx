@@ -22,8 +22,10 @@ const PgDetails = () => {
         const pgData = res.data?.pg;
         setPg(pgData);
 
-        if (pgData?.profile_image) {
-          setActiveImage(`http://localhost:8000/uploads/${pgData.profile_image}`);
+        if (pgData?.gallery?.length > 0) {
+          setActiveImage(`http://localhost:3000/uploads/${pgData.gallery[0].image_url}`);
+        } else if (pgData?.profile_image) {
+          setActiveImage(`http://localhost:3000/uploads/${pgData.profile_image}`);
         }
       } catch (err) {
         console.error("PG Details Error:", err);
@@ -72,11 +74,26 @@ const PgDetails = () => {
     ? pg.rules
     : [];
 
-  const galleryImages = [
-    pg.profile_image
-      ? `http://localhost:8000/uploads/${pg.profile_image}`
-      : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop",
-  ];
+  const galleryImages =
+    pg.gallery && pg.gallery.length > 0
+      ? pg.gallery.map((img) => `http://localhost:3000/uploads/${img.image_url}`)
+      : [
+          pg.profile_image
+            ? `http://localhost:3000/uploads/${pg.profile_image}`
+            : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop",
+        ];
+
+  const showPreviousImage = () => {
+    const currentIndex = galleryImages.indexOf(activeImage);
+    const previousIndex = currentIndex <= 0 ? galleryImages.length - 1 : currentIndex - 1;
+    setActiveImage(galleryImages[previousIndex]);
+  };
+
+  const showNextImage = () => {
+    const currentIndex = galleryImages.indexOf(activeImage);
+    const nextIndex = currentIndex === galleryImages.length - 1 ? 0 : currentIndex + 1;
+    setActiveImage(galleryImages[nextIndex]);
+  };
 
   const handleBookVisit = async () => {
     try {
@@ -124,12 +141,33 @@ const PgDetails = () => {
             
             {/* Gallery (Bento Box Style) */}
             <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-2 shadow-sm md:rounded-[2.5rem] md:p-3">
-              <div className="overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
+              <div className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
                 <img
                   src={activeImage || galleryImages[0]}
                   alt="PG"
                   className="h-[300px] w-full object-cover transition-transform duration-700 hover:scale-105 md:h-[480px]"
                 />
+                {galleryImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={showPreviousImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-3 shadow-lg transition hover:bg-white"
+                    >
+                      ←
+                    </button>
+
+                    <button
+                      onClick={showNextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-3 shadow-lg transition hover:bg-white"
+                    >
+                      →
+                    </button>
+
+                    <div className="absolute bottom-4 right-4 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white">
+                      {galleryImages.indexOf(activeImage) + 1} / {galleryImages.length}
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="mt-2 grid grid-cols-4 gap-2 md:mt-3 md:gap-3">

@@ -67,6 +67,12 @@ const AddPG = () => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
+
+    if (files.length > 10) {
+      alert("You can upload a maximum of 10 images.");
+      return;
+    }
+
     setSelectedImages(files);
   };
 
@@ -99,10 +105,9 @@ const AddPG = () => {
       );
   
       if (selectedImages.length > 0) {
-        data.append(
-          "profile_image",
-          selectedImages[0]
-        );
+        selectedImages.forEach((image) => {
+          data.append("images", image);
+        });
       }
   
       console.log("Submitting PG...");
@@ -266,6 +271,66 @@ const AddPG = () => {
               ></textarea>
             </div>
           </div>
+          <div>
+  <label className="mb-3 block text-sm font-semibold text-gray-700">
+    PG Type
+  </label>
+
+  <div className="grid grid-cols-3 gap-3">
+
+    <button
+      type="button"
+      onClick={() =>
+        setFormData({ ...formData, pg_type: "boys" })
+      }
+      className={`rounded-2xl border p-5 transition ${
+        formData.pg_type === "boys"
+          ? "border-black bg-black text-white"
+          : "border-gray-300 bg-white"
+      }`}
+    >
+      👨
+      <div className="mt-2 font-bold">
+        Boys PG
+      </div>
+    </button>
+
+    <button
+      type="button"
+      onClick={() =>
+        setFormData({ ...formData, pg_type: "girls" })
+      }
+      className={`rounded-2xl border p-5 transition ${
+        formData.pg_type === "girls"
+          ? "border-black bg-black text-white"
+          : "border-gray-300 bg-white"
+      }`}
+    >
+      👩
+      <div className="mt-2 font-bold">
+        Girls PG
+      </div>
+    </button>
+
+    <button
+      type="button"
+      onClick={() =>
+        setFormData({ ...formData, pg_type: "both" })
+      }
+      className={`rounded-2xl border p-5 transition ${
+        formData.pg_type === "both"
+          ? "border-black bg-black text-white"
+          : "border-gray-300 bg-white"
+      }`}
+    >
+      🏠
+      <div className="mt-2 font-bold">
+        Boys & Girls
+      </div>
+    </button>
+
+  </div>
+</div>
 
           {/* Location */}
           <div className="rounded-[2rem] border border-gray-200 bg-white p-6 shadow-sm">
@@ -367,7 +432,7 @@ const AddPG = () => {
                 Upload Photos
               </h2>
             </div>
-            <p className="mt-2 text-sm text-gray-500">Upload at least one clear image of your PG.</p>
+            <p className="mt-2 text-sm text-gray-500">Upload up to 10 images of your PG. The first image will be used as the cover image.</p>
 
             <div className="mt-6 rounded-[2rem] border-2 border-dashed border-gray-300 bg-gray-50 p-10 text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-black text-white">
@@ -386,6 +451,7 @@ const AddPG = () => {
               <input
                 type="file"
                 multiple
+                accept="image/*"
                 ref={fileInputRef}
                 onChange={handleImageUpload}
                 className="hidden"

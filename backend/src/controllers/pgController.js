@@ -1,11 +1,15 @@
 import {
   createPG,
+  savePGImages,
   getAllPGs,
   getPGById,
   getPGsByOwner,
   updatePG,
   deletePG,
 } from "../models/pgModel.js";
+
+// Import the new utility (adjust the path to match your folder structure)
+import { processImage } from "../utils/imageProcessor.js"; 
 
 // Create PG
 export const createPGController = async (req, res) => {
@@ -33,14 +37,31 @@ export const createPGController = async (req, res) => {
       });
     }
 
-    // Uploaded Image
-    const profile_image = req.file
-      ? req.file.filename
-      : null;
+    // Uploaded Image Logic Extracted
+    let processedImages = [];
+    let profile_image = null;
+
+    if (req.files && req.files.length > 0) {
+      try {
+        for (const file of req.files) {
+          const processedFileName = await processImage(file);
+          processedImages.push(processedFileName);
+        }
+
+        // Temporary: use the first uploaded image as the cover image.
+        profile_image = processedImages[0];
+
+        console.log("Processed Images:", processedImages);
+      } catch (imageError) {
+        return res.status(imageError.statusCode || 500).json({
+          success: false,
+          message: imageError.message,
+        });
+      }
+    }
 
     // Owner ID from Logged In User
     const owner_id = req.user.id;
-
 
     const result = await createPG({
       owner_id,
@@ -58,6 +79,12 @@ export const createPGController = async (req, res) => {
       google_map_link,
       profile_image,
     });
+
+    // Save gallery images after the PG has been created.
+    if (processedImages.length > 0) {
+      await savePGImages(result.insertId, processedImages);
+      console.log(`Saved ${processedImages.length} gallery images for PG ${result.insertId}`);
+    }
 
     return res.status(201).json({
       success: true,
@@ -107,6 +134,13 @@ export const getSinglePGController = async (req, res) => {
         message: "PG not found",
       });
     }
+
+    console.log("Returning PG Details:", {
+      id: pg.id,
+      title: pg.title,
+      profile_image: pg.profile_image,
+      galleryCount: pg.gallery?.length || 0,
+    });
 
     return res.status(200).json({
       success: true,
@@ -158,7 +192,9 @@ export const updatePGController = async (req, res) => {
       });
     }
     
-
+    // NOTE: If you plan to allow users to update images later, 
+    // you can reuse the processImage() utility right here!
+    
     const updatedData = {
       title: req.body.title ?? existingPG.title,
       description: req.body.description ?? existingPG.description,
