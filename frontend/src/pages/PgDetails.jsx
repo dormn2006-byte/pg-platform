@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import API from "../services/api";
+import API, { IMAGE_BASE_URL } from "../services/api";
 
 const PgDetails = () => {
   const { id } = useParams();
@@ -22,10 +22,11 @@ const PgDetails = () => {
         const pgData = res.data?.pg;
         setPg(pgData);
 
+        // Update: Using dynamic IMAGE_BASE_URL instead of hardcoded localhost
         if (pgData?.gallery?.length > 0) {
-          setActiveImage(`http://localhost:3000/uploads/${pgData.gallery[0].image_url}`);
+          setActiveImage(`${IMAGE_BASE_URL}/uploads/${pgData.gallery[0].image_url}`);
         } else if (pgData?.profile_image) {
-          setActiveImage(`http://localhost:3000/uploads/${pgData.profile_image}`);
+          setActiveImage(`${IMAGE_BASE_URL}/uploads/${pgData.profile_image}`);
         }
       } catch (err) {
         console.error("PG Details Error:", err);
@@ -74,12 +75,13 @@ const PgDetails = () => {
     ? pg.rules
     : [];
 
+  // Update: Using dynamic IMAGE_BASE_URL instead of hardcoded localhost
   const galleryImages =
     pg.gallery && pg.gallery.length > 0
-      ? pg.gallery.map((img) => `http://localhost:3000/uploads/${img.image_url}`)
+      ? pg.gallery.map((img) => `${IMAGE_BASE_URL}/uploads/${img.image_url}`)
       : [
           pg.profile_image
-            ? `http://localhost:3000/uploads/${pg.profile_image}`
+            ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
             : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop",
         ];
 
