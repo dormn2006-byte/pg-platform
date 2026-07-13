@@ -23,7 +23,7 @@ router.post(
   "/create",
   protect,
   ownerOnly,
-  upload.single("profile_image"),
+  upload.array("images", 10),
   createPGController
 );
 
