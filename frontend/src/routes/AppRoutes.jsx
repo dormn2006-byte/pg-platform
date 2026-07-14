@@ -4,11 +4,8 @@ import Home from "../pages/Home";
 import PgDetails from "../pages/PgDetails";
 import ExplorePGs from "../pages/ExplorePGs";
 
-import LoginSelection from "../pages/auth/LoginSelection";
-import UserLogin from "../pages/auth/UserLogin";
-import OwnerLogin from "../pages/auth/OwnerLogin";
-import UserSignup from "../pages/auth/UserSignup";
-import OwnerSignup from "../pages/auth/OwnerSignup";
+import Auth from "../pages/auth/Auth";
+
 
 import PGAdminLayout from "../layouts/PGAdminLayout";
 import ProtectedRoute from "./ProtectedRoute";
@@ -43,12 +40,7 @@ const AppRoutes = () => {
         <Route path="/pg/:id" element={<PgDetails />} />
 
         {/* Auth Routes */}
-        <Route path="/auth" element={<LoginSelection />} />
-        <Route path="/login-selection" element={<LoginSelection />} />
-        <Route path="/login" element={<LoginSelection />} />
-
-        <Route path="/login/user" element={<UserLogin />} />
-        <Route path="/login/owner" element={<OwnerLogin />} />
+        <Route path="/auth" element={<Auth />} />
 
         <Route
           path="/superadmin/dashboard"
@@ -139,8 +131,7 @@ const AppRoutes = () => {
           element={<BookingDetails />}
         />
 
-        <Route path="/signup/user" element={<UserSignup />} />
-        <Route path="/signup/owner" element={<OwnerSignup />} />
+        
         {/* Protected Owner Routes */}
         <Route
           path="/owner"
