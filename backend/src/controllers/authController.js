@@ -3,11 +3,16 @@ import jwt from "jsonwebtoken";
 import {
   createUser,
   findUserByEmail,
+  // Make sure you export these helper functions from your userModel.js to save/clear OTPs
+  updateUserOTP, 
+  clearUserOTP,
 } from "../models/userModel.js";
 import crypto from "crypto";
 import { sendOTPEmail, sendLoginAlert } from "../utils/emailService.js";
 
-// Register User
+// =========================================================================
+// 1. REGISTER USER
+// =========================================================================
 export const registerUser = async (req, res) => {
   try {
     const {
@@ -84,43 +89,47 @@ export const registerUser = async (req, res) => {
   }
 };
 
-
+// =========================================================================
+// 2. REQUEST OTP
+// =========================================================================
 export const requestOTP = async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email) return res.status(400).json({ success: false, message: "Email required" });
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email required" });
+    }
 
-    // Verify user exists
-    // const user = await getUserByEmail(email);
-    // if (!user) return res.status(404).json({ success: false, message: "Account not found" });
+    // Verify user exists in the system
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Account not found" });
+    }
 
+    // Generate secure 6-digit numeric OTP
     const otp = crypto.randomInt(100000, 999999).toString();
-    const expiry = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
+    const expiry = new Date(Date.now() + 5 * 60 * 1000); // Valid for 5 minutes
 
-    // Update your database with the OTP (Implement this in userModel.js)
-    // await updateUserOTP(user.id, otp, expiry);
+    // Save the generated OTP and expiry to the user's database record
+    await updateUserOTP(user.id, otp, expiry);
 
-    // Send the email
+    // Dispatch OTP email through Nodemailer
     await sendOTPEmail(email, otp);
 
     return res.status(200).json({ success: true, message: "OTP sent to email" });
   } catch (error) {
-    console.error(error);
+    console.error("Request OTP Error:", error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
-// Login User
-// Make sure to import your email service at the top of the file
-// import { sendLoginAlertEmail } from "../services/emailService.js";
-// import { clearUserOTP } from "../models/userModel.js"; // Create this helper if you haven't
-
+// =========================================================================
+// 3. LOGIN USER (With Dual Auth: Password OR OTP)
+// =========================================================================
 export const loginUser = async (req, res) => {
   try {
-    // 1. Update destructuring to include 'otp'
     const { email, password, otp } = req.body;
 
-    // 2. Validation: Require email AND either a password OR an otp
+    // Validation: Require email and at least one authentication credential
     if (!email || (!password && !otp)) {
       return res.status(400).json({
         success: false,
@@ -138,24 +147,24 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    // 3. --- DUAL AUTHENTICATION LOGIC ---
+    // --- DUAL AUTHENTICATION SYSTEM ---
     if (otp) {
-      // METHOD A: OTP Verification
+      // METHOD A: OTP Verification Route
       const now = new Date();
 
-      // Check if OTP matches and is not expired
-      if (user.otp_code !== otp || new Date(user.otp_expiry) < now) {
+      // Ensure the user has an active OTP, it matches, and is not expired
+      if (!user.otp_code || user.otp_code !== otp || new Date(user.otp_expiry) < now) {
         return res.status(401).json({
           success: false,
           message: "Invalid or expired OTP",
         });
       }
 
-      // Clear the OTP from the database so it cannot be reused
-      // NOTE: Make sure you have a function to do this, e.g., await clearUserOTP(user.id);
+      // Clear the OTP on successful verification to prevent reuse attacks
+      await clearUserOTP(user.id);
 
     } else if (password) {
-      // METHOD B: Traditional Password Verification (Your exact original logic)
+      // METHOD B: Traditional Password Verification Route
       const isPasswordMatched = await bcrypt.compare(
         password,
         user.password
@@ -169,7 +178,7 @@ export const loginUser = async (req, res) => {
       }
     }
 
-    // Generate JWT Token (Your exact original logic)
+    // Generate JWT Token
     const token = jwt.sign(
       {
         id: user.id,
@@ -182,10 +191,14 @@ export const loginUser = async (req, res) => {
       }
     );
 
-    // 4. (Optional) Fire off the asynchronous login alert email
-    // sendLoginAlertEmail(user.email, user.full_name).catch(console.error);
+    // Asynchronous Login Alert Notification
+    if (typeof sendLoginAlert === "function") {
+      sendLoginAlert(user.email, user.full_name).catch((err) => 
+        console.error("Login notification alert failed to send:", err)
+      );
+    }
 
-    // Return Response (Your exact original logic)
+    // Return Authentication Payload
     return res.status(200).json({
       success: true,
       message: "Login successful",
