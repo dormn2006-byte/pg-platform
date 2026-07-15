@@ -2,6 +2,7 @@ import express from "express";
 import {
   registerUser,
   loginUser,
+  requestOTP,
 } from "../controllers/authController.js";
 import {
   protect,
@@ -29,6 +30,8 @@ router.post("/register", registerUser);
 
 // Login Route
 router.post("/login", loginUser);
+
+router.post("/request-otp", requestOTP);
 
 // Protected User Route
 router.get("/profile", protect, (req, res) => {
