@@ -3,12 +3,12 @@ import jwt from "jsonwebtoken";
 import {
   createUser,
   findUserByEmail,
-  // Make sure you export these helper functions from your userModel.js to save/clear OTPs
   updateUserOTP, 
   clearUserOTP,
 } from "../models/userModel.js";
 import crypto from "crypto";
-import { sendOTPEmail, sendLoginAlert } from "../utils/emailService.js";
+// Updated import to include sendWelcomeEmail
+import { sendOTPEmail, sendLoginAlert, sendWelcomeEmail } from "../utils/emailService.js";
 
 // =========================================================================
 // 1. REGISTER USER
@@ -54,6 +54,12 @@ export const registerUser = async (req, res) => {
       phone,
       profile_image,
     });
+
+    // --- TRIGGER WELCOME EMAIL ---
+    // We trigger this asynchronously so it doesn't slow down the API response
+    sendWelcomeEmail(email, full_name, role || "student").catch((err) => 
+      console.error("Welcome email failed to send:", err)
+    );
 
     // Generate JWT Token
     const token = jwt.sign(
