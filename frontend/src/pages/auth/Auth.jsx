@@ -26,6 +26,11 @@ const Auth = () => {
   // Unified State for Modes
   const [authMode, setAuthMode] = useState("login");
   const [userRole, setUserRole] = useState("student");
+  
+  // Dual Auth Login States
+  const [loginMethod, setLoginMethod] = useState("password"); // 'password' or 'otp'
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
 
   // Unified Form Data
   const [formData, setFormData] = useState({
@@ -45,7 +50,29 @@ const Auth = () => {
     });
   };
 
-  // Unified Submit Handler (Logic remains 100% untouched)
+  // Request OTP Handler
+  const handleRequestOtp = async () => {
+    if (!formData.email) {
+      setError("Please enter your email address first to receive an OTP.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+      const response = await api.post("/auth/request-otp", { email: formData.email });
+      
+      if (response.data.success) {
+        setOtpSent(true);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to send OTP. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Unified Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -54,14 +81,24 @@ const Auth = () => {
       setError("");
 
       if (authMode === "login") {
-        const response = await api.post("/auth/login", {
+        // Intercept standard submit if they need to request an OTP first
+        if (loginMethod === "otp" && !otpSent) {
+          await handleRequestOtp();
+          return;
+        }
+
+        // Construct dynamic payload based on selected method
+        const payload = {
           email: formData.email,
-          password: formData.password,
-        });
+          ...(loginMethod === "password" ? { password: formData.password } : { otp })
+        };
+
+        const response = await api.post("/auth/login", payload);
 
         if (response.data.success) {
           const user = response.data.user;
 
+          // Role verification logic
           if (userRole === "owner" && user.role !== "owner" && user.role !== "superadmin") {
             setError("Access denied. You do not have owner privileges.");
             setLoading(false);
@@ -79,6 +116,7 @@ const Auth = () => {
           }
         }
       } else {
+        // Registration Logic (100% untouched)
         const payload = {
           full_name: formData.full_name,
           email: formData.email,
@@ -242,6 +280,34 @@ const Auth = () => {
                 />
               </div>
 
+              {/* Dual Auth Switcher (Login Only) */}
+              {authMode === "login" && (
+                <div className="flex rounded-xl bg-gray-100/80 p-1 mb-2 border border-gray-200/50">
+                  <button
+                    type="button"
+                    onClick={() => { setLoginMethod("password"); setOtpSent(false); setError(""); }}
+                    className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all duration-300 ${
+                      loginMethod === "password" 
+                        ? "bg-white text-[#3A2935] shadow-sm border border-gray-200" 
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    Password
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setLoginMethod("otp"); setError(""); }}
+                    className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all duration-300 ${
+                      loginMethod === "otp" 
+                        ? "bg-white text-[#3A2935] shadow-sm border border-gray-200" 
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    Email OTP
+                  </button>
+                </div>
+              )}
+
               {/* Phone - Owner Signup Only */}
               {authMode === "signup" && userRole === "owner" && (
                 <div className="relative">
@@ -262,23 +328,46 @@ const Auth = () => {
                 </div>
               )}
 
-              {/* Password - Always */}
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
+              {/* Password Input (Signup OR Login via Password) */}
+              {(authMode === "signup" || (authMode === "login" && loginMethod === "password")) && (
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Password"
+                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#3A2935] outline-none placeholder:text-gray-400 transition focus:border-[#E56A54] focus:bg-white"
+                    required={authMode === "signup" || loginMethod === "password"}
+                  />
                 </div>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Password"
-                  className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#3A2935] outline-none placeholder:text-gray-400 transition focus:border-[#E56A54] focus:bg-white"
-                  required
-                />
-              </div>
+              )}
+
+              {/* OTP Input (Login via OTP - only visible after sending) */}
+              {authMode === "login" && loginMethod === "otp" && otpSent && (
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    name="otp"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="Enter 6-digit OTP"
+                    maxLength={6}
+                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#3A2935] outline-none placeholder:text-gray-400 transition focus:border-[#E56A54] focus:bg-white tracking-widest"
+                    required
+                  />
+                </div>
+              )}
 
               {/* Error Message */}
               {error && (
@@ -304,13 +393,13 @@ const Auth = () => {
                 {loading 
                   ? "Processing..." 
                   : authMode === "login" 
-                    ? "Log in securely" 
+                    ? (loginMethod === "otp" && !otpSent ? "Send OTP via Email" : "Log in securely") 
                     : "Agree and continue"
                 }
               </button>
 
-              {/* Forgot Password (Login Only) */}
-              {authMode === "login" && (
+              {/* Forgot Password (Login Only via Password) */}
+              {authMode === "login" && loginMethod === "password" && (
                 <div className="mt-5 text-center">
                   <button type="button" className="text-xs font-bold text-[#3A2935] hover:text-[#E56A54] transition hover:underline">
                     Forgot your password?
@@ -339,6 +428,8 @@ const Auth = () => {
                 onClick={() => {
                   setAuthMode(authMode === "login" ? "signup" : "login");
                   setError(""); // Clear errors when switching modes
+                  setOtpSent(false); // Reset OTP state
+                  setOtp("");
                 }}
                 className="w-full rounded-2xl border-2 border-[#3A2935] bg-transparent px-6 py-4 text-sm font-black text-[#3A2935] transition hover:bg-gray-50 active:scale-[0.98]"
               >
