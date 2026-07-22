@@ -18,6 +18,8 @@ import Students from "../admin/pgAdmin/Students";
 import BookingDetails from "../admin/pgAdmin/BookingDetails";
 import About from "../pages/About";
 import FAQ from "../pages/faq";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import TermsConditions from "../pages/TermsConditions";
 import EditPG from "../admin/pgAdmin/components/EditPG";
 import SuperAdminDashboard from "../admin/superAdmin/SuperAdminDashboard";
 import ManageOwners from "../admin/superAdmin/ManageOwners";
@@ -37,6 +39,8 @@ const AppRoutes = () => {
         <Route path="/pgs" element={<ExplorePGs />} />
         <Route path="/about" element={<About />} />
         <Route path="/faqs" element={<FAQ />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsConditions />} />
         <Route path="/pg/:id" element={<PgDetails />} />
 
         {/* Auth Routes */}

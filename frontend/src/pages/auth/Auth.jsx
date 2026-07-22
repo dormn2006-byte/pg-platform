@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../services/api";
 
@@ -380,7 +380,7 @@ const Auth = () => {
               {/* Legal Note for Signup */}
               {authMode === "signup" && (
                 <p className="text-[11px] text-gray-500 mt-2 leading-relaxed px-1">
-                  We'll call or text you to confirm your number. Standard message and data rates apply. <span className="font-bold text-[#3A2935] underline cursor-pointer hover:text-[#E56A54] transition-colors">Privacy Policy</span>
+                  We'll call or text you to confirm your number. Standard message and data rates apply. <Link to="/privacy" target="_blank" className="font-bold text-[#3A2935] underline cursor-pointer hover:text-[#E56A54] transition-colors">Privacy Policy</Link>
                 </p>
               )}
 
