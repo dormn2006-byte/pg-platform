@@ -74,11 +74,7 @@ const Contact = () => {
         <Container>
           {/* Header Banner */}
           <div className="mx-auto max-w-3xl text-center mb-12 md:mb-16">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#E56A54]/20 bg-[#E56A54]/10 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-[#E56A54]">
-              <span className="h-2 w-2 rounded-full bg-[#E56A54] animate-ping"></span>
-              24/7 Student & Owner Support
-            </div>
-            <h1 className="mt-4 text-3xl font-black tracking-tight text-[#3A2935] sm:text-4xl md:text-5xl">
+            <h1 className="text-3xl font-black tracking-tight text-[#3A2935] sm:text-4xl md:text-5xl">
               We&apos;re Here to Help You Find & Manage <span className="text-[#E56A54]">Your Ideal Stay</span>
             </h1>
             <p className="mt-4 text-base font-medium leading-relaxed text-gray-600 sm:text-lg">
