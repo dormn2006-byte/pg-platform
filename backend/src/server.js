@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import pgRoutes from "./routes/pgRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 import fs from "fs";
 
 
@@ -18,6 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/pg", pgRoutes);
+app.use("/api/contact", contactRoutes);
 import path from "path";
 import { fileURLToPath } from "url";
 
