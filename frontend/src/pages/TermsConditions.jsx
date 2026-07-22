@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import PublicLayout from "../layouts/PublicLayout";
 import Container from "../layouts/Container";
 
@@ -21,52 +22,92 @@ const TermsConditions = () => {
             </h1>
 
             <p className="text-base sm:text-lg font-medium text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Effective Date: July 22, 2026 • Governed under the Information Technology Act, 2000 & Information Technology (Intermediary Guidelines) Rules, 2021.
+              Effective Date: July 22, 2026 • Governed under the Information Technology Act, 2000 & Intermediary Guidelines Rules, 2021.
             </p>
           </div>
 
           {/* Terms Content Sections */}
           <div className="space-y-8">
 
-            {/* Preamble */}
-            <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
-              <h2 className="text-xl sm:text-2xl font-black text-[#3A2935] mb-4">
-                Preamble & Binding Agreement
-              </h2>
-              <p className="text-gray-600 font-medium leading-relaxed mb-4 text-sm sm:text-base">
-                These Terms and Conditions ("Terms" or "Agreement") constitute a legally binding contract between Dormn Technologies ("Dormn", "Platform", "we", "us", or "our") and any individual or entity ("User", "you", "Student", or "Property Owner") accessing, browsing, registering, or interacting with the website, web application, APIs, or related services.
-              </p>
-              <div className="rounded-2xl border-2 border-orange-100 bg-orange-50/50 p-4 text-xs sm:text-sm font-medium text-gray-700 leading-relaxed">
-                <strong>Express Assent:</strong> By creating an account, browsing listings, submitting visit booking requests, or listing student accommodation properties, you represent that you possess full legal capacity under the Indian Contract Act, 1872 and agree to be bound unconditionally by these Terms. If you do not agree, you must immediately cease accessing the Platform.
-              </div>
-            </section>
-            
-            {/* Section 1: User Roles and Responsibilities */}
+            {/* Section 1: Acceptance of Terms */}
             <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 border-2 border-orange-100 text-lg font-black text-[#E56A54]">
                   1.0
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
-                  User Classification & Operational Responsibilities
+                  Acceptance of Terms
+                </h2>
+              </div>
+
+              <p className="text-gray-600 font-medium leading-relaxed mb-4 text-sm sm:text-base">
+                Welcome to Dormn (the &quot;Platform&quot;). These Terms and Conditions (&quot;Terms&quot;) govern your access to and use of the Dormn website, mobile applications, and related services. By accessing, browsing, or using the Platform, you acknowledge that you have read, understood, and agree to be bound by these Terms, as well as our{" "}
+                <Link to="/privacy" className="text-[#E56A54] font-bold hover:underline">
+                  Privacy Policy
+                </Link>. If you do not agree, you must immediately cease using the Platform.
+              </p>
+
+              <div className="rounded-2xl border-2 border-orange-100 bg-orange-50/50 p-4 text-xs sm:text-sm font-medium text-gray-700 leading-relaxed">
+                <strong>Modification Reserve:</strong> Dormn reserves the right to modify these Terms at any time. Material changes will be communicated via a prominent notice on the Platform or through email notifications. Continued use of the Platform constitutes your acceptance of updated Terms.
+              </div>
+            </section>
+            
+            {/* Section 2: Description of Services */}
+            <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 border-2 border-orange-100 text-lg font-black text-[#E56A54]">
+                  2.0
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
+                  Description of Services
                 </h2>
               </div>
 
               <p className="text-gray-600 font-medium leading-relaxed mb-6 text-sm sm:text-base">
-                Dormn functions as an interactive digital marketplace facilitating discovery between Students/Seekers and PG Accommodation Owners. All users must accurately select their account persona during registration:
+                Dormn is a digital intermediary platform designed to connect property owners with prospective tenants (students and professionals) seeking Paying Guest (PG) accommodations. The Platform provides:
               </p>
 
-              <div className="grid gap-6 sm:grid-cols-2">
+              <div className="space-y-3">
+                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-4">
+                  <p className="font-bold text-[#3A2935] text-sm mb-1">🎓 For Students & Tenants</p>
+                  <p className="text-xs font-medium text-gray-600">A frictionless interface on <Link to="/pgs" className="text-[#E56A54] font-bold hover:underline">Explore PGs</Link> to search verified PGs using dynamic filters (location, amenities, gender restrictions), view details, and submit visit requests.</p>
+                </div>
+
+                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-4">
+                  <p className="font-bold text-[#3A2935] text-sm mb-1">🏢 For Property Owners</p>
+                  <p className="text-xs font-medium text-gray-600">A comprehensive management dashboard to list properties, upload gallery images (optimized via Sharp), manage incoming requests, and track tenant rosters.</p>
+                </div>
+
+                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-4">
+                  <p className="font-bold text-[#3A2935] text-sm mb-1">🛡️ For Platform Administrators</p>
+                  <p className="text-xs font-medium text-gray-600">SuperAdmin oversight capabilities to monitor users, verify listings, and manage system-wide activities.</p>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 3: User Roles and Responsibilities */}
+            <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 border-2 border-orange-100 text-lg font-black text-[#E56A54]">
+                  3.0
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
+                  User Roles & Responsibilities
+                </h2>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2 mb-6">
                 <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-6 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-2xl">🎓</span>
-                      <h3 className="font-black text-[#3A2935] text-lg">1.1 Student & Seeker Obligations</h3>
+                      <h3 className="font-black text-[#3A2935] text-base sm:text-lg">3.1 Students & Tenants</h3>
                     </div>
                     <ul className="space-y-2 text-xs sm:text-sm font-medium text-gray-600 list-disc list-inside leading-relaxed">
-                      <li><strong>Identity Authenticity:</strong> You must provide truthful identity and contact details during account registration.</li>
-                      <li><strong>Inspection Duty:</strong> You acknowledge that visit requests submitted via the Platform do not constitute an executed tenancy agreement. You are solely responsible for physically inspecting properties, verifying amenities, and checking rental terms prior to monetary transactions.</li>
-                      <li><strong>Conduct:</strong> You agree to abide by property rules set forth by owners when conducting physical visits or residing on premises.</li>
+                      <li>Provide accurate and truthful information during registration and booking requests.</li>
+                      <li>Utilize the &quot;Request a Visit&quot; feature for its intended purpose.</li>
+                      <li>Understand that Dormn does not guarantee property availability or safety; conduct physical inspections prior to transferring funds.</li>
+                      <li>Adhere to all house rules established by the Property Owner.</li>
                     </ul>
                   </div>
                 </div>
@@ -75,191 +116,158 @@ const TermsConditions = () => {
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-2xl">🏢</span>
-                      <h3 className="font-black text-[#3A2935] text-lg">1.2 Property Owner Obligations</h3>
+                      <h3 className="font-black text-[#3A2935] text-base sm:text-lg">3.2 Property Owners</h3>
                     </div>
                     <ul className="space-y-2 text-xs sm:text-sm font-medium text-gray-600 list-disc list-inside leading-relaxed">
-                      <li><strong>Listing Accuracy:</strong> Property Owners warrant that all listed details (pricing, PG type, room availability, rules, amenities, and up to 10 photos) are current, truthful, and non-misleading.</li>
-                      <li><strong>Statutory Compliance:</strong> Owners warrant that their PG or hostel properties comply with all local municipal, police registration, fire safety, and sanitation laws.</li>
-                      <li><strong>Booking Governance:</strong> Owners are responsible for responding to student visit requests, maintaining room availability status, and executing rental contracts offline.</li>
+                      <li>Provide complete, accurate listing details (pricing, amenities, rooms, rules).</li>
+                      <li>Ensure property complies with local municipal laws, zoning, and safety standards.</li>
+                      <li>Promptly manage booking requests (Accept/Reject) via the owner dashboard.</li>
+                      <li>Take full responsibility for rental agreements and security deposit transactions.</li>
                     </ul>
                   </div>
                 </div>
               </div>
-            </section>
 
-            {/* Section 2: Intermediary Status & Liability Limitation */}
-            <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 border-2 border-orange-100 text-lg font-black text-[#E56A54]">
-                  2.0
-                </div>
-                <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
-                  Intermediary Status & Absolute Liability Exclusions
-                </h2>
-              </div>
-
-              <p className="text-gray-600 font-medium leading-relaxed mb-6 text-sm sm:text-base">
-                Dormn operates as an <strong>Intermediary</strong> under Section 2(1)(w) of the Information Technology Act, 2000 and claims Safe Harbor protections under Section 79 of the Information Technology Act, 2000.
-              </p>
-
-              <div className="space-y-4">
-                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-5">
-                  <h3 className="font-bold text-[#3A2935] text-sm mb-1">2.1 No Ownership or Direct Agency</h3>
-                  <p className="text-xs font-medium text-gray-600 leading-relaxed">
-                    Dormn provides an online venue for Owners to advertise listings. Dormn does not own, lease, operate, manage, control, or endorse any listed PG or hostel. Dormn is not a party to any rental agreement, lease contract, or monetary deposit transaction established between students and owners.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-5">
-                  <h3 className="font-bold text-[#3A2935] text-sm mb-1">2.2 SuperAdmin Moderation Scope</h3>
-                  <p className="text-xs font-medium text-gray-600 leading-relaxed">
-                    While Dormn utilizes a SuperAdmin moderation workflow to review pending PG submissions prior to publication, such moderation is executed purely for platform compliance, format standardization, and basic data integrity. Admin approval does <strong>NOT</strong> constitute a legal certification, safety guarantee, structural audit, or endorsement of habitability.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-5">
-                  <h3 className="font-bold text-[#3A2935] text-sm mb-1">2.3 Limitation of Damages & Disclaimer</h3>
-                  <p className="text-xs font-medium text-gray-600 leading-relaxed">
-                    To the maximum extent permitted by applicable Indian law, Dormn, its directors, officers, and employees shall not be liable for any direct, indirect, incidental, consequential, special, or exemplary damages, including property damage, personal injury, tenancy disputes, loss of security deposits, or misrepresentation arising out of or in connection with property visits or stays.
-                  </p>
-                </div>
+              <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-5">
+                <h3 className="font-bold text-[#3A2935] text-sm mb-1">3.3 Role-Based Access Control (RBAC)</h3>
+                <p className="text-xs font-medium text-gray-600 leading-relaxed">
+                  Dormn utilizes JSON Web Token (JWT) authentication to enforce strict Role-Based Access Control. Users must only access dashboard capabilities assigned to their registered role. Attempting to bypass security measures or impersonate another role is strictly prohibited and results in account termination.
+                </p>
               </div>
             </section>
 
-            {/* Section 3: Prohibited Activities */}
-            <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 border-2 border-orange-100 text-lg font-black text-[#E56A54]">
-                  3.0
-                </div>
-                <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
-                  Prohibited Platform Activities
-                </h2>
-              </div>
-
-              <p className="text-gray-600 font-medium leading-relaxed mb-6 text-sm sm:text-base">
-                Users are strictly prohibited from engaging in any conduct that compromises platform integrity, user safety, or legal compliance. Prohibited activities include:
-              </p>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="flex items-start gap-3 rounded-2xl bg-red-50/60 border border-red-100 p-4">
-                  <span className="text-lg">🚫</span>
-                  <div>
-                    <p className="font-bold text-red-900 text-xs sm:text-sm">Fraudulent Listings</p>
-                    <p className="text-[11px] font-medium text-red-700 mt-0.5">Publishing fake properties, misleading pricing, or unauthorized room photos.</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 rounded-2xl bg-red-50/60 border border-red-100 p-4">
-                  <span className="text-lg">🚫</span>
-                  <div>
-                    <p className="font-bold text-red-900 text-xs sm:text-sm">Security Exploitation</p>
-                    <p className="text-[11px] font-medium text-red-700 mt-0.5">Attempting to reverse-engineer JWT authentication, bypass roles, or forge credentials.</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 rounded-2xl bg-red-50/60 border border-red-100 p-4">
-                  <span className="text-lg">🚫</span>
-                  <div>
-                    <p className="font-bold text-red-900 text-xs sm:text-sm">Malicious Uploads</p>
-                    <p className="text-[11px] font-medium text-red-700 mt-0.5">Uploading files containing executable scripts, malware, or exceeding 5MB Multer limits.</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 rounded-2xl bg-red-50/60 border border-red-100 p-4">
-                  <span className="text-lg">🚫</span>
-                  <div>
-                    <p className="font-bold text-red-900 text-xs sm:text-sm">Harassment & Discrimination</p>
-                    <p className="text-[11px] font-medium text-red-700 mt-0.5">Engaging in abusive messaging, hate speech, or unlawful discrimination during interactions.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Section 4: Account Moderation & Termination */}
+            {/* Section 4: Platform Liability & Intermediary Status */}
             <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 border-2 border-orange-100 text-lg font-black text-[#E56A54]">
                   4.0
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
-                  Account Moderation & Right to Terminate
+                  Platform Liability & Intermediary Status
                 </h2>
               </div>
 
-              <p className="text-gray-600 font-medium leading-relaxed mb-4 text-sm sm:text-base">
-                Dormn reserves the absolute right, exercisable at its sole discretion through SuperAdmin moderation mechanisms, to:
+              <p className="text-gray-600 font-medium leading-relaxed mb-6 text-sm sm:text-base">
+                Dormn operates strictly as a digital intermediary under the Information Technology Act, 2000 and Information Technology (Intermediary Guidelines) Rules, 2021.
               </p>
 
-              <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-gray-600 list-disc list-inside">
-                <li>Reject, block, or permanently delete property listings that fail moderation criteria or receive user grievances.</li>
-                <li>Suspend or terminate user accounts engaged in fraudulent activity, illegal acts, or breach of these Terms without prior notice.</li>
-                <li>Report unlawful activity to law enforcement agencies in compliance with statutory intermediary obligations.</li>
-              </ul>
+              <div className="space-y-4">
+                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-5">
+                  <h3 className="font-bold text-[#3A2935] text-sm mb-1">No Direct Liability</h3>
+                  <p className="text-xs font-medium text-gray-600 leading-relaxed">
+                    Dormn acts solely as a facilitator for discovery. We do not own, operate, or control the physical properties listed on the Platform. Financial transactions and tenancy contracts are executed directly between Students and Owners.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-5">
+                  <h3 className="font-bold text-[#3A2935] text-sm mb-1">Disclaimer of Warranties & Limitation of Liability</h3>
+                  <p className="text-xs font-medium text-gray-600 leading-relaxed">
+                    The Platform is provided on an &quot;as is&quot; basis without warranties of any kind. Dormn, its officers, and affiliates shall not be liable for any direct, indirect, or consequential damages resulting from property visits, tenancy disputes, or platform use.
+                  </p>
+                </div>
+              </div>
             </section>
 
-            {/* Section 5: Intellectual Property & Media License */}
+            {/* Section 5: Prohibited Activities */}
             <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 border-2 border-orange-100 text-lg font-black text-[#E56A54]">
                   5.0
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
-                  Intellectual Property & Media License
+                  Prohibited Activities
                 </h2>
               </div>
 
-              <p className="text-gray-600 font-medium leading-relaxed mb-4 text-sm sm:text-base">
-                All platform branding, software code, UI design systems, graphics, and trademarks are the exclusive property of Dormn Technologies. By uploading property imagery to the Platform, Property Owners grant Dormn a worldwide, non-exclusive, royalty-free, perpetual license to host, display, downscale (to 1600px max width), convert to WebP format, and distribute such media solely for platform functionality and marketing purposes.
-              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="flex items-start gap-3 rounded-2xl bg-red-50/60 border border-red-100 p-4">
+                  <span className="text-lg">🚫</span>
+                  <div>
+                    <p className="font-bold text-red-900 text-xs sm:text-sm">Fraudulent Listings</p>
+                    <p className="text-[11px] font-medium text-red-700 mt-0.5">Posting false property information, unauthorized pricing, or non-existent amenities.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 rounded-2xl bg-red-50/60 border border-red-100 p-4">
+                  <span className="text-lg">🚫</span>
+                  <div>
+                    <p className="font-bold text-red-900 text-xs sm:text-sm">Harassment & Abuse</p>
+                    <p className="text-[11px] font-medium text-red-700 mt-0.5">Using WhatsApp or call channels to harass, threaten, or abuse other users.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 rounded-2xl bg-red-50/60 border border-red-100 p-4">
+                  <span className="text-lg">🚫</span>
+                  <div>
+                    <p className="font-bold text-red-900 text-xs sm:text-sm">Platform Abuse & DoS</p>
+                    <p className="text-[11px] font-medium text-red-700 mt-0.5">Attempting to reverse-engineer, hack, bypass image processing, or launch Denial of Service (DoS) attacks.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 rounded-2xl bg-red-50/60 border border-red-100 p-4">
+                  <span className="text-lg">🚫</span>
+                  <div>
+                    <p className="font-bold text-red-900 text-xs sm:text-sm">Unlawful Content</p>
+                    <p className="text-[11px] font-medium text-red-700 mt-0.5">Uploading or sharing content violating local, state, or national laws.</p>
+                  </div>
+                </div>
+              </div>
             </section>
 
-            {/* Section 6: Governance, Jurisdiction & Dispute Resolution */}
+            {/* Section 6: Intellectual Property & Account Termination */}
             <section className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm transition-all duration-300 hover:border-gray-200">
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 border-2 border-orange-100 text-lg font-black text-[#E56A54]">
                   6.0
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
-                  Governing Law & Exclusive Jurisdiction
+                  Intellectual Property & Account Termination
                 </h2>
               </div>
 
-              <p className="text-gray-600 font-medium leading-relaxed mb-4 text-sm sm:text-base">
-                These Terms shall be governed by, construed, and enforced strictly in accordance with the laws of the Republic of India. Any disputes, claims, or legal proceedings arising out of or touching upon these Terms or platform usage shall be subject to the exclusive jurisdiction of competent courts in India.
-              </p>
+              <div className="space-y-4">
+                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-5">
+                  <h3 className="font-bold text-[#3A2935] text-sm mb-1">Intellectual Property Rights</h3>
+                  <p className="text-xs font-medium text-gray-600 leading-relaxed">
+                    All software, React.js frontend architecture, Node.js backend, UI designs, and branding are the exclusive property of Dormn. By uploading imagery, Owners grant Dormn a non-exclusive, royalty-free license to host, display, and optimize content for platform operations.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-5">
+                  <h3 className="font-bold text-[#3A2935] text-sm mb-1">Account Termination</h3>
+                  <p className="text-xs font-medium text-gray-600 leading-relaxed">
+                    Dormn reserves the right to suspend or permanently terminate user accounts violating these Terms, engaging in fraudulent activity, or compromising platform security.
+                  </p>
+                </div>
+              </div>
             </section>
 
-            {/* Section 7: Grievance Officer & Intermediary Protocol */}
+            {/* Section 7: Governing Law & Jurisdiction */}
             <section className="rounded-[2rem] border-2 border-orange-100 bg-orange-50/40 p-6 sm:p-10 shadow-sm transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E56A54] text-lg font-black text-white">
                   7.0
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
-                  Statutory Intermediary Notice & Contact
+                  Governing Law & Jurisdiction
                 </h2>
               </div>
 
               <p className="text-gray-700 font-medium leading-relaxed mb-6 text-sm sm:text-base">
-                If you become aware of any unlawful content, copyright infringement, or listing policy violation on Dormn, please submit a formal notice to our designated Nodal Grievance Officer:
+                These Terms shall be governed by and construed in accordance with the laws of the Republic of India. Any disputes arising out of or in connection with these Terms shall be subject to the exclusive jurisdiction of competent courts in India.
               </p>
 
-              <div className="rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-xs space-y-3">
-                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Legal Nodal Department</span>
-                  <span className="text-sm font-black text-[#3A2935]">Grievance & Legal Compliance Cell</span>
+              <div className="rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Legal Contact Support</span>
+                  <p className="text-sm font-black text-[#3A2935]">Submit questions regarding these terms</p>
                 </div>
-
-                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Official Notice Email</span>
-                  <a href="mailto:legal@dormn.com" className="text-sm font-bold text-[#E56A54] hover:underline">legal@dormn.com</a>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Notice Response SLA</span>
-                  <span className="text-sm font-bold text-[#3A2935]">Within 24 Hours</span>
-                </div>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E56A54] px-6 py-3 text-xs font-bold text-white shadow-md transition-all hover:bg-[#d65a45]"
+                >
+                  Contact Support →
+                </Link>
               </div>
             </section>
 
