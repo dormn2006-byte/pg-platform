@@ -33,28 +33,28 @@ const coreValues = [
 
 const techStack = [
   {
-    category: "Frontend Experience",
+    category: "FRONTEND EXPERIENCE",
     tech: "React.js • Vite • Tailwind CSS",
     description:
       "Delivers a highly responsive, modern, and aesthetically premium UI with role-based routing architecture (Student, Owner, SuperAdmin).",
     icon: "💻",
   },
   {
-    category: "Backend & Database",
+    category: "BACKEND & DATABASE",
     tech: "Node.js • Express.js • MySQL",
     description:
-      "Stateless JWT authentication and bcrypt password hashing paired with a secure MySQL database.",
+      "Stateless JWT authentication and bcrypt password hashing paired with a secure, optimized MySQL database.",
     icon: "⚙️",
   },
   {
-    category: "Media Handling",
+    category: "MEDIA HANDLING",
     tech: "Sharp • Multer Image Pipeline",
     description:
       "Automatic compression and resizing of gallery images before secure storage to guarantee lightning-fast page loads.",
     icon: "🖼️",
   },
   {
-    category: "Communication",
+    category: "COMMUNICATION",
     tech: "Nodemailer • SMTP Service",
     description:
       "Integrated automated email receipts and support inquiry dispatch directly to our support desk.",
@@ -64,26 +64,26 @@ const techStack = [
 
 const whoWeServe = [
   {
-    role: "1. Students & Tenants",
+    role: "Students & Tenants",
     description:
       "Ultimate discovery engine with dynamic search across cities, advanced filters (Gender, Room Type, Sponsored), Discover Mode, visit requests, WhatsApp chat, and real-time booking tracking.",
-    badge: "Seekers",
+    badge: "SEEKERS",
     linkText: "Explore PGs",
     linkUrl: "/pgs",
   },
   {
-    role: "2. Property Owners",
+    role: "Property Owners",
     description:
       "Comprehensive business management dashboard to effortlessly list properties, upload gallery photos, accept/reject booking requests, and maintain a clear tenant roster.",
-    badge: "Providers",
+    badge: "PROVIDERS",
     linkText: "Owner Dashboard",
     linkUrl: "/auth",
   },
   {
-    role: "3. Platform Administrators",
+    role: "Platform Administrators",
     description:
       "SuperAdmin team possesses robust oversight capabilities to monitor users, verify and flag listings, and manage system-wide activities for a safe environment.",
-    badge: "SuperAdmin",
+    badge: "SUPERADMIN",
     linkText: "Contact Admin",
     linkUrl: "/contact",
   },
@@ -256,9 +256,9 @@ const About = () => {
           </Container>
         </section>
 
-        {/* Our Core Values */}
+        {/* SECTION 1: Our Core Values (Point-Wise Layout) */}
         <section className="bg-white px-5 py-20 lg:px-8 lg:py-28 border-y border-gray-100">
-          <Container>
+          <Container max-w-4xl>
             <div className="mb-12 text-center md:mb-16">
               <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
                 Foundational Principles
@@ -268,30 +268,34 @@ const About = () => {
               </h2>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4 md:gap-6">
-              {coreValues.map((value) => (
+            {/* Structured Point-Wise List */}
+            <div className="mx-auto max-w-3xl space-y-6">
+              {coreValues.map((value, index) => (
                 <div
                   key={value.title}
-                  className="rounded-[2rem] border-2 border-gray-100 bg-[#FAF9F5]/60 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#E56A54]/30 hover:bg-white hover:shadow-[0_15px_40px_-15px_rgba(0,0,0,0.08)] sm:p-8"
+                  className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 rounded-3xl border-2 border-gray-100 bg-[#FAF9F5]/70 p-6 sm:p-8 transition-all hover:border-[#E56A54]/30 hover:bg-white hover:shadow-sm"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-orange-100 bg-orange-50 text-2xl shadow-sm">
+                  <div className="flex h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0 items-center justify-center rounded-2xl border-2 border-orange-100 bg-orange-50 text-2xl shadow-sm">
                     {value.icon}
                   </div>
-
-                  <h3 className="mt-6 text-xl font-black tracking-tight text-[#3A2935]">
-                    {value.title}
-                  </h3>
-
-                  <p className="mt-3 text-sm font-medium leading-relaxed text-gray-600">
-                    {value.description}
-                  </p>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-[#E56A54]">0{index + 1}.</span>
+                      <h3 className="text-xl font-black text-[#3A2935]">
+                        {value.title}
+                      </h3>
+                    </div>
+                    <p className="mt-2 text-sm sm:text-base font-medium leading-relaxed text-gray-600">
+                      {value.description}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
           </Container>
         </section>
 
-        {/* Our Technology & Architecture */}
+        {/* SECTION 2: Technology & Architecture (Point-Wise Tech Breakdown) */}
         <section className="px-5 py-20 lg:px-8 lg:py-28">
           <Container>
             <div className="mb-12 text-center md:mb-16">
@@ -306,31 +310,37 @@ const About = () => {
               </p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {techStack.map((tech) => (
-                <div
-                  key={tech.category}
-                  className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm transition-all hover:border-gray-200 hover:shadow-md flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="text-3xl mb-4">{tech.icon}</div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#E56A54]">
-                      {tech.category}
-                    </span>
-                    <h3 className="mt-1 text-lg font-black text-[#3A2935]">
-                      {tech.tech}
-                    </h3>
-                    <p className="mt-3 text-xs leading-relaxed font-medium text-gray-600">
-                      {tech.description}
-                    </p>
+            {/* Point-Wise Vertical List Container */}
+            <div className="mx-auto max-w-4xl rounded-[2.5rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm">
+              <div className="divide-y divide-gray-100">
+                {techStack.map((tech, index) => (
+                  <div key={tech.category} className="py-6 first:pt-0 last:pb-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E56A54]/10 text-xl text-[#E56A54]">
+                        {tech.icon}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#E56A54]">
+                            {tech.category}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-black text-[#3A2935] mt-0.5">
+                          {tech.tech}
+                        </h3>
+                        <p className="mt-1.5 text-xs sm:text-sm font-medium leading-relaxed text-gray-600 max-w-2xl">
+                          {tech.description}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </Container>
         </section>
 
-        {/* Who We Serve */}
+        {/* SECTION 3: Who We Serve (Point-Wise Ecosystem List) */}
         <section className="bg-white px-5 py-20 lg:px-8 lg:py-28 border-y border-gray-100">
           <Container>
             <div className="mb-12 text-center md:mb-16">
@@ -342,28 +352,36 @@ const About = () => {
               </h2>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-3">
-              {whoWeServe.map((item) => (
+            {/* Point-Wise List Items */}
+            <div className="mx-auto max-w-4xl space-y-4">
+              {whoWeServe.map((item, index) => (
                 <div
                   key={item.role}
-                  className="flex flex-col justify-between rounded-[2.5rem] border-2 border-gray-100 bg-[#FAF9F5]/80 p-8 transition-all hover:border-[#E56A54]/30 hover:bg-white hover:shadow-md"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 rounded-3xl border-2 border-gray-100 bg-[#FAF9F5]/70 p-6 sm:p-8 transition-all hover:border-[#E56A54]/30 hover:bg-white hover:shadow-sm"
                 >
-                  <div>
-                    <span className="inline-block rounded-full bg-[#E56A54]/10 px-3 py-1 text-[11px] font-extrabold text-[#E56A54] uppercase tracking-wider mb-4">
-                      {item.badge}
-                    </span>
-                    <h3 className="text-2xl font-black text-[#3A2935]">
-                      {item.role}
-                    </h3>
-                    <p className="mt-4 text-sm font-medium leading-relaxed text-gray-600">
-                      {item.description}
-                    </p>
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#3A2935] text-white font-black text-sm mt-1">
+                      0{index + 1}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-xl font-black text-[#3A2935]">
+                          {item.role}
+                        </h3>
+                        <span className="rounded-full bg-[#E56A54]/10 px-2.5 py-0.5 text-[10px] font-extrabold text-[#E56A54] uppercase tracking-wider">
+                          {item.badge}
+                        </span>
+                      </div>
+                      <p className="text-sm font-medium leading-relaxed text-gray-600 max-w-2xl">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="mt-8 pt-4 border-t border-gray-100">
+                  <div className="shrink-0 self-end sm:self-center">
                     <Link
                       to={item.linkUrl}
-                      className="inline-flex items-center gap-2 text-sm font-black text-[#E56A54] hover:underline"
+                      className="inline-flex items-center gap-2 rounded-2xl border-2 border-[#3A2935] bg-white px-5 py-2.5 text-xs font-black text-[#3A2935] transition-all hover:bg-[#3A2935] hover:text-white"
                     >
                       {item.linkText} →
                     </Link>
@@ -374,11 +392,11 @@ const About = () => {
           </Container>
         </section>
 
-        {/* Looking to the Future */}
+        {/* SECTION 4: Product Roadmap & Innovations (Point-Wise Timeline/List) */}
         <section className="px-5 py-20 lg:px-8 lg:py-28">
-          <Container>
+          <Container max-w-4xl>
             <div className="rounded-[2.5rem] border-2 border-gray-100 bg-white p-8 shadow-sm md:rounded-[3rem] md:p-14">
-              <div className="mb-12 text-center">
+              <div className="mb-10 text-center">
                 <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
                   Looking To The Future
                 </p>
@@ -392,21 +410,24 @@ const About = () => {
                 </p>
               </div>
 
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                {futureFeatures.map((item) => (
+              {/* Point-Wise List Format */}
+              <div className="space-y-4 max-w-3xl mx-auto">
+                {futureFeatures.map((item, index) => (
                   <div
                     key={item.title}
-                    className="rounded-2xl border-2 border-gray-100 bg-gray-50 p-6 transition-all hover:border-[#E56A54]/30 hover:bg-white"
+                    className="flex items-start gap-4 rounded-2xl border-2 border-gray-100 bg-[#FAF9F5]/60 p-5 transition-all hover:border-[#E56A54]/30 hover:bg-white"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E56A54]/10 text-xs font-black text-[#E56A54] mb-3">
+                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#E56A54] text-xs font-black text-white mt-0.5">
                       ✓
                     </div>
-                    <h3 className="text-base font-extrabold text-[#3A2935]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-2 text-xs leading-relaxed font-medium text-gray-600">
-                      {item.desc}
-                    </p>
+                    <div>
+                      <h3 className="text-base font-extrabold text-[#3A2935]">
+                        {index + 1}. {item.title}
+                      </h3>
+                      <p className="mt-1 text-sm leading-relaxed font-medium text-gray-600">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
