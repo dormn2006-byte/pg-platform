@@ -191,12 +191,12 @@ const Contact = () => {
                       <textarea
                         id="description"
                         name="description"
-                        rows="6"
+                        rows="8"
                         value={formData.description}
                         onChange={handleChange}
                         placeholder="Please describe how we can assist you (e.g. PG room availability, owner partnership, refund status...)"
                         required
-                        className="w-full min-h-[160px] rounded-2xl border-2 border-gray-100 bg-[#FAF9F5]/50 p-4 text-sm font-bold text-[#3A2935] placeholder-gray-400 outline-none transition-all focus:border-[#E56A54] focus:bg-white focus:ring-4 focus:ring-[#E56A54]/10"
+                        className="w-full min-h-[220px] rounded-2xl border-2 border-gray-100 bg-[#FAF9F5]/50 p-4 text-sm font-bold text-[#3A2935] placeholder-gray-400 outline-none transition-all focus:border-[#E56A54] focus:bg-white focus:ring-4 focus:ring-[#E56A54]/10"
                       ></textarea>
                     </div>
                   </div>

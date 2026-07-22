@@ -58,8 +58,10 @@ const ExplorePGs = () => {
       try {
         setLoading(true);
         const response = await API.get("/pg/all");
-        setPgListings(response.data?.pgs || []);
+        const pgs = response.data?.pgs || response.data?.data || response.data || [];
+        setPgListings(Array.isArray(pgs) ? pgs : []);
       } catch (err) {
+        console.error("ExplorePGs fetch error:", err);
         setError("Failed to load PG listings");
       } finally {
         setLoading(false);

@@ -42,12 +42,12 @@ const footerSections = [
 
 const Footer = () => {
   return (
-    <footer className="bg-[#E56A54] text-white selection:bg-[#3A2935] selection:text-white">
+    <footer className="bg-[#E56A54] text-[#3A2935] selection:bg-[#3A2935] selection:text-white">
       {/* Top GitHub-Style Multi-Column Navigation */}
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-10 sm:px-6 lg:px-8">
         
         {/* Brand Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/20 pb-8 mb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[#3A2935]/20 pb-8 mb-10">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#3A2935] text-xl font-black text-white shadow-md">
               D
@@ -56,7 +56,7 @@ const Footer = () => {
               <h2 className="text-2xl font-black tracking-tight text-[#3A2935]">
                 Dormn
               </h2>
-              <p className="text-xs font-bold uppercase tracking-wider text-white/90">
+              <p className="text-xs font-black uppercase tracking-wider text-[#3A2935]/80">
                 Next Gen Student Housing Platform
               </p>
             </div>
@@ -67,21 +67,21 @@ const Footer = () => {
             <a
               href="#"
               aria-label="Instagram"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3A2935]/10 text-white transition hover:bg-[#3A2935] hover:scale-105"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3A2935] text-white transition hover:bg-[#3A2935]/80 hover:scale-105"
             >
               📷
             </a>
             <a
               href="#"
               aria-label="LinkedIn"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3A2935]/10 text-white transition hover:bg-[#3A2935] hover:scale-105"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3A2935] text-white transition hover:bg-[#3A2935]/80 hover:scale-105"
             >
               💼
             </a>
             <a
               href="#"
               aria-label="Twitter"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3A2935]/10 text-white transition hover:bg-[#3A2935] hover:scale-105"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#3A2935] text-white transition hover:bg-[#3A2935]/80 hover:scale-105"
             >
               🐦
             </a>
@@ -100,7 +100,7 @@ const Footer = () => {
                   <li key={idx}>
                     <Link
                       to={link.path}
-                      className="text-sm font-semibold text-white/90 transition-colors hover:text-[#3A2935] hover:underline"
+                      className="text-sm font-extrabold text-[#3A2935]/90 transition-colors hover:text-[#3A2935] hover:underline"
                     >
                       {link.name}
                     </Link>
@@ -112,25 +112,25 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-6 text-center md:flex-row md:text-left">
-          <p className="text-xs font-bold text-white/90">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[#3A2935]/20 pt-6 text-center md:flex-row md:text-left">
+          <p className="text-xs font-extrabold text-[#3A2935]/90">
             © 2026 Dormn Inc. All rights reserved. • Built for Students & Property Partners.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-white">
-            <Link to="/privacy" className="hover:text-[#3A2935] hover:underline">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-black text-[#3A2935]">
+            <Link to="/privacy" className="hover:underline">
               Privacy Policy
             </Link>
             <span>•</span>
-            <Link to="/terms" className="hover:text-[#3A2935] hover:underline">
+            <Link to="/terms" className="hover:underline">
               Terms & Conditions
             </Link>
             <span>•</span>
-            <Link to="/about" className="hover:text-[#3A2935] hover:underline">
+            <Link to="/about" className="hover:underline">
               About Platform
             </Link>
             <span>•</span>
-            <Link to="/contact" className="hover:text-[#3A2935] hover:underline">
+            <Link to="/contact" className="hover:underline">
               Contact Support
             </Link>
           </div>
