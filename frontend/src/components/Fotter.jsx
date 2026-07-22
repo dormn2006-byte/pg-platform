@@ -5,19 +5,14 @@ const footerSections = [
     title: "PLATFORM",
     links: [
       { name: "Explore PGs", path: "/pgs" },
-      { name: "Verified Stays", path: "/pgs" },
-      { name: "Premium Rooms", path: "/pgs" },
-      { name: "Student Housing", path: "/pgs" },
-      { name: "Search Locations", path: "/pgs" },
+      { name: "My Bookings", path: "/my-bookings" },
     ],
   },
   {
     title: "PARTNERS",
     links: [
-      { name: "List Your PG", path: "/signup/owner" },
+      { name: "List Your Property", path: "/auth" },
       { name: "Owner Dashboard", path: "/auth" },
-      { name: "Partner Community", path: "/about" },
-      { name: "Property Approval", path: "/about" },
     ],
   },
   {
@@ -25,8 +20,6 @@ const footerSections = [
     links: [
       { name: "Contact Us", path: "/contact" },
       { name: "Help & FAQs", path: "/faqs" },
-      { name: "Student Support", path: "/contact" },
-      { name: "Booking Status", path: "/my-bookings" },
     ],
   },
   {
@@ -43,7 +36,7 @@ const footerSections = [
 const Footer = () => {
   return (
     <footer className="bg-[#E56A54] text-[#3A2935] selection:bg-[#3A2935] selection:text-white">
-      {/* Top GitHub-Style Multi-Column Navigation */}
+      {/* Top Multi-Column Navigation */}
       <div className="mx-auto max-w-7xl px-4 pt-12 pb-10 sm:px-6 lg:px-8">
         
         {/* Brand Header */}
