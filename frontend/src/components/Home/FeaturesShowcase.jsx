@@ -1,45 +1,49 @@
+import Container from "../../layouts/Container";
 import { featureSlides } from "../../data/homeData";
 
 const FeaturesShowcase = () => {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      {/* Header - Balanced and clean */}
-      <div className="mb-10 text-center">
-        <h2 className="text-3xl md:text-4xl font-black text-[#3A2935] tracking-tight mb-3">
-          Why Students <span className="text-[#E56A54]">Love Us</span>
-        </h2>
-        <p className="text-sm md:text-base text-gray-500 font-medium">
-          Everything you need for a safe and hassle-free stay.
-        </p>
-      </div>
+    <section className="bg-[#FAF9F5] px-4 py-16 sm:px-6 lg:px-8 border-b border-gray-100">
+      <Container max-w-4xl>
+        {/* Header */}
+        <div className="mb-12 text-center">
+          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
+            Student Experience
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-black text-[#3A2935] tracking-tight mb-3">
+            Why Students <span className="text-[#E56A54]">Love Us</span>
+          </h2>
+          <p className="text-sm sm:text-base text-gray-500 font-medium max-w-xl mx-auto">
+            Everything you need for a safe, verified, and hassle-free stay.
+          </p>
+        </div>
 
-      {/* Horizontal Snap-Slider (Space Efficient) */}
-      <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide [-webkit-overflow-scrolling:touch] cursor-grab active:cursor-grabbing">
-        {featureSlides.map((feature, index) => (
-          <div
-            key={index}
-            className="group flex flex-col min-w-[260px] sm:min-w-[300px] md:min-w-[320px] rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm snap-start transition-all duration-300 hover:border-[#E56A54]/30 hover:shadow-lg hover:-translate-y-1"
-          >
-            {/* Zesty Icon with Hover Animation */}
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 border-2 border-gray-100 text-2xl group-hover:bg-[#E56A54] group-hover:text-white transition-all duration-300">
-              {feature.icon}
-            </div>
+        {/* Point-Wise Vertical List (No Horizontal Scrolling) */}
+        <div className="space-y-4 max-w-3xl mx-auto">
+          {featureSlides.map((feature, index) => (
+            <div
+              key={index}
+              className="flex items-start gap-4 sm:gap-5 rounded-3xl border-2 border-gray-100 bg-white p-5 sm:p-7 shadow-sm transition-all duration-300 hover:border-[#E56A54]/30 hover:shadow-md"
+            >
+              <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-orange-50 border-2 border-orange-100 text-2xl">
+                {feature.icon}
+              </div>
 
-            {/* Content */}
-            <h3 className="text-lg font-black text-[#3A2935] tracking-tight mb-2">
-              {feature.title}
-            </h3>
-            <p className="text-xs md:text-sm font-medium leading-relaxed text-gray-500 line-clamp-3">
-              {feature.description}
-            </p>
-            
-            {/* Subtle Accent Line */}
-            <div className="mt-auto pt-6">
-               <div className="h-1 w-8 bg-gray-100 rounded-full group-hover:bg-[#E56A54] transition-colors duration-300"></div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-black text-[#E56A54]">Point 0{index + 1}</span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-[#3A2935] tracking-tight mb-1">
+                  {feature.title}
+                </h3>
+                <p className="text-xs sm:text-sm font-medium leading-relaxed text-gray-600">
+                  {feature.description}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </Container>
     </section>
   );
 };

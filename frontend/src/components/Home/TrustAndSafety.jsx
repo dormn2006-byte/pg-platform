@@ -35,8 +35,8 @@ const safetyFeatures = [
 
 const TrustAndSafety = () => {
   return (
-    <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 border-y border-gray-100">
-      <Container max-w-5xl>
+    <section className="bg-[#FAF9F5] px-4 py-16 sm:px-6 lg:px-8 border-b border-gray-100">
+      <Container max-w-4xl>
         <div className="mb-12 text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
             Ecosystem Integrity
@@ -49,20 +49,24 @@ const TrustAndSafety = () => {
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {safetyFeatures.map((item) => (
+        {/* Point-Wise Vertical List */}
+        <div className="space-y-4 max-w-3xl mx-auto">
+          {safetyFeatures.map((item, index) => (
             <div
               key={item.feature}
-              className="flex items-start gap-4 rounded-2xl border-2 border-gray-100 bg-[#FAF9F5]/80 p-5 transition-all hover:border-[#E56A54]/30 hover:bg-white"
+              className="flex items-start gap-4 sm:gap-5 rounded-3xl border-2 border-gray-100 bg-white p-5 sm:p-6 shadow-sm transition-all hover:border-[#E56A54]/30 hover:shadow-md"
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-xl border border-orange-100">
+              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-xl border border-orange-100">
                 {item.icon}
               </div>
               <div>
-                <h3 className="text-base font-extrabold text-[#3A2935]">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-[11px] font-black text-[#E56A54]">Rule 0{index + 1}</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-extrabold text-[#3A2935]">
                   {item.feature}
                 </h3>
-                <p className="mt-1 text-xs font-medium leading-relaxed text-gray-600">
+                <p className="mt-1 text-xs sm:text-sm font-medium leading-relaxed text-gray-600">
                   {item.desc}
                 </p>
               </div>

@@ -3,25 +3,25 @@ import Container from "../../layouts/Container";
 
 const steps = [
   {
-    number: "Step 1",
+    step: "01",
     title: "Search & Discover",
     description:
-      "Use our powerful dynamic search to explore PGs by city, area, gender preference (Boys/Girls/Unisex), room type (AC/Non-AC), and more. Don't know where to start? Discover Mode automatically surfaces trending locations.",
+      "Use our powerful dynamic search to explore PGs by city, area, gender preference (Boys/Girls/Unisex), room type (AC/Non-AC), and more. Discover Mode automatically surfaces trending locations and premium stays.",
     icon: "🔍",
     linkText: "Start Search",
     linkUrl: "/pgs",
   },
   {
-    number: "Step 2",
+    step: "02",
     title: "Explore & Compare",
     description:
-      "Every listing includes high-quality gallery images, detailed descriptions, pricing, amenity tags, house rules, and Google Maps integration for exact locations. Compare options side by side.",
+      "Every listing includes high-quality gallery images, detailed descriptions, pricing, amenity tags, house rules, and Google Maps integration for exact locations. Compare options side by side effortlessly.",
     icon: "🏠",
     linkText: "View Stays",
     linkUrl: "/pgs",
   },
   {
-    number: "Step 3",
+    step: "03",
     title: "Request a Visit",
     description:
       "Submit a visit request directly through the platform. Attach an optional message for the property owner and track your request status (Pending, Accepted, Rejected) in real-time.",
@@ -30,7 +30,7 @@ const steps = [
     linkUrl: "/my-bookings",
   },
   {
-    number: "Step 4",
+    step: "04",
     title: "Connect Directly",
     description:
       "Need to speak with the owner before booking? Use our instant Call and WhatsApp buttons on every listing with pre-filled messages to reach out directly.",
@@ -43,7 +43,7 @@ const steps = [
 const HowItWorks = () => {
   return (
     <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 border-y border-gray-100">
-      <Container>
+      <Container max-w-4xl>
         <div className="mb-12 text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
             Simple 4-Step Process
@@ -56,37 +56,36 @@ const HowItWorks = () => {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step) => (
+        {/* Point-Wise Vertical List */}
+        <div className="space-y-4">
+          {steps.map((item) => (
             <div
-              key={step.title}
-              className="flex flex-col justify-between rounded-[2rem] border-2 border-gray-100 bg-[#FAF9F5]/70 p-6 transition-all duration-300 hover:border-[#E56A54]/30 hover:bg-white hover:shadow-md"
+              key={item.title}
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 rounded-3xl border-2 border-gray-100 bg-[#FAF9F5]/70 p-6 sm:p-8 transition-all hover:border-[#E56A54]/30 hover:bg-white hover:shadow-sm"
             >
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 border border-orange-100 text-xl">
-                    {step.icon}
-                  </span>
-                  <span className="rounded-full bg-[#3A2935] px-3 py-1 text-[10px] font-extrabold uppercase text-white tracking-wider">
-                    {step.number}
-                  </span>
+              <div className="flex items-start gap-4 sm:gap-5">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#3A2935] text-white font-black text-sm mt-0.5">
+                  {item.step}
                 </div>
-
-                <h3 className="text-xl font-black text-[#3A2935] mb-2">
-                  {step.title}
-                </h3>
-
-                <p className="text-xs sm:text-sm font-medium leading-relaxed text-gray-600">
-                  {step.description}
-                </p>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xl">{item.icon}</span>
+                    <h3 className="text-xl font-black text-[#3A2935]">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs sm:text-sm font-medium leading-relaxed text-gray-600 max-w-2xl">
+                    {item.description}
+                  </p>
+                </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-gray-100">
+              <div className="shrink-0 self-end sm:self-center">
                 <Link
-                  to={step.linkUrl}
-                  className="inline-flex items-center gap-1.5 text-xs font-black text-[#E56A54] hover:underline"
+                  to={item.linkUrl}
+                  className="inline-flex items-center gap-2 rounded-2xl border-2 border-[#3A2935] bg-white px-5 py-2.5 text-xs font-black text-[#3A2935] transition-all hover:bg-[#3A2935] hover:text-white"
                 >
-                  {step.linkText} →
+                  {item.linkText} →
                 </Link>
               </div>
             </div>

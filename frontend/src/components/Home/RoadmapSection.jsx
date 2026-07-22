@@ -33,8 +33,8 @@ const roadmapItems = [
 
 const RoadmapSection = () => {
   return (
-    <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 border-y border-gray-100">
-      <Container max-w-5xl>
+    <section className="bg-[#FAF9F5] px-4 py-16 sm:px-6 lg:px-8 border-b border-gray-100">
+      <Container max-w-4xl>
         <div className="mb-12 text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
             Product Roadmap
@@ -47,20 +47,21 @@ const RoadmapSection = () => {
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {roadmapItems.map((item) => (
+        {/* Point-Wise Vertical List */}
+        <div className="space-y-4 max-w-3xl mx-auto">
+          {roadmapItems.map((item, index) => (
             <div
               key={item.title}
-              className="flex flex-col justify-between rounded-2xl border-2 border-gray-100 bg-[#FAF9F5]/70 p-5 transition-all hover:border-[#E56A54]/30 hover:bg-white"
+              className="flex items-start gap-4 sm:gap-5 rounded-3xl border-2 border-gray-100 bg-white p-5 sm:p-6 shadow-sm transition-all hover:border-[#E56A54]/30 hover:shadow-md"
             >
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#E56A54] text-xs font-black text-white mt-0.5">
+                ✓
+              </div>
               <div>
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E56A54] text-xs font-black text-white mb-3">
-                  ✓
-                </div>
                 <h3 className="text-base font-extrabold text-[#3A2935]">
-                  {item.title}
+                  {index + 1}. {item.title}
                 </h3>
-                <p className="mt-2 text-xs font-medium leading-relaxed text-gray-600">
+                <p className="mt-1 text-xs sm:text-sm font-medium leading-relaxed text-gray-600">
                   {item.desc}
                 </p>
               </div>

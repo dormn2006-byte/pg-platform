@@ -35,8 +35,8 @@ const reasons = [
 
 const WhyChooseDormn = () => {
   return (
-    <section className="bg-[#FAF9F5] px-4 py-16 sm:px-6 lg:px-8">
-      <Container>
+    <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 border-y border-gray-100">
+      <Container max-w-4xl>
         <div className="mb-12 text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
             Why Students & Owners Trust Us
@@ -49,21 +49,27 @@ const WhyChooseDormn = () => {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {reasons.map((item) => (
+        {/* Point-Wise Vertical List */}
+        <div className="space-y-4 max-w-3xl mx-auto">
+          {reasons.map((item, index) => (
             <div
               key={item.title}
-              className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 sm:p-8 shadow-sm transition-all duration-300 hover:border-[#E56A54]/30 hover:shadow-md"
+              className="flex items-start gap-4 sm:gap-5 rounded-3xl border-2 border-gray-100 bg-[#FAF9F5]/70 p-5 sm:p-7 transition-all duration-300 hover:border-[#E56A54]/30 hover:bg-white hover:shadow-sm"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 border border-orange-100 text-2xl mb-5">
+              <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-orange-50 border-2 border-orange-100 text-2xl">
                 {item.icon}
               </div>
-              <h3 className="text-xl font-black text-[#3A2935] mb-2">
-                {item.title}
-              </h3>
-              <p className="text-xs sm:text-sm font-medium leading-relaxed text-gray-600">
-                {item.desc}
-              </p>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-black text-[#E56A54]">Feature 0{index + 1}</span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-[#3A2935] mb-1">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm font-medium leading-relaxed text-gray-600">
+                  {item.desc}
+                </p>
+              </div>
             </div>
           ))}
         </div>

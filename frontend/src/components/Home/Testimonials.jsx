@@ -19,8 +19,8 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="bg-[#FAF9F5] px-4 py-16 sm:px-6 lg:px-8">
-      <Container max-w-5xl>
+    <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 border-b border-gray-100">
+      <Container max-w-4xl>
         <div className="mb-12 text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
             Community Feedback
@@ -30,30 +30,25 @@ const Testimonials = () => {
           </h2>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {testimonials.map((item) => (
+        {/* Point-Wise Vertical List */}
+        <div className="space-y-4 max-w-3xl mx-auto">
+          {testimonials.map((item, index) => (
             <div
               key={item.author}
-              className="flex flex-col justify-between rounded-[2.5rem] border-2 border-gray-100 bg-white p-8 shadow-sm transition-all hover:border-[#E56A54]/30 hover:shadow-md"
+              className="flex flex-col sm:flex-row sm:items-center gap-5 rounded-3xl border-2 border-gray-100 bg-[#FAF9F5]/70 p-6 sm:p-8 transition-all hover:border-[#E56A54]/30 hover:bg-white hover:shadow-sm"
             >
-              <div className="mb-6">
-                <div className="text-3xl mb-4 text-[#E56A54]">“</div>
-                <p className="text-sm sm:text-base font-medium leading-relaxed text-gray-700 italic">
-                  {item.quote}
-                </p>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-2xl border border-orange-100">
+                {item.avatar}
               </div>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-50 text-xl">
-                  {item.avatar}
-                </div>
-                <div>
-                  <h3 className="text-sm font-black text-[#3A2935]">
-                    {item.author}
-                  </h3>
-                  <p className="text-xs font-bold text-[#E56A54]">
-                    {item.role}
-                  </p>
+              <div>
+                <p className="text-xs sm:text-sm font-medium leading-relaxed text-gray-700 italic mb-3">
+                  &quot;{item.quote}&quot;
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-[#3A2935]">{item.author}</span>
+                  <span className="text-gray-300">•</span>
+                  <span className="text-xs font-bold text-[#E56A54]">{item.role}</span>
                 </div>
               </div>
             </div>
