@@ -36,7 +36,7 @@ const reasons = [
 const WhyChooseDormn = () => {
   return (
     <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 border-y border-gray-100">
-      <Container max-w-4xl>
+      <Container max-w-6xl>
         <div className="mb-12 text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
             Why Students & Owners Trust Us
@@ -49,8 +49,8 @@ const WhyChooseDormn = () => {
           </p>
         </div>
 
-        {/* Point-Wise Vertical List */}
-        <div className="space-y-4 max-w-3xl mx-auto">
+        {/* 2-Column Point-Wise Layout (3 on Left, 3 on Right) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {reasons.map((item, index) => (
             <div
               key={item.title}
