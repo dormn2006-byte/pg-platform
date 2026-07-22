@@ -31,6 +31,29 @@ const coreValues = [
   },
 ];
 
+const trustStandards = [
+  {
+    title: "SuperAdmin Verification Workflow",
+    desc: "Every property goes through a moderation process where our admin team reviews listings for accuracy, habitability, and policy compliance before going live.",
+    icon: "🛡️",
+  },
+  {
+    title: "Automated Image Security Pipeline",
+    desc: "Property imagery is validated, resized, and compressed using Sharp engine and Multer to prevent malicious execution and guarantee fast loading.",
+    icon: "🖼️",
+  },
+  {
+    title: "DPDP Act 2023 & IT Act 2000 Compliance",
+    desc: "User data is protected under Indian statutory guidelines. Passwords are salted with bcrypt (10 rounds) and sessions are managed via 7-day stateless JWT tokens.",
+    icon: "📜",
+  },
+  {
+    title: "Grievance Redressal Mechanism",
+    desc: "Formal statutory grievance handling with a 24-hour acknowledgement SLA and 15-day complaint resolution protocol under IT Rules 2021.",
+    icon: "⚖️",
+  },
+];
+
 const techStack = [
   {
     category: "FRONTEND EXPERIENCE",
@@ -295,8 +318,49 @@ const About = () => {
           </Container>
         </section>
 
-        {/* SECTION 2: Technology & Architecture (Point-Wise Tech Breakdown) */}
+        {/* SECTION 2: Platform Trust & Security Standards (Point-Wise List) */}
         <section className="px-5 py-20 lg:px-8 lg:py-28">
+          <Container max-w-4xl>
+            <div className="mb-12 text-center md:mb-16">
+              <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
+                Trust & Verification
+              </p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-[#3A2935] sm:text-4xl md:text-5xl">
+                Platform Safety & Governance Standards
+              </h2>
+              <p className="mt-4 max-w-2xl mx-auto text-base text-gray-600 font-medium">
+                Dormn implements strict verification protocols to keep our ecosystem safe, trustworthy, and compliant.
+              </p>
+            </div>
+
+            <div className="mx-auto max-w-3xl space-y-4">
+              {trustStandards.map((item, index) => (
+                <div
+                  key={item.title}
+                  className="flex items-start gap-4 sm:gap-5 rounded-3xl border-2 border-gray-100 bg-white p-5 sm:p-7 shadow-sm transition-all hover:border-[#E56A54]/30 hover:shadow-md"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 border-2 border-orange-100 text-2xl">
+                    {item.icon}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-black text-[#E56A54]">Standard 0{index + 1}</span>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-black text-[#3A2935] mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm font-medium leading-relaxed text-gray-600">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        {/* SECTION 3: Technology & Architecture (Point-Wise Tech Breakdown) */}
+        <section className="bg-white px-5 py-20 lg:px-8 lg:py-28 border-y border-gray-100">
           <Container>
             <div className="mb-12 text-center md:mb-16">
               <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
@@ -311,9 +375,9 @@ const About = () => {
             </div>
 
             {/* Point-Wise Vertical List Container */}
-            <div className="mx-auto max-w-4xl rounded-[2.5rem] border-2 border-gray-100 bg-white p-6 sm:p-10 shadow-sm">
-              <div className="divide-y divide-gray-100">
-                {techStack.map((tech, index) => (
+            <div className="mx-auto max-w-4xl rounded-[2.5rem] border-2 border-gray-100 bg-[#FAF9F5]/70 p-6 sm:p-10 shadow-sm">
+              <div className="divide-y divide-gray-200/60">
+                {techStack.map((tech) => (
                   <div key={tech.category} className="py-6 first:pt-0 last:pb-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E56A54]/10 text-xl text-[#E56A54]">
@@ -340,8 +404,8 @@ const About = () => {
           </Container>
         </section>
 
-        {/* SECTION 3: Who We Serve (Point-Wise Ecosystem List) */}
-        <section className="bg-white px-5 py-20 lg:px-8 lg:py-28 border-y border-gray-100">
+        {/* SECTION 4: Who We Serve (Point-Wise Ecosystem List) */}
+        <section className="px-5 py-20 lg:px-8 lg:py-28">
           <Container>
             <div className="mb-12 text-center md:mb-16">
               <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
@@ -357,7 +421,7 @@ const About = () => {
               {whoWeServe.map((item, index) => (
                 <div
                   key={item.role}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 rounded-3xl border-2 border-gray-100 bg-[#FAF9F5]/70 p-6 sm:p-8 transition-all hover:border-[#E56A54]/30 hover:bg-white hover:shadow-sm"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 rounded-3xl border-2 border-gray-100 bg-white p-6 sm:p-8 transition-all hover:border-[#E56A54]/30 hover:shadow-sm"
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#3A2935] text-white font-black text-sm mt-1">
@@ -392,10 +456,10 @@ const About = () => {
           </Container>
         </section>
 
-        {/* SECTION 4: Product Roadmap & Innovations (Point-Wise Timeline/List) */}
-        <section className="px-5 py-20 lg:px-8 lg:py-28">
+        {/* SECTION 5: Product Roadmap & Innovations (Point-Wise Timeline/List) */}
+        <section className="bg-white px-5 py-20 lg:px-8 lg:py-28 border-y border-gray-100">
           <Container max-w-4xl>
-            <div className="rounded-[2.5rem] border-2 border-gray-100 bg-white p-8 shadow-sm md:rounded-[3rem] md:p-14">
+            <div className="rounded-[2.5rem] border-2 border-gray-100 bg-[#FAF9F5]/70 p-8 shadow-sm md:rounded-[3rem] md:p-14">
               <div className="mb-10 text-center">
                 <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
                   Looking To The Future
@@ -415,7 +479,7 @@ const About = () => {
                 {futureFeatures.map((item, index) => (
                   <div
                     key={item.title}
-                    className="flex items-start gap-4 rounded-2xl border-2 border-gray-100 bg-[#FAF9F5]/60 p-5 transition-all hover:border-[#E56A54]/30 hover:bg-white"
+                    className="flex items-start gap-4 rounded-2xl border-2 border-gray-100 bg-white p-5 transition-all hover:border-[#E56A54]/30"
                   >
                     <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#E56A54] text-xs font-black text-white mt-0.5">
                       ✓
@@ -432,7 +496,7 @@ const About = () => {
                 ))}
               </div>
 
-              <div className="mt-12 text-center border-t border-gray-100 pt-8">
+              <div className="mt-12 text-center border-t border-gray-200/60 pt-8">
                 <p className="text-sm font-extrabold text-[#3A2935] italic">
                   Dormn: Your Home, Our Priority.
                 </p>
@@ -442,7 +506,7 @@ const About = () => {
         </section>
 
         {/* CTA (Premium Charcoal Banner) */}
-        <section className="px-5 pb-20 lg:px-8 lg:pb-28">
+        <section className="px-5 py-20 lg:px-8 lg:py-28">
           <Container>
             <div className="relative overflow-hidden rounded-[2.5rem] bg-[#3A2935] px-6 py-12 shadow-[0_20px_50px_-12px_rgba(58,41,53,0.4)] sm:px-12 sm:py-16 md:rounded-[3rem] lg:px-20 lg:py-24">
               <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-[#E56A54]/30 blur-[4rem]"></div>
@@ -472,6 +536,12 @@ const About = () => {
                     className="w-full rounded-2xl border-2 border-gray-400 bg-transparent px-8 py-4 text-center text-sm font-bold tracking-wide text-white transition-colors hover:border-white hover:bg-white/10 sm:w-auto md:text-base"
                   >
                     Become an Owner
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="w-full rounded-2xl border-2 border-gray-400/40 bg-white/10 px-8 py-4 text-center text-sm font-bold tracking-wide text-white transition-colors hover:bg-white/20 sm:w-auto md:text-base"
+                  >
+                    Contact Support
                   </Link>
                 </div>
               </div>
