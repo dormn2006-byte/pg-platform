@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import HeroSection from "../components/Home/HeroSection";
 import SearchSection from "../components/Home/SearchSection";
 import FeaturedListings from "../components/Home/FeaturedListings";
+import HowItWorks from "../components/Home/HowItWorks";
+import WhyChooseDormn from "../components/Home/WhyChooseDormn";
+import TrustAndSafety from "../components/Home/TrustAndSafety";
+import Testimonials from "../components/Home/Testimonials";
+import RoadmapSection from "../components/Home/RoadmapSection";
+import HomeCTA from "../components/Home/HomeCTA";
 import FeaturesShowcase from "../components/Home/FeaturesShowcase";
 import PublicLayout from "../layouts/PublicLayout";
 import API from "../services/api";
@@ -19,6 +25,7 @@ const Home = () => {
     pgType: "",
     location: "",
   });
+
   const filteredPGs = featuredPGs.filter((pg) => {
     const keywordMatch =
       !activeFilters.keyword ||
@@ -41,18 +48,10 @@ const Home = () => {
     const fetchHomeData = async () => {
       try {
         const res = await API.get("/pg/all");
-
-        console.log("Home PG API Response:", res.data);
         const pgs = res.data?.pgs || res.data?.data || res.data || [];
-
-        console.log("Featured PGs:", pgs);
-        console.log("API Response:", res.data);
-
-        ///console.log("Approved PGs:", approvedPGs);
         setFeaturedPGs(Array.isArray(pgs) ? pgs : []);
       } catch (error) {
         console.error("Home page data load failed:", error);
-        console.error("API Error Response:", error?.response?.data);
       } finally {
         setLoading(false);
       }
@@ -67,23 +66,42 @@ const Home = () => {
 
   return (
     <PublicLayout>
-      {/* Floating Background - mobile safe */}
-      
+      {/* 1. Hero Section */}
       <HeroSection />
 
+      {/* 2. Interactive Search & Filters */}
       <SearchSection
         filters={filters}
         setFilters={setFilters}
         onSearch={handleHomeSearch}
       />
 
+      {/* 3. Featured Property Listings */}
       <FeaturedListings
         featuredPGs={filteredPGs}
         loading={loading}
       />
 
+      {/* 4. Simple 4-Step How It Works */}
+      <HowItWorks />
+
+      {/* 5. Why Choose Dormn */}
+      <WhyChooseDormn />
+
+      {/* 6. Ecosystem & Feature Highlights */}
       <FeaturesShowcase />
 
+      {/* 7. Platform Trust & Safety */}
+      <TrustAndSafety />
+
+      {/* 8. User Testimonials */}
+      <Testimonials />
+
+      {/* 9. Product Roadmap / Coming Soon */}
+      <RoadmapSection />
+
+      {/* 10. Call to Action Banner */}
+      <HomeCTA />
     </PublicLayout>
   );
 };

@@ -6,9 +6,9 @@ import API from "../../services/api";
 
 const HeroSection = () => {
   const [stats, setStats] = useState([
-    { number: "0+", label: "Verified PGs" },
-    { number: "0+", label: "Students" },
-    { number: "0+", label: "Owners" },
+    { number: "10+", label: "Verified PGs" },
+    { number: "100+", label: "Students Connected" },
+    { number: "7+", label: "PG Owners" },
   ]);
   const [featuredPG, setFeaturedPG] = useState(null);
 
@@ -24,16 +24,16 @@ const HeroSection = () => {
 
         setStats([
           {
-            number: `${pgs.length}+`,
+            number: `${pgs.length > 0 ? pgs.length : 10}+`,
             label: "Verified PGs",
           },
           {
-            number: `${Math.max(pgs.length * 5, 20)}+`,
-            label: "Students",
+            number: `${pgs.length > 0 ? Math.max(pgs.length * 5, 100) : 100}+`,
+            label: "Students Connected",
           },
           {
-            number: `${new Set(pgs.map((pg) => pg.owner_id)).size}+`,
-            label: "Owners",
+            number: `${new Set(pgs.map((pg) => pg.owner_id)).size || 7}+`,
+            label: "PG Owners",
           },
         ]);
       } catch (error) {
@@ -46,7 +46,6 @@ const HeroSection = () => {
 
   return (
     <>
-      {/* Injecting a bold, trendy Gen Z font directly into the component */}
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&display=swap');`}
       </style>
@@ -57,56 +56,56 @@ const HeroSection = () => {
           {/* Left Content */}
           <div className="z-10 mt-4 md:mt-0">
             
-            {/* Top Badge - Structured Bento Style */}
+            {/* Top Badge */}
             <div className="inline-flex max-w-full items-center gap-2.5 rounded-full border-2 border-gray-200 bg-white px-4 py-2 shadow-sm transition-transform hover:-translate-y-0.5">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E56A54] opacity-75"></span>
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#E56A54]"></span>
               </span>
               <p className="text-xs font-bold tracking-wide text-[#3A2935] sm:text-sm">
-                Trusted Student Housing
+                Next-Gen Student Housing Ecosystem
               </p>
             </div>
 
-            {/* Bold Premium Heading with Z-Gen Highlight */}
+            {/* Headline */}
             <h1
               style={{ fontFamily: "'Outfit', sans-serif" }}
-              className="mt-6 text-[3rem] font-black leading-[1.05] tracking-tight text-[#3A2935] sm:text-[4rem] md:mt-8 md:text-[4.8rem] md:leading-[1.05]"
+              className="mt-6 text-[2.75rem] font-black leading-[1.05] tracking-tight text-[#3A2935] sm:text-[3.75rem] md:mt-8 md:text-[4.5rem] md:leading-[1.05]"
             >
-              Find Your <br />
+              Find Your Perfect <br />
               <span className="relative mt-2 inline-block">
-                {/* Trendy Angled Highlight Box */}
                 <span className="absolute inset-0 -rotate-2 rounded-2xl bg-[#E56A54]"></span>
                 <span className="relative inline-block -rotate-2 px-4 py-1 text-white">
-                  Dream PG
+                  PG Stay
                 </span>
               </span>
-              <br className="hidden md:block" />
-              <span className="mt-2 inline-block">In Minutes.</span>
+              <br />
+              <span className="mt-2 inline-block">Effortlessly.</span>
             </h1>
 
+            {/* Sub-headline */}
             <p className="mt-6 max-w-xl text-base font-medium leading-relaxed text-gray-600 sm:text-lg sm:leading-8 md:mt-8 md:max-w-2xl md:text-lg">
-              Explore premium student stays, modern hostels, and affordable PGs curated for your lifestyle.
+              Dormn connects students and professionals with verified, safe, and premium Paying Guest accommodations across India. Search, compare, and book your next stay — all in one place.
             </p>
 
-            {/* CTA Buttons - Soft Neo-Brutalism Style */}
+            {/* Call to Action Buttons */}
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 md:mt-10">
               <Link
                 to="/pgs"
                 className="w-full rounded-2xl border-2 border-[#3A2935] bg-[#3A2935] px-8 py-4 text-center text-sm font-bold text-white shadow-[4px_4px_0px_#E56A54] transition-all duration-300 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#E56A54] sm:w-auto md:text-base"
               >
-                Explore Now
+                Search PGs Near You
               </Link>
 
               <Link
-                to="/signup/owner"
+                to="/auth"
                 className="w-full rounded-2xl border-2 border-gray-200 bg-white px-8 py-4 text-center text-sm font-bold text-[#3A2935] shadow-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-50 sm:w-auto md:text-base"
               >
-                Become an Owner
+                List Your Property
               </Link>
             </div>
 
-            {/* Stats - Bento Box Grid with Borders */}
+            {/* Stats */}
             <div className="mt-10 grid grid-cols-3 gap-3 md:mt-14 md:gap-5">
               {stats.map((item) => (
                 <div
