@@ -5,19 +5,50 @@ import api from "../../services/api";
 
 // Highly reliable, aesthetic architectural and interior images
 const bgImages = [
-  "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1502672260266-1c1de2424855?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1598928506311-c55dd1b36f73?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1499916078039-922301b0eb9b?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=600&q=80",
+  "https://i.ibb.co/C5GDQmpM/Whats-App-Image-2026-07-22-at-10-25-14-PM-1.jpg",
+  "https://i.ibb.co/4gNDywLT/Whats-App-Image-2026-07-22-at-10-25-14-PM-2.jpg",
+  "https://i.ibb.co/wFS2fkVB/Whats-App-Image-2026-07-22-at-10-25-14-PM.jpg",
+  "https://i.ibb.co/QjKKf1qX/Whats-App-Image-2026-07-22-at-10-25-15-PM-1.jpg",
+  "https://i.ibb.co/mVpcqHBC/Whats-App-Image-2026-07-22-at-10-25-15-PM.jpg",
+  "https://i.ibb.co/k6sN9jVq/Whats-App-Image-2026-07-22-at-10-25-16-PM-1.jpg",
+  "https://i.ibb.co/SD8TtG3G/Whats-App-Image-2026-07-22-at-10-25-16-PM.jpg",
+  "https://i.ibb.co/4RmNHjDG/Whats-App-Image-2026-07-22-at-10-25-17-PM-1.jpg",
+  "https://i.ibb.co/Jj0nmpZ5/Whats-App-Image-2026-07-22-at-10-25-17-PM.jpg",
+  "https://i.ibb.co/v0FgKrN/Whats-App-Image-2026-07-22-at-10-25-18-PM-1.jpg",
+  "https://i.ibb.co/84cvvP6D/Whats-App-Image-2026-07-22-at-10-25-18-PM.jpg",
+  "https://i.ibb.co/zWvbzQq6/Whats-App-Image-2026-07-22-at-10-25-19-PM-1.jpg",
+  "https://i.ibb.co/fzXpJdrN/Whats-App-Image-2026-07-22-at-10-25-19-PM-2.jpg",
+  "https://i.ibb.co/cSZ9nb9R/Whats-App-Image-2026-07-22-at-10-25-19-PM.jpg",
+  "https://i.ibb.co/PvZSXR9S/Whats-App-Image-2026-07-22-at-10-25-20-PM-1.jpg",
+  "https://i.ibb.co/KxF8ZDhn/Whats-App-Image-2026-07-22-at-10-25-20-PM.jpg",
+  "https://i.ibb.co/0R7WB4JW/Whats-App-Image-2026-07-22-at-10-25-21-PM-1.jpg",
+  "https://i.ibb.co/ymXj0qYN/Whats-App-Image-2026-07-22-at-10-25-21-PM.jpg",
+  "https://i.ibb.co/JXDr22s/Whats-App-Image-2026-07-22-at-10-25-22-PM.jpg"
 ];
+
+const MarqueeRow = ({ images, direction = "left", speed = "60s" }) => {
+  return (
+    <div className="flex-1 w-full overflow-hidden flex pointer-events-none">
+      <div 
+        className={`flex gap-3 shrink-0 h-full ${direction === "left" ? "animate-slide-left" : "animate-slide-right"}`}
+        style={{ "--speed": speed }}
+      >
+        {[...images, ...images].map((src, idx) => (
+          <div 
+            key={idx} 
+            className="h-full aspect-[4/5] rounded-[1.5rem] overflow-hidden shadow-2xl shrink-0 pointer-events-auto"
+          >
+            <img 
+              src={src} 
+              alt="bg-grid" 
+              className="w-full h-full object-cover transition-transform duration-[10s] hover:scale-110" 
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -152,47 +183,47 @@ const Auth = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col font-sans selection:bg-[#E56A54] selection:text-white bg-[#FAF9F5] overflow-hidden">
+    <div className="relative min-h-screen flex flex-col font-sans selection:bg-[#93B733] selection:text-white bg-[#FAF9F5] overflow-hidden">
       
       {/* --- BACKGROUND EFFECTS --- */}
       
       {/* 1. Mobile Vibrant Gradient Orbs */}
       <div className="absolute inset-0 z-0 block md:hidden overflow-hidden pointer-events-none opacity-40">
-        <div className="absolute -top-[10%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-[#E56A54] blur-[80px]"></div>
-        <div className="absolute top-[40%] -right-[20%] w-[80vw] h-[80vw] rounded-full bg-[#3A2935] blur-[100px]"></div>
-        <div className="absolute -bottom-[10%] -left-[20%] w-[90vw] h-[90vw] rounded-full bg-[#E56A54] blur-[90px]"></div>
+        <div className="absolute -top-[10%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-[#93B733] blur-[80px]"></div>
+        <div className="absolute top-[40%] -right-[20%] w-[80vw] h-[80vw] rounded-full bg-[#0D3A1D] blur-[100px]"></div>
+        <div className="absolute -bottom-[10%] -left-[20%] w-[90vw] h-[90vw] rounded-full bg-[#93B733] blur-[90px]"></div>
       </div>
 
       {/* 2. Desktop Image Grid & Darker Overlay */}
       <div className="absolute inset-0 z-0 hidden md:block overflow-hidden pointer-events-none bg-[#2A1B25]">
-        <div className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 p-3 opacity-[0.35]">
-          {bgImages.map((src, idx) => (
-            <div key={idx} className="aspect-[4/5] rounded-[1.5rem] overflow-hidden shadow-2xl">
-              <img src={src} alt="bg-grid" className="w-full h-full object-cover transition-transform duration-[10s] hover:scale-110" />
-            </div>
-          ))}
+        <div className="flex flex-col gap-3 py-3 opacity-[0.35] h-full justify-center">
+          <MarqueeRow images={bgImages} direction="right" speed="55s" />
+          <MarqueeRow images={[...bgImages.slice(7), ...bgImages.slice(0, 7)]} direction="left" speed="65s" />
+          <MarqueeRow images={[...bgImages.slice(13), ...bgImages.slice(0, 13)]} direction="right" speed="60s" />
         </div>
       </div>
 
       {/* 3. The Giant ZigZag "DORMN" Motif */}
       <div className="absolute inset-0 z-0 flex flex-col items-center justify-center pointer-events-none overflow-hidden opacity-30 md:opacity-20 mix-blend-overlay md:mix-blend-color-dodge">
-        <span className="text-[22vw] md:text-[14vw] font-black text-[#E56A54] -rotate-6 -ml-[20vw] tracking-tighter leading-[0.75] select-none">DORMN</span>
-        <span className="text-[25vw] md:text-[16vw] font-black text-[#3A2935] md:text-[#FAF9F5] rotate-3 ml-[15vw] tracking-tighter leading-[0.75] select-none">DORMN</span>
-        <span className="text-[22vw] md:text-[14vw] font-black text-[#E56A54] -rotate-2 -ml-[10vw] tracking-tighter leading-[0.75] select-none">DORMN</span>
+        <span className="text-[22vw] md:text-[14vw] font-black text-[#93B733] -rotate-6 -ml-[20vw] tracking-tighter leading-[0.75] select-none">DORMN</span>
+        <span className="text-[25vw] md:text-[16vw] font-black text-[#0D3A1D] md:text-[#FAF9F5] rotate-3 ml-[15vw] tracking-tighter leading-[0.75] select-none">DORMN</span>
+        <span className="text-[22vw] md:text-[14vw] font-black text-[#93B733] -rotate-2 -ml-[10vw] tracking-tighter leading-[0.75] select-none">DORMN</span>
       </div>
 
       {/* Top Navbar */}
       <nav className="relative z-20 md:bg-transparent px-5 py-4 md:px-8 flex justify-between items-center bg-white/70 backdrop-blur-xl border-b border-white/20 md:border-none">
         <div onClick={() => navigate("/")} className="flex cursor-pointer items-center gap-3 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E56A54] text-lg font-black text-white shadow-lg shadow-[#E56A54]/30 transition-transform group-hover:scale-105">
-            D
-          </div>
-          <h1 className="text-xl font-black tracking-tight text-[#3A2935] md:text-white transition-colors">Dormn</h1>
+          <img 
+            src="https://i.ibb.co/TqtkM8HV/logo.jpg" 
+            alt="Dormn Logo" 
+            className="h-10 w-10 rounded-xl object-cover shadow-lg shadow-black/10 transition-transform group-hover:scale-105" 
+          />
+          <h1 className="text-xl font-black tracking-tight text-[#0D3A1D] md:text-white transition-colors">Dormn</h1>
         </div>
         
         <button
           onClick={() => navigate("/")}
-          className="text-sm font-bold text-[#3A2935] md:text-white/80 hover:text-[#E56A54] md:hover:text-white transition-colors"
+          className="text-sm font-bold text-[#0D3A1D] md:text-white/80 hover:text-[#93B733] md:hover:text-white transition-colors"
         >
           Back Home
         </button>
@@ -206,7 +237,7 @@ const Auth = () => {
           
           {/* Header */}
           <div className="text-center px-6 pt-8 pb-5 border-b border-gray-100/80">
-            <h2 className="text-xl font-black text-[#3A2935]">
+            <h2 className="text-xl font-black text-[#0D3A1D]">
               {authMode === "login" ? "Welcome Back" : "Create an Account"}
             </h2>
           </div>
@@ -220,7 +251,7 @@ const Auth = () => {
                 onClick={() => setUserRole("student")}
                 className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition-all duration-300 flex justify-center items-center gap-2 ${
                   userRole === "student" 
-                    ? "bg-white text-[#3A2935] shadow-sm border border-gray-200" 
+                    ? "bg-white text-[#0D3A1D] shadow-sm border border-gray-200" 
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
@@ -231,7 +262,7 @@ const Auth = () => {
                 onClick={() => setUserRole("owner")}
                 className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition-all duration-300 flex justify-center items-center gap-2 ${
                   userRole === "owner" 
-                    ? "bg-white text-[#3A2935] shadow-sm border border-gray-200" 
+                    ? "bg-white text-[#0D3A1D] shadow-sm border border-gray-200" 
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
@@ -256,7 +287,7 @@ const Auth = () => {
                     value={formData.full_name}
                     onChange={handleChange}
                     placeholder="Full Name"
-                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#3A2935] outline-none placeholder:text-gray-400 transition focus:border-[#E56A54] focus:bg-white"
+                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#0D3A1D] outline-none placeholder:text-gray-400 transition focus:border-[#93B733] focus:bg-white"
                     required
                   />
                 </div>
@@ -275,7 +306,7 @@ const Auth = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Email address"
-                  className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#3A2935] outline-none placeholder:text-gray-400 transition focus:border-[#E56A54] focus:bg-white"
+                  className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#0D3A1D] outline-none placeholder:text-gray-400 transition focus:border-[#93B733] focus:bg-white"
                   required
                 />
               </div>
@@ -288,7 +319,7 @@ const Auth = () => {
                     onClick={() => { setLoginMethod("password"); setOtpSent(false); setError(""); }}
                     className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all duration-300 ${
                       loginMethod === "password" 
-                        ? "bg-white text-[#3A2935] shadow-sm border border-gray-200" 
+                        ? "bg-white text-[#0D3A1D] shadow-sm border border-gray-200" 
                         : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
@@ -299,7 +330,7 @@ const Auth = () => {
                     onClick={() => { setLoginMethod("otp"); setError(""); }}
                     className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all duration-300 ${
                       loginMethod === "otp" 
-                        ? "bg-white text-[#3A2935] shadow-sm border border-gray-200" 
+                        ? "bg-white text-[#0D3A1D] shadow-sm border border-gray-200" 
                         : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
@@ -322,7 +353,7 @@ const Auth = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Phone number"
-                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#3A2935] outline-none placeholder:text-gray-400 transition focus:border-[#E56A54] focus:bg-white"
+                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#0D3A1D] outline-none placeholder:text-gray-400 transition focus:border-[#93B733] focus:bg-white"
                     required
                   />
                 </div>
@@ -342,7 +373,7 @@ const Auth = () => {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Password"
-                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#3A2935] outline-none placeholder:text-gray-400 transition focus:border-[#E56A54] focus:bg-white"
+                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#0D3A1D] outline-none placeholder:text-gray-400 transition focus:border-[#93B733] focus:bg-white"
                     required={authMode === "signup" || loginMethod === "password"}
                   />
                 </div>
@@ -363,7 +394,7 @@ const Auth = () => {
                     onChange={(e) => setOtp(e.target.value)}
                     placeholder="Enter 6-digit OTP"
                     maxLength={6}
-                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#3A2935] outline-none placeholder:text-gray-400 transition focus:border-[#E56A54] focus:bg-white tracking-widest"
+                    className="w-full rounded-2xl border-2 border-gray-100 bg-gray-50/50 pl-11 pr-5 py-4 text-sm font-semibold text-[#0D3A1D] outline-none placeholder:text-gray-400 transition focus:border-[#93B733] focus:bg-white tracking-widest"
                     required
                   />
                 </div>
@@ -380,7 +411,7 @@ const Auth = () => {
               {/* Legal Note for Signup */}
               {authMode === "signup" && (
                 <p className="text-[11px] text-gray-500 mt-2 leading-relaxed px-1">
-                  We'll call or text you to confirm your number. Standard message and data rates apply. <span className="font-bold text-[#3A2935] underline cursor-pointer hover:text-[#E56A54] transition-colors">Privacy Policy</span>
+                  We'll call or text you to confirm your number. Standard message and data rates apply. <span className="font-bold text-[#0D3A1D] underline cursor-pointer hover:text-[#93B733] transition-colors">Privacy Policy</span>
                 </p>
               )}
 
@@ -388,7 +419,7 @@ const Auth = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-6 w-full rounded-2xl bg-[#E56A54] px-6 py-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(229,106,84,0.3)] transition-all hover:scale-[1.02] hover:bg-[#d65a45] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                className="mt-6 w-full rounded-2xl bg-[#93B733] px-6 py-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(229,106,84,0.3)] transition-all hover:scale-[1.02] hover:bg-[#d65a45] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading 
                   ? "Processing..." 
@@ -401,7 +432,7 @@ const Auth = () => {
               {/* Forgot Password (Login Only via Password) */}
               {authMode === "login" && loginMethod === "password" && (
                 <div className="mt-5 text-center">
-                  <button type="button" className="text-xs font-bold text-[#3A2935] hover:text-[#E56A54] transition hover:underline">
+                  <button type="button" className="text-xs font-bold text-[#0D3A1D] hover:text-[#93B733] transition hover:underline">
                     Forgot your password?
                   </button>
                 </div>
@@ -431,7 +462,7 @@ const Auth = () => {
                   setOtpSent(false); // Reset OTP state
                   setOtp("");
                 }}
-                className="w-full rounded-2xl border-2 border-[#3A2935] bg-transparent px-6 py-4 text-sm font-black text-[#3A2935] transition hover:bg-gray-50 active:scale-[0.98]"
+                className="w-full rounded-2xl border-2 border-[#0D3A1D] bg-transparent px-6 py-4 text-sm font-black text-[#0D3A1D] transition hover:bg-gray-50 active:scale-[0.98]"
               >
                 {authMode === "login" ? "Sign up for Dormn" : "Log in instead"}
               </button>

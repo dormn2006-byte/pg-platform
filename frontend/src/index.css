@@ -26,3 +26,29 @@ body {
   overscroll-behavior-x: none;
   touch-action: pan-y;
 }
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes slide-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-left {
+  animation: slide-left var(--speed, 60s) linear infinite;
+}
+
+.animate-slide-right {
+  animation: slide-right var(--speed, 60s) linear infinite;
+}

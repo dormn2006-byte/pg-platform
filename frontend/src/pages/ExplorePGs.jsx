@@ -12,7 +12,7 @@ const SectionSlider = ({ title, subtitle, pgs }) => {
     <div className="mb-14 animate-[fadeIn_0.5s_ease-out_forwards]">
       {/* Title container aligned with the slider's left padding */}
       <div className="mb-4 pl-5 sm:pl-6 lg:pl-10">
-        <h2 className="text-[22px] sm:text-2xl md:text-3xl font-black text-[#3A2935] tracking-tight">{title}</h2>
+        <h2 className="text-[22px] sm:text-2xl md:text-3xl font-black text-[#0D3A1D] tracking-tight">{title}</h2>
         {subtitle && <p className="mt-1 text-xs sm:text-sm font-medium text-gray-500">{subtitle}</p>}
       </div>
       
@@ -31,7 +31,7 @@ const SectionSlider = ({ title, subtitle, pgs }) => {
           {/* View All Card */}
           <div className="w-[44vw] min-w-[44vw] sm:w-[260px] sm:min-w-[260px] md:w-[300px] md:min-w-[300px] lg:w-[320px] lg:min-w-[320px] snap-start flex-shrink-0 flex flex-col cursor-pointer transition-transform hover:scale-[0.98]">
             <div className="flex h-full flex-col items-center justify-center rounded-2xl border-2 border-gray-100 bg-gray-50 aspect-[4/3] mb-3">
-               <span className="text-xs sm:text-sm font-bold text-[#3A2935]">View All</span>
+               <span className="text-xs sm:text-sm font-bold text-[#0D3A1D]">View All</span>
                <span className="mt-2 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white shadow-sm">→</span>
             </div>
           </div>
@@ -113,7 +113,7 @@ const ExplorePGs = () => {
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
       
-      <div className="bg-[#FAF9F5] min-h-screen font-sans pb-20 selection:bg-[#E56A54] selection:text-white">
+      <div className="bg-[#FAF9F5] min-h-screen font-sans pb-20 selection:bg-[#93B733] selection:text-white">
         
         {/* Sticky Search & Filter Bar */}
         <section className="sticky top-[68px] z-30 bg-[#FAF9F5]/95 backdrop-blur-xl pt-4 pb-2 border-b border-gray-200/60 shadow-[0_4px_15px_-10px_rgba(0,0,0,0.05)] transition-all duration-300">
@@ -128,7 +128,7 @@ const ExplorePGs = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 className="flex-grow min-h-[40px] text-[14px] sm:text-base font-medium text-gray-800 outline-none placeholder:text-gray-500 bg-transparent"
               />
-              <button className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-[#E56A54] text-white shadow-sm hover:bg-[#d65a45] transition-colors">
+              <button className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-[#93B733] text-white shadow-sm hover:bg-[#d65a45] transition-colors">
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -185,13 +185,13 @@ const ExplorePGs = () => {
               
               {/* Premium Promo Banner */}
               <div className="px-5 sm:px-6 lg:px-10 mb-14 animate-[fadeIn_0.5s_ease-out_0.2s_forwards]">
-                <div className="relative overflow-hidden rounded-[2rem] bg-[#3A2935] px-6 py-10 sm:px-12 sm:py-16 md:rounded-[3rem]">
-                  <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#E56A54]/30 blur-3xl"></div>
+                <div className="relative overflow-hidden rounded-[2rem] bg-[#0D3A1D] px-6 py-10 sm:px-12 sm:py-16 md:rounded-[3rem]">
+                  <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#93B733]/30 blur-3xl"></div>
                   <div className="relative z-10 md:w-2/3 lg:w-1/2">
-                    <p className="text-xs font-bold uppercase tracking-widest text-[#E56A54]">Partner with Dormn</p>
+                    <p className="text-xs font-bold uppercase tracking-widest text-[#93B733]">Partner with Dormn</p>
                     <h3 className="mt-3 text-2xl font-black text-white sm:text-4xl md:text-5xl">Have a property? <br/>List it in minutes.</h3>
                     <p className="mt-4 text-sm font-medium text-gray-300 sm:text-base hidden sm:block">Join hundreds of verified owners. Get instant bookings, verified students, and secure payouts.</p>
-                    <Link to="/signup/owner" className="mt-6 sm:mt-8 inline-block rounded-xl bg-[#E56A54] px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105">
+                    <Link to="/signup/owner" className="mt-6 sm:mt-8 inline-block rounded-xl bg-[#93B733] px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105">
                       Become an Owner
                     </Link>
                   </div>
@@ -206,12 +206,12 @@ const ExplorePGs = () => {
             /* ACTIVE SEARCH MODE (Grid View) */
             <section className="px-5 sm:px-6 lg:px-10 animate-[fadeIn_0.3s_ease-out_forwards]">
               <div className="mb-6 sm:mb-8 flex items-center justify-between border-b border-gray-200 pb-4">
-                <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
+                <h2 className="text-xl sm:text-2xl font-black text-[#0D3A1D]">
                   {filteredPGs.length > 0 ? `${filteredPGs.length} Stays found` : "No exact matches"}
                 </h2>
                 <button 
                   onClick={() => { setSearch(""); setActiveFilter("All"); }}
-                  className="text-xs sm:text-sm font-bold text-[#E56A54] hover:underline"
+                  className="text-xs sm:text-sm font-bold text-[#93B733] hover:underline"
                 >
                   Clear Filters
                 </button>
@@ -223,7 +223,7 @@ const ExplorePGs = () => {
                     <div className="h-16 w-16 rounded-full bg-gray-50 flex items-center justify-center mb-4">
                       <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     </div>
-                    <h3 className="text-xl font-black text-[#3A2935]">No PGs found</h3>
+                    <h3 className="text-xl font-black text-[#0D3A1D]">No PGs found</h3>
                     <p className="mt-2 text-sm text-gray-500">We couldn't find any stays matching your current filters. Try exploring other areas.</p>
                   </div>
                 ) : (

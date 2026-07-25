@@ -60,10 +60,10 @@ const HeroSection = () => {
             {/* Top Badge - Structured Bento Style */}
             <div className="inline-flex max-w-full items-center gap-2.5 rounded-full border-2 border-gray-200 bg-white px-4 py-2 shadow-sm transition-transform hover:-translate-y-0.5">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E56A54] opacity-75"></span>
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#E56A54]"></span>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#93B733] opacity-75"></span>
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#93B733]"></span>
               </span>
-              <p className="text-xs font-bold tracking-wide text-[#3A2935] sm:text-sm">
+              <p className="text-xs font-bold tracking-wide text-[#0D3A1D] sm:text-sm">
                 Trusted Student Housing
               </p>
             </div>
@@ -71,12 +71,12 @@ const HeroSection = () => {
             {/* Bold Premium Heading with Z-Gen Highlight */}
             <h1
               style={{ fontFamily: "'Outfit', sans-serif" }}
-              className="mt-6 text-[3rem] font-black leading-[1.05] tracking-tight text-[#3A2935] sm:text-[4rem] md:mt-8 md:text-[4.8rem] md:leading-[1.05]"
+              className="mt-6 text-[3rem] font-black leading-[1.05] tracking-tight text-[#0D3A1D] sm:text-[4rem] md:mt-8 md:text-[4.8rem] md:leading-[1.05]"
             >
               Find Your <br />
               <span className="relative mt-2 inline-block">
                 {/* Trendy Angled Highlight Box */}
-                <span className="absolute inset-0 -rotate-2 rounded-2xl bg-[#E56A54]"></span>
+                <span className="absolute inset-0 -rotate-2 rounded-2xl bg-[#93B733]"></span>
                 <span className="relative inline-block -rotate-2 px-4 py-1 text-white">
                   Dream PG
                 </span>
@@ -93,14 +93,14 @@ const HeroSection = () => {
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 md:mt-10">
               <Link
                 to="/pgs"
-                className="w-full rounded-2xl border-2 border-[#3A2935] bg-[#3A2935] px-8 py-4 text-center text-sm font-bold text-white shadow-[4px_4px_0px_#E56A54] transition-all duration-300 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#E56A54] sm:w-auto md:text-base"
+                className="w-full rounded-2xl border-2 border-[#0D3A1D] bg-[#0D3A1D] px-8 py-4 text-center text-sm font-bold text-white shadow-[4px_4px_0px_#93B733] transition-all duration-300 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#93B733] sm:w-auto md:text-base"
               >
                 Explore Now
               </Link>
 
               <Link
                 to="/signup/owner"
-                className="w-full rounded-2xl border-2 border-gray-200 bg-white px-8 py-4 text-center text-sm font-bold text-[#3A2935] shadow-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-50 sm:w-auto md:text-base"
+                className="w-full rounded-2xl border-2 border-gray-200 bg-white px-8 py-4 text-center text-sm font-bold text-[#0D3A1D] shadow-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-50 sm:w-auto md:text-base"
               >
                 Become an Owner
               </Link>
@@ -111,11 +111,11 @@ const HeroSection = () => {
               {stats.map((item) => (
                 <div
                   key={item.label}
-                  className="group flex flex-col items-center justify-center rounded-[1.5rem] border-2 border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E56A54]/40 hover:shadow-md md:rounded-[2rem] md:p-6"
+                  className="group flex flex-col items-center justify-center rounded-[1.5rem] border-2 border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#93B733]/40 hover:shadow-md md:rounded-[2rem] md:p-6"
                 >
                   <h3
                     style={{ fontFamily: "'Outfit', sans-serif" }}
-                    className="text-2xl font-black text-[#3A2935] transition-colors group-hover:text-[#E56A54] sm:text-3xl md:text-4xl"
+                    className="text-2xl font-black text-[#0D3A1D] transition-colors group-hover:text-[#93B733] sm:text-3xl md:text-4xl"
                   >
                     {item.number}
                   </h3>

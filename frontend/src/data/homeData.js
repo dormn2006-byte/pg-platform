@@ -1,6 +1,6 @@
 export const featureSlides = [
     {
-      icon: "🚀",
+      icon: "instant",
       title: "Instant Discovery",
       description:
         "Find verified PGs near your college with smart filters and fast browsing experience.",
@@ -10,7 +10,7 @@ export const featureSlides = [
     },
   
     {
-      icon: "🛡️",
+      icon: "verified",
       title: "Verified Listings",
       description:
         "Every PG listing goes through admin approval before becoming visible publicly.",
@@ -20,7 +20,7 @@ export const featureSlides = [
     },
   
     {
-      icon: "⚡",
+      icon: "mobile",
       title: "Mobile First Experience",
       description:
         "Designed primarily for smartphone users with smooth responsive performance.",

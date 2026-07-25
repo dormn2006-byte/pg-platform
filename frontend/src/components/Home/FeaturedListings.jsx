@@ -10,7 +10,7 @@ const FeaturedListings = ({ featuredPGs = [], loading = false }) => {
       <Container className="mb-8 md:mb-12">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-[#3A2935]">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-[#0D3A1D]">
               Popular PGs Near You
             </h2>
             <p className="mt-2 max-w-2xl text-sm sm:text-base text-gray-600">
@@ -20,7 +20,7 @@ const FeaturedListings = ({ featuredPGs = [], loading = false }) => {
 
           <Link
             to="/explore"
-            className="text-[#E56A54] text-sm sm:text-base font-medium hover:underline flex items-center group whitespace-nowrap pb-1"
+            className="text-[#93B733] text-sm sm:text-base font-medium hover:underline flex items-center group whitespace-nowrap pb-1"
           >
             View all PGs
             <svg 

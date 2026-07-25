@@ -76,10 +76,11 @@ const AdminSidebar = ({ closeSidebar }) => {
       {/* Top Branding */}
       <div className="flex items-center justify-between border-b border-white/10 px-6 py-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-500 text-xl font-black shadow-lg shadow-pink-500/20">
-            P
-          </div>
-
+          <img 
+            src="https://i.ibb.co/TqtkM8HV/logo.jpg" 
+            alt="Dormn Logo" 
+            className="h-12 w-12 rounded-2xl object-cover shadow-lg" 
+          />
           <div>
             <h2 className="text-xl font-black tracking-tight">
               Dormn
