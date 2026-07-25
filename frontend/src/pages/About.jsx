@@ -3,31 +3,39 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import PublicLayout from "../layouts/PublicLayout";
 import Container from "../layouts/Container";
+import { ShieldCheck, Compass, TrendingUp, Sparkles, CheckCircle, Lock, Building2 } from "lucide-react";
+
+const iconMap = {
+  ShieldCheck: ShieldCheck,
+  Compass: Compass,
+  Building2: Building2,
+  Sparkles: Sparkles,
+};
 
 const features = [
   {
     title: "Verified Listings",
     description:
       "Every PG listed on our platform goes through verification and approval before becoming visible to students.",
-    icon: "🛡️",
+    icon: "ShieldCheck",
   },
   {
     title: "Smart PG Discovery",
     description:
       "Students can discover PGs using filters like boys PG, girls PG, AC rooms, food availability, location and college distance.",
-    icon: "🚀",
+    icon: "Compass",
   },
   {
     title: "PG Owner Dashboard",
     description:
       "PG owners can manage listings, upload room photos, track bookings and monitor students directly from their dashboard.",
-    icon: "🏢",
+    icon: "Building2",
   },
   {
     title: "Future Ready Platform",
     description:
       "We are building a scalable student accommodation ecosystem with analytics, automation and secure admin approvals.",
-    icon: "⚡",
+    icon: "Sparkles",
   },
 ];
 
@@ -68,7 +76,7 @@ const About = () => {
             label: 'Verified PGs',
           },
           {
-            number: `${Math.max(pgs.length * 5, 100)}+`, // Fallback to look good if DB is small
+            number: `${Math.max(pgs.length * 5, 100)}+`,
             label: 'Students Connected',
           },
           {
@@ -90,7 +98,7 @@ const About = () => {
 
   return (
     <PublicLayout>
-      <div className="bg-[#FAF9F5] font-sans selection:bg-[#E56A54] selection:text-white">
+      <div className="bg-[#FAF9F5] font-sans selection:bg-[#93B733] selection:text-white">
         
         {/* Hero Section */}
         <section className="relative overflow-hidden px-4 pb-12 pt-10 sm:px-5 sm:pb-16 sm:pt-12 lg:px-8 lg:pb-20 lg:pt-16">
@@ -99,18 +107,18 @@ const About = () => {
             <div className="z-10">
               <div className="inline-flex items-center gap-2.5 rounded-full border-2 border-gray-200 bg-white px-4 py-2 shadow-sm transition-transform hover:-translate-y-0.5 sm:px-5">
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E56A54] opacity-75"></span>
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#E56A54]"></span>
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#93B733] opacity-75"></span>
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#93B733]"></span>
                 </span>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#3A2935] sm:text-xs">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#0D3A1D] sm:text-xs">
                   Revolutionizing Student Housing
                 </p>
               </div>
 
-              <h1 className="mt-6 text-4xl font-black leading-[1.1] tracking-tight text-[#3A2935] sm:text-5xl md:mt-8 md:text-6xl lg:text-[4.5rem]">
+              <h1 className="mt-6 text-4xl font-black leading-[1.1] tracking-tight text-[#0D3A1D] sm:text-5xl md:mt-8 md:text-6xl lg:text-[4.5rem]">
                 Building The Future Of
                 <span className="relative mt-2 inline-block">
-                  <span className="absolute inset-0 -rotate-1 rounded-2xl bg-[#E56A54]"></span>
+                  <span className="absolute inset-0 -rotate-1 rounded-2xl bg-[#93B733]"></span>
                   <span className="relative inline-block -rotate-1 px-4 py-1 text-white">
                     Student Stays
                   </span>
@@ -146,9 +154,9 @@ const About = () => {
             {stats.map((item) => (
               <div
                 key={item.label}
-                className="group flex flex-col items-center justify-center rounded-[1.5rem] border-2 border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#E56A54]/40 hover:shadow-md md:rounded-[2rem] md:p-8"
+                className="group flex flex-col items-center justify-center rounded-[1.5rem] border-2 border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#93B733]/40 hover:shadow-md md:rounded-[2rem] md:p-8"
               >
-                <h3 className="text-3xl font-black text-[#3A2935] transition-colors group-hover:text-[#E56A54] sm:text-4xl md:text-5xl">
+                <h3 className="text-3xl font-black text-[#0D3A1D] transition-colors group-hover:text-[#93B733] sm:text-4xl md:text-5xl">
                   {item.number}
                 </h3>
                 <p className="mt-2 text-center text-[10px] font-bold uppercase tracking-widest text-gray-500 sm:text-xs">
@@ -159,50 +167,193 @@ const About = () => {
           </Container>
         </section>
 
-        {/* About Platform */}
+        {/* ========================================================================= */}
+        {/* SECTION 1: OUR MISSION - REDEFINING THE STUDENT HOUSING EXPERIENCE       */}
+        {/* ========================================================================= */}
         <section className="px-4 pb-14 sm:px-5 sm:pb-20 lg:px-8 lg:pb-28">
           <Container>
-            <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm md:rounded-[3rem] md:p-14">
-              <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-center">
+            <div className="relative overflow-hidden rounded-[2.5rem] border-2 border-gray-100 bg-white p-8 shadow-sm md:rounded-[3rem] md:p-14">
+              <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                 
                 <div className="order-2 overflow-hidden rounded-[2rem] border-4 border-gray-50 bg-gray-100 lg:order-1">
                   <img
                     src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop"
-                    alt="Student Accommodation"
+                    alt="Student Housing Transformation"
                     className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                   />
                 </div>
 
                 <div className="order-1 lg:order-2">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
-                    What We Are Doing
-                  </p>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3.5 py-1 text-xs font-extrabold text-[#93B733]">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Section 1 • Strategic Mission
+                  </div>
 
-                  <h2 className="mt-3 text-3xl font-black tracking-tight text-[#3A2935] sm:text-4xl md:mt-4 md:text-5xl">
-                    Simplifying PG Search For Students.
+                  <h2 className="mt-4 text-3xl font-black tracking-tight text-[#0D3A1D] sm:text-4xl md:text-5xl">
+                    Our Mission: Redefining the Student Housing Experience
                   </h2>
 
                   <p className="mt-5 text-base font-medium leading-relaxed text-gray-600 sm:text-lg sm:leading-8">
-                    Students often struggle while searching for trusted accommodation because information is scattered across multiple sources and frequently becomes outdated.
+                    The traditional PG market has long been plagued by chaos—unorganized listings, lack of pricing transparency, outdated photos, and tedious manual offline management.
                   </p>
 
                   <p className="mt-4 text-base font-medium leading-relaxed text-gray-600 sm:text-lg sm:leading-8">
-                    Dormn solves this by creating a centralized platform where students can explore verified accommodations with room photos, amenities, pricing, rules, location details, and direct owner communication.
+                    Dormn was created as the modern solution designed to bring structure, transparency, and high aesthetic standards to student housing. We turn what used to be a stressful chore into a premium, confident experience of &quot;finding a home away from home.&quot;
                   </p>
+
+                  <div className="mt-6 grid grid-cols-2 gap-3 pt-4 border-t border-gray-100">
+                    <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-100">
+                      <p className="text-xs font-bold text-[#93B733]">Traditional PG Search</p>
+                      <p className="mt-1 text-xs font-medium text-gray-500">Unorganized, manual, &amp; zero transparency</p>
+                    </div>
+                    <div className="rounded-xl bg-orange-50/60 p-3.5 border border-orange-100">
+                      <p className="text-xs font-bold text-[#0D3A1D]">The Dormn Standard</p>
+                      <p className="mt-1 text-xs font-semibold text-gray-600">Structured, verified, &amp; aesthetic stays</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 2: THE DORMN STANDARD - BUILT FOR MODERN TENANT & OWNER           */}
+        {/* ========================================================================= */}
+        <section className="bg-white px-5 py-20 lg:px-8 lg:py-28 border-y border-gray-100">
+          <Container>
+            <div className="mb-12 text-center md:mb-16 max-w-3xl mx-auto">
+              <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3.5 py-1 text-xs font-extrabold text-[#93B733]">
+                Section 2 • Dual-Sided Ecosystem
+              </div>
+              <h2 className="mt-4 text-3xl font-black tracking-tight text-[#0D3A1D] sm:text-4xl md:text-5xl">
+                The Dormn Standard: Built for the Modern Tenant &amp; Owner
+              </h2>
+              <p className="mt-4 text-base font-medium text-gray-600 sm:text-lg">
+                We designed Dormn with a deep understanding of both user journeys—delivering tailored value to both students searching for rooms and property partners hosting them.
+              </p>
+            </div>
+
+            <div className="grid gap-8 lg:grid-cols-2">
+              
+              {/* For Tenant: Frictionless Discovery */}
+              <div className="group rounded-[2.5rem] border-2 border-gray-100 bg-[#FAF9F5] p-8 transition-all duration-300 hover:border-[#93B733]/40 hover:bg-white hover:shadow-xl sm:p-10">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-orange-200 bg-white text-[#93B733] shadow-sm">
+                  <Compass className="h-7 w-7" />
+                </div>
+
+                <p className="mt-6 text-xs font-extrabold uppercase tracking-widest text-[#93B733]">
+                  For The Tenant
+                </p>
+                <h3 className="mt-2 text-2xl font-black text-[#0D3A1D]">
+                  Frictionless Discovery
+                </h3>
+                <p className="mt-4 text-base font-medium leading-relaxed text-gray-600">
+                  Students get an effortless search process powered by smart location filters, room category specifications (AC/Non-AC), college proximity metrics, interactive map links, and high-definition verified room galleries.
+                </p>
+
+                <ul className="mt-6 space-y-2.5 border-t border-gray-200/60 pt-6">
+                  {[
+                    "Smart location & college proximity search filters",
+                    "Verified HD photo galleries & room specs",
+                    "Direct 1-click WhatsApp & phone owner connections",
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2.5 text-xs font-bold text-[#0D3A1D] sm:text-sm">
+                      <CheckCircle className="h-4 w-4 text-[#93B733] flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* For Owner: Effortless Growth */}
+              <div className="group rounded-[2.5rem] border-2 border-gray-100 bg-[#FAF9F5] p-8 transition-all duration-300 hover:border-[#0D3A1D]/40 hover:bg-white hover:shadow-xl sm:p-10">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-purple-200 bg-white text-purple-700 shadow-sm">
+                  <TrendingUp className="h-7 w-7" />
+                </div>
+
+                <p className="mt-6 text-xs font-extrabold uppercase tracking-widest text-purple-700">
+                  For The Owner
+                </p>
+                <h3 className="mt-2 text-2xl font-black text-[#0D3A1D]">
+                  Effortless Growth
+                </h3>
+                <p className="mt-4 text-base font-medium leading-relaxed text-gray-600">
+                  Property partners gain digital visibility to thousands of verified students, maximizing room occupancy while simplifying booking management through a streamlined partner dashboard.
+                </p>
+
+                <ul className="mt-6 space-y-2.5 border-t border-gray-200/60 pt-6">
+                  {[
+                    "Instant digital reach to active student leads",
+                    "Streamlined booking request approvals & tenant management",
+                    "Maximizes room occupancy with minimal marketing effort",
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2.5 text-xs font-bold text-[#0D3A1D] sm:text-sm">
+                      <CheckCircle className="h-4 w-4 text-purple-700 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+            </div>
+          </Container>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* SECTION 3: TRUST & TRANSPARENCY - OUR CORE PILLARS                        */}
+        {/* ========================================================================= */}
+        <section className="px-5 py-20 lg:px-8 lg:py-28">
+          <Container>
+            <div className="rounded-[2.5rem] border-2 border-gray-100 bg-white p-8 shadow-sm md:rounded-[3rem] md:p-14">
+              <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1 text-xs font-extrabold text-emerald-700">
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    Section 3 • Security &amp; Reliability
+                  </div>
+
+                  <h2 className="mt-4 text-3xl font-black tracking-tight text-[#0D3A1D] md:text-5xl">
+                    Trust &amp; Transparency: Our Core Pillars
+                  </h2>
+
+                  <p className="mt-6 text-base font-medium leading-8 text-gray-600 sm:text-lg">
+                    Safety and truth in advertising are non-negotiable at Dormn. We enforce strict quality protocols so every tenant moves into a space that matches their expectation.
+                  </p>
+
+                  {/* SuperAdmin Oversight Focus */}
+                  <div className="mt-6 rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-5">
+                    <div className="flex items-center gap-2.5 text-emerald-900 font-extrabold text-sm sm:text-base">
+                      <Lock className="h-4 w-4 text-emerald-700" />
+                      SuperAdmin Oversight
+                    </div>
+                    <p className="mt-2 text-xs font-semibold leading-relaxed text-emerald-800 sm:text-sm">
+                      Our dedicated quality control team actively monitors the platform to audit listings, verify host identity, and ban fraudulent or misleading posts. Dormn is a strictly curated community—never an open, unverified bulletin board.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="overflow-hidden rounded-[2.5rem] border-[6px] border-white bg-gray-100 shadow-md md:rounded-[3rem]">
+                  <img
+                    src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop"
+                    alt="Verified PG Rooms Quality Oversight"
+                    className="h-[320px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[420px] lg:h-[480px]"
+                  />
                 </div>
               </div>
             </div>
           </Container>
         </section>
 
-        {/* Features */}
+        {/* Existing Platform Highlights Features Grid */}
         <section className="bg-white px-5 py-20 lg:px-8 lg:py-28 border-y border-gray-100">
           <Container>
             <div className="mb-12 text-center md:mb-16">
-              <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#93B733]">
                 Platform Highlights
               </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight text-[#3A2935] sm:text-4xl md:text-5xl">
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-[#0D3A1D] sm:text-4xl md:text-5xl">
                 Why Dormn Is Different
               </h2>
             </div>
@@ -213,11 +364,14 @@ const About = () => {
                   key={feature.title}
                   className="rounded-[2rem] border-2 border-gray-100 bg-gray-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:bg-white hover:shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] sm:p-8 md:p-10"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-orange-100 bg-orange-50 text-2xl shadow-sm sm:h-16 sm:w-16 sm:text-3xl md:h-16 md:w-16">
-                    {feature.icon}
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-orange-100 bg-orange-50 shadow-sm sm:h-16 sm:w-16 md:h-16 md:w-16 text-[#93B733]">
+                    {(() => {
+                      const IconComponent = iconMap[feature.icon] || Sparkles;
+                      return <IconComponent className="h-6 w-6 sm:h-8 sm:w-8" />;
+                    })()}
                   </div>
 
-                  <h3 className="mt-6 text-2xl font-black tracking-tight text-[#3A2935]">
+                  <h3 className="mt-6 text-2xl font-black tracking-tight text-[#0D3A1D]">
                     {feature.title}
                   </h3>
 
@@ -230,47 +384,16 @@ const About = () => {
           </Container>
         </section>
 
-        {/* Mission Section */}
-        <section className="px-5 py-20 lg:px-8 lg:py-28">
-          <Container className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
-                Our Mission
-              </p>
-
-              <h2 className="mt-4 text-3xl font-black tracking-tight text-[#3A2935] md:text-5xl">
-                Safe, Smart & Transparent Student Living.
-              </h2>
-
-              <p className="mt-6 text-lg font-medium leading-8 text-gray-600">
-                We believe finding a PG should not feel stressful or confusing.
-              </p>
-
-              <p className="mt-4 text-lg font-medium leading-8 text-gray-600">
-                Our mission is to create a trusted accommodation network where students can confidently explore and compare PGs with complete transparency.
-              </p>
-            </div>
-
-            <div className="overflow-hidden rounded-[2.5rem] border-[6px] border-white bg-gray-100 shadow-md md:rounded-[3rem]">
-              <img
-                src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop"
-                alt="PG Rooms"
-                className="h-[320px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[420px] lg:h-[500px]"
-              />
-            </div>
-          </Container>
-        </section>
-
         {/* Future Vision (Bento List) */}
-        <section className="px-5 pb-20 lg:px-8 lg:pb-28">
+        <section className="px-5 py-20 lg:px-8 lg:py-28">
           <Container>
             <div className="rounded-[2.5rem] border-2 border-gray-100 bg-white p-8 shadow-sm md:rounded-[3rem] md:p-14">
               <div className="mb-12 text-center">
-                <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
+                <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#93B733]">
                   Future Roadmap
                 </p>
 
-                <h2 className="mt-4 text-3xl font-black tracking-tight text-[#3A2935] md:text-5xl">
+                <h2 className="mt-4 text-3xl font-black tracking-tight text-[#0D3A1D] md:text-5xl">
                   What We Are Building Next
                 </h2>
 
@@ -280,7 +403,7 @@ const About = () => {
               </div>
 
               <div className="mb-10 rounded-2xl border-2 border-orange-100 bg-orange-50/50 p-5 text-center">
-                <p className="text-sm font-bold text-[#E56A54]">
+                <p className="text-sm font-bold text-[#93B733]">
                   Current roadmap items will gradually move from planning to live platform features as Dormn expands.
                 </p>
               </div>
@@ -289,12 +412,12 @@ const About = () => {
                 {futureFeatures.map((feature) => (
                   <div
                     key={feature}
-                    className="flex items-center gap-4 rounded-2xl border-2 border-gray-100 bg-gray-50 p-5 transition-colors hover:border-[#E56A54]/30 hover:bg-white"
+                    className="flex items-center gap-4 rounded-2xl border-2 border-gray-100 bg-gray-50 p-5 transition-colors hover:border-[#93B733]/30 hover:bg-white"
                   >
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#E56A54]/10 text-sm font-black text-[#E56A54]">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#93B733]/10 text-sm font-black text-[#93B733]">
                       ✓
                     </div>
-                    <h3 className="text-sm font-bold text-[#3A2935] md:text-base">
+                    <h3 className="text-sm font-bold text-[#0D3A1D] md:text-base">
                       {feature}
                     </h3>
                   </div>
@@ -307,12 +430,12 @@ const About = () => {
         {/* CTA (Premium Charcoal Banner) */}
         <section className="px-5 pb-20 lg:px-8 lg:pb-28">
           <Container>
-            <div className="relative overflow-hidden rounded-[2.5rem] bg-[#3A2935] px-6 py-12 shadow-[0_20px_50px_-12px_rgba(58,41,53,0.4)] sm:px-12 sm:py-16 md:rounded-[3rem] lg:px-20 lg:py-24">
+            <div className="relative overflow-hidden rounded-[2.5rem] bg-[#0D3A1D] px-6 py-12 shadow-[0_20px_50px_-12px_rgba(58,41,53,0.4)] sm:px-12 sm:py-16 md:rounded-[3rem] lg:px-20 lg:py-24">
               {/* Decorative Background Elements */}
-              <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-[#E56A54]/30 blur-[4rem]"></div>
+              <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-[#93B733]/30 blur-[4rem]"></div>
               
               <div className="relative z-10 max-w-2xl">
-                <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#E56A54]">
+                <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#93B733]">
                   Join The Platform
                 </p>
 
@@ -327,7 +450,7 @@ const About = () => {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 md:mt-10">
                   <Link
                     to="/pgs"
-                    className="w-full rounded-2xl bg-[#E56A54] px-8 py-4 text-center text-sm font-bold tracking-wide text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-[#d65a45] sm:w-auto md:text-base"
+                    className="w-full rounded-2xl bg-[#93B733] px-8 py-4 text-center text-sm font-bold tracking-wide text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-[#d65a45] sm:w-auto md:text-base"
                   >
                     Explore PGs
                   </Link>

@@ -30,7 +30,7 @@ const SearchSection = ({
           
           {/* Mobile Heading */}
           <div className="mb-4 md:hidden">
-            <h3 className="text-lg font-bold text-[#3A2935]">
+            <h3 className="text-lg font-bold text-[#0D3A1D]">
               Find Your Perfect PG
             </h3>
             <p className="mt-1 text-xs text-gray-500">
@@ -42,7 +42,7 @@ const SearchSection = ({
             <input
               type="text"
               placeholder="Search PG, area, city or college"
-              className="min-h-[52px] w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#3A2935] outline-none transition-all placeholder:text-gray-400 focus:border-[#E56A54] focus:bg-white focus:ring-1 focus:ring-[#E56A54] sm:px-5 sm:py-4 sm:text-base"
+              className="min-h-[52px] w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#0D3A1D] outline-none transition-all placeholder:text-gray-400 focus:border-[#93B733] focus:bg-white focus:ring-1 focus:ring-[#93B733] sm:px-5 sm:py-4 sm:text-base"
               value={filters.keyword}
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, keyword: e.target.value }))
@@ -55,7 +55,7 @@ const SearchSection = ({
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, pgType: e.target.value }))
               }
-              className="min-h-[52px] w-full appearance-none rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#3A2935] outline-none transition-all focus:border-[#E56A54] focus:bg-white focus:ring-1 focus:ring-[#E56A54] sm:px-5 sm:py-4 sm:text-base"
+              className="min-h-[52px] w-full appearance-none rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#0D3A1D] outline-none transition-all focus:border-[#93B733] focus:bg-white focus:ring-1 focus:ring-[#93B733] sm:px-5 sm:py-4 sm:text-base"
             >
               <option value="">All PG Types</option>
               <option value="Boys">Boys PG</option>
@@ -67,7 +67,7 @@ const SearchSection = ({
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, location: e.target.value }))
               }
-              className="min-h-[52px] w-full appearance-none rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#3A2935] outline-none transition-all focus:border-[#E56A54] focus:bg-white focus:ring-1 focus:ring-[#E56A54] sm:px-5 sm:py-4 sm:text-base"
+              className="min-h-[52px] w-full appearance-none rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#0D3A1D] outline-none transition-all focus:border-[#93B733] focus:bg-white focus:ring-1 focus:ring-[#93B733] sm:px-5 sm:py-4 sm:text-base"
             >
               <option value="">All Locations</option>
               {locations.map((city) => (
@@ -79,7 +79,7 @@ const SearchSection = ({
 
             <button
               onClick={handleSearch}
-              className="min-h-[52px] w-full rounded-2xl bg-[#E56A54] px-5 py-3 text-sm font-semibold text-white shadow-md transition duration-300 hover:bg-[#d65a45] hover:shadow-lg sm:px-6 sm:py-4 sm:text-base"
+              className="min-h-[52px] w-full rounded-2xl bg-[#93B733] px-5 py-3 text-sm font-semibold text-white shadow-md transition duration-300 hover:bg-[#d65a45] hover:shadow-lg sm:px-6 sm:py-4 sm:text-base"
             >
               Search Verified PGs
             </button>

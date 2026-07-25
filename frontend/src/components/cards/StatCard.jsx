@@ -4,18 +4,18 @@ const StatCard = ({ stat }) => {
       
       {/* Subtle decorative accent instead of neon glow */}
       <div
-        className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#E56A54]/5 transition-transform duration-500 group-hover:scale-150"
+        className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#93B733]/5 transition-transform duration-500 group-hover:scale-150"
       ></div>
 
       {/* Content */}
       <div className="relative z-10">
         {/* Number */}
-        <h3 className="text-5xl font-black text-[#E56A54] md:text-6xl">
+        <h3 className="text-5xl font-black text-[#93B733] md:text-6xl">
           {stat.number}
         </h3>
 
         {/* Label */}
-        <p className="mt-4 text-xl sm:text-2xl font-bold tracking-tight text-[#3A2935]">
+        <p className="mt-4 text-xl sm:text-2xl font-bold tracking-tight text-[#0D3A1D]">
           {stat.label}
         </p>
 

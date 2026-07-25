@@ -27,11 +27,13 @@ const Navbar = () => {
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
-          <div className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-xl bg-[#E56A54] text-xl font-black text-white shadow-sm transition-transform duration-300 group-hover:rotate-6">
-            D
-          </div>
+          <img 
+            src="https://i.ibb.co/TqtkM8HV/logo.jpg" 
+            alt="Dormn Logo" 
+            className="h-10 w-10 md:h-11 md:w-11 rounded-xl object-cover transition-transform duration-300 group-hover:rotate-6" 
+          />
           <div>
-            <h1 className="text-xl font-black tracking-tight text-[#3A2935] sm:text-2xl md:text-[1.6rem]">
+            <h1 className="text-xl font-black tracking-tight text-[#0D3A1D] sm:text-2xl md:text-[1.6rem]">
               Dormn
             </h1>
             <p className="hidden text-[10px] font-bold uppercase tracking-wider text-gray-400 sm:block">
@@ -49,13 +51,13 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 className={`relative text-sm font-bold transition-colors duration-300 ${
-                  isActive ? "text-[#E56A54]" : "text-gray-500 hover:text-[#3A2935]"
+                  isActive ? "text-[#93B733]" : "text-gray-500 hover:text-[#0D3A1D]"
                 }`}
               >
                 {link.name}
                 {/* Active Indicator Dot */}
                 {isActive && (
-                  <span className="absolute -bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#E56A54]"></span>
+                  <span className="absolute -bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#93B733]"></span>
                 )}
               </Link>
             );
@@ -70,11 +72,11 @@ const Navbar = () => {
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex items-center gap-2.5 rounded-2xl border-2 border-gray-100 bg-white p-1.5 pr-4 shadow-sm transition-all hover:border-gray-200 hover:shadow-md"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3A2935] font-bold text-white">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D3A1D] font-bold text-white">
                   {userInitial}
                 </div>
                 <div className="hidden text-left sm:block">
-                  <p className="max-w-[120px] truncate text-xs font-bold text-[#3A2935]">
+                  <p className="max-w-[120px] truncate text-xs font-bold text-[#0D3A1D]">
                     {user.full_name || user.name}
                   </p>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
@@ -87,7 +89,7 @@ const Navbar = () => {
               {profileOpen && (
                 <div className="absolute right-0 top-14 z-50 w-56 rounded-2xl border border-gray-100 bg-white p-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
                   <div className="border-b border-gray-100 px-3 pb-3 pt-2">
-                    <p className="truncate text-sm font-bold text-[#3A2935]">
+                    <p className="truncate text-sm font-bold text-[#0D3A1D]">
                       {user.full_name || user.name}
                     </p>
                     <p className="text-[10px] font-bold uppercase text-gray-400">
@@ -98,7 +100,7 @@ const Navbar = () => {
                   <Link
                     to="/student/dashboard"
                     onClick={() => setProfileOpen(false)}
-                    className="mt-2 block rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-[#3A2935]"
+                    className="mt-2 block rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-[#0D3A1D]"
                   >
                     Dashboard
                   </Link>
@@ -119,14 +121,14 @@ const Navbar = () => {
             <>
               <Link
                 to="/signup/owner"
-                className="hidden rounded-xl border-2 border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#3A2935] transition-all hover:border-gray-300 hover:bg-gray-50 md:flex"
+                className="hidden rounded-xl border-2 border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#0D3A1D] transition-all hover:border-gray-300 hover:bg-gray-50 md:flex"
               >
                 Become an Owner
               </Link>
 
               <Link
                 to="/auth"
-                className="rounded-xl border-2 border-[#3A2935] bg-[#3A2935] px-5 py-2.5 text-sm font-bold text-white shadow-[2px_2px_0px_#E56A54] transition-all duration-300 hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-[#E56A54] hover:border-[#E56A54] hover:shadow-[1px_1px_0px_#3A2935]"
+                className="rounded-xl border-2 border-[#0D3A1D] bg-[#0D3A1D] px-5 py-2.5 text-sm font-bold text-white shadow-[2px_2px_0px_#93B733] transition-all duration-300 hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-[#93B733] hover:border-[#93B733] hover:shadow-[1px_1px_0px_#0D3A1D]"
               >
                 Sign In
               </Link>
@@ -136,7 +138,7 @@ const Navbar = () => {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-[#3A2935] transition-colors hover:bg-gray-200 lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-[#0D3A1D] transition-colors hover:bg-gray-200 lg:hidden"
           >
             {mobileMenuOpen ? (
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -157,7 +159,7 @@ const Navbar = () => {
           <div className="flex flex-col p-4">
             {user && (
               <div className="mb-4 rounded-xl bg-gray-50 p-4 border border-gray-100">
-                <p className="font-bold text-[#3A2935]">
+                <p className="font-bold text-[#0D3A1D]">
                   {user.full_name || user.name}
                 </p>
                 <p className="text-[10px] font-bold uppercase text-gray-500">
@@ -175,7 +177,7 @@ const Navbar = () => {
                     to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`rounded-xl px-4 py-3 text-sm font-bold transition-colors ${
-                      isActive ? "bg-[#E56A54]/10 text-[#E56A54]" : "text-gray-600 hover:bg-gray-50 hover:text-[#3A2935]"
+                      isActive ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-600 hover:bg-gray-50 hover:text-[#0D3A1D]"
                     }`}
                   >
                     {link.name}
@@ -190,7 +192,7 @@ const Navbar = () => {
                   <Link
                     to="/student/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl bg-gray-50 px-4 py-3 text-center text-sm font-bold text-[#3A2935]"
+                    className="rounded-xl bg-gray-50 px-4 py-3 text-center text-sm font-bold text-[#0D3A1D]"
                   >
                     Dashboard
                   </Link>
@@ -209,14 +211,14 @@ const Navbar = () => {
                   <Link
                     to="/signup/owner"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-center text-sm font-bold text-[#3A2935]"
+                    className="rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-center text-sm font-bold text-[#0D3A1D]"
                   >
                     Become an Owner
                   </Link>
                   <Link
                     to="/auth"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl bg-[#3A2935] px-4 py-3 text-center text-sm font-bold text-white"
+                    className="rounded-xl bg-[#0D3A1D] px-4 py-3 text-center text-sm font-bold text-white"
                   >
                     Sign In
                   </Link>

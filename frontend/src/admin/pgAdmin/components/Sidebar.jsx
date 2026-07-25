@@ -66,10 +66,11 @@ const Sidebar = () => {
     <aside className="flex h-screen w-[290px] flex-col border-r border-gray-200 bg-white px-5 py-6">
       {/* Logo */}
       <div className="mb-10 flex items-center gap-4 px-2">
-        <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-black text-2xl font-black text-white shadow-lg">
-          P
-        </div>
-
+        <img 
+          src="https://i.ibb.co/TqtkM8HV/logo.jpg" 
+          alt="Dormn Logo" 
+          className="h-14 w-14 rounded-[20px] object-cover shadow-md" 
+        />
         <div>
           <h1 className="text-2xl font-black tracking-tight text-gray-900">
             Dormn

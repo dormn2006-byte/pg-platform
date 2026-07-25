@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import HeroSection from "../components/Home/HeroSection";
 import SearchSection from "../components/Home/SearchSection";
 import FeaturedListings from "../components/Home/FeaturedListings";
+import HomeServiceTopics from "../components/Home/HomeServiceTopics";
 import FeaturesShowcase from "../components/Home/FeaturesShowcase";
 import PublicLayout from "../layouts/PublicLayout";
 import API from "../services/api";
@@ -81,6 +82,8 @@ const Home = () => {
         featuredPGs={filteredPGs}
         loading={loading}
       />
+
+      <HomeServiceTopics />
 
       <FeaturesShowcase />
 

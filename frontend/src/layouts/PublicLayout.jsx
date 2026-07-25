@@ -3,7 +3,7 @@ import Footer from "../components/Fotter.jsx";
 
 const PublicLayout = ({ children }) => {
   return (
-<div className="min-h-screen overflow-x-hidden bg-[#F0F2F5] text-[#3A2935] font-sans selection:bg-[#E56A54] selection:text-white">        <Navbar />
+<div className="min-h-screen overflow-x-hidden bg-[#F0F2F5] text-[#0D3A1D] font-sans selection:bg-[#93B733] selection:text-white">        <Navbar />
 
       {/* Public Page Content */}
       <main>{children}</main>

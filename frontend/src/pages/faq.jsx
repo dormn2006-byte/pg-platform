@@ -51,14 +51,14 @@ const FAQ = () => {
         {/* Header Section */}
         <div className="mx-auto max-w-3xl text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-5 py-2 mb-6 shadow-sm">
-            <span className="h-2 w-2 rounded-full bg-[#E56A54] animate-pulse"></span>
-            <p className="text-[11px] font-black uppercase tracking-widest text-[#3A2935]">
+            <span className="h-2 w-2 rounded-full bg-[#93B733] animate-pulse"></span>
+            <p className="text-[11px] font-black uppercase tracking-widest text-[#0D3A1D]">
               Frequently Asked Questions
             </p>
           </div>
 
-          <h1 className="text-4xl font-black text-[#3A2935] md:text-6xl mb-6">
-            Everything you need to know about <span className="text-[#E56A54]">Dormn</span>
+          <h1 className="text-4xl font-black text-[#0D3A1D] md:text-6xl mb-6">
+            Everything you need to know about <span className="text-[#93B733]">Dormn</span>
           </h1>
           
           <p className="text-lg text-gray-600 font-medium">
@@ -79,12 +79,12 @@ const FAQ = () => {
                   onClick={() => toggleFAQ(index)}
                   className="flex w-full items-center justify-between gap-6 px-8 py-7 text-left"
                 >
-                  <h2 className="text-lg font-black text-[#3A2935] md:text-xl">
+                  <h2 className="text-lg font-black text-[#0D3A1D] md:text-xl">
                     {faq.question}
                   </h2>
 
                   <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-gray-100 bg-gray-50 transition-transform duration-500 ${isOpen ? "rotate-45" : "rotate-0"}`}>
-                    <span className="text-xl text-[#3A2935]">+</span>
+                    <span className="text-xl text-[#0D3A1D]">+</span>
                   </div>
                 </button>
 
