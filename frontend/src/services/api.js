@@ -10,7 +10,7 @@ const API = axios.create({
 });
 
 // CRITICAL FIX: The IMAGE_BASE_URL must match the API_URL exactly.
-// Do NOT remove "/api" because your server.js is serving images at /api/uploads
+// Do NOT remove "/api" because your server.js is serving images at /api/uploads 
 export const IMAGE_BASE_URL = API_URL;
   
 // Add token automatically

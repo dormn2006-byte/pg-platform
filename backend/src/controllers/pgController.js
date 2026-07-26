@@ -6,10 +6,15 @@ import {
   getPGsByOwner,
   updatePG,
   deletePG,
+  getFilterOptions, // NEW: Added for Phase 1 (Dynamic dropdowns)
+  searchPGs,        // NEW: Added for Phase 2 (Advanced search)
+  toggleSavePG,      
+  getSavedPGsByUser
 } from "../models/pgModel.js";
 
 // Import the new utility (adjust the path to match your folder structure)
 import { processImage } from "../utils/imageProcessor.js"; 
+import { getOwnerAnalyticsData } from "../models/pgModel.js";
 
 // Create PG
 export const createPGController = async (req, res) => {
@@ -27,6 +32,7 @@ export const createPGController = async (req, res) => {
       amenities,
       rules,
       google_map_link,
+      sharing_options, // NEW: Added to capture dynamic pricing matrix
     } = req.body;
 
     // Validation
@@ -78,6 +84,7 @@ export const createPGController = async (req, res) => {
       rules,
       google_map_link,
       profile_image,
+      sharing_options, // NEW: Passed to database model
     });
 
     // Save gallery images after the PG has been created.
@@ -210,6 +217,7 @@ export const updatePGController = async (req, res) => {
       google_map_link:
         req.body.google_map_link ?? existingPG.google_map_link,
       profile_image: req.body.profile_image ?? existingPG.profile_image,
+      sharing_options: req.body.sharing_options ?? existingPG.sharing_options, // NEW: Handled in updates
     };
 
     console.log("Update Data:", updatedData);
@@ -256,6 +264,127 @@ export const deletePGController = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
+    });
+  }
+};
+
+// ==========================================
+// NEW ADVANCED SEARCH & FILTER CONTROLLERS
+// ==========================================
+
+// Get Dynamic Filter Options for Frontend
+export const getFilterOptionsController = async (req, res) => {
+  try {
+    const options = await getFilterOptions();
+
+    return res.status(200).json({
+      success: true,
+      data: options,
+    });
+  } catch (error) {
+    console.error("Get Filter Options Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// ==========================================
+// SAVED PGS (FAVORITES) CONTROLLERS
+// ==========================================
+
+export const toggleSavePGController = async (req, res) => {
+  try {
+    const userId = req.user.id; // From your auth middleware
+    const { pgId } = req.body;
+
+    if (!pgId) {
+      return res.status(400).json({ success: false, message: "PG ID is required" });
+    }
+
+    const result = await toggleSavePG(userId, pgId);
+
+    return res.status(200).json({
+      success: true,
+      isSaved: result.isSaved,
+      message: result.message,
+    });
+  } catch (error) {
+    console.error("Toggle Save PG Error:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const getSavedPGsController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const savedPGs = await getSavedPGsByUser(userId);
+
+    return res.status(200).json({
+      success: true,
+      total: savedPGs.length,
+      pgs: savedPGs,
+    });
+  } catch (error) {
+    console.error("Get Saved PGs Error:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+// Search PGs with Advanced Filters
+export const searchPGsController = async (req, res) => {
+  try {
+    // Extract parameters from frontend query string
+    const {
+      pg_type,
+      city,
+      area,
+      nearby_college,
+      min_price,
+      max_price,
+    } = req.query;
+
+    const pgs = await searchPGs({
+      pg_type,
+      city,
+      area,
+      nearby_college,
+      min_price,
+      max_price,
+    });
+
+    return res.status(200).json({
+      success: true,
+      total: pgs.length,
+      pgs,
+    });
+  } catch (error) {
+    console.error("Search PGs Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+// Owner Analytics Controller
+export const getOwnerAnalyticsController = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const analytics = await getOwnerAnalyticsData(ownerId);
+
+    return res.status(200).json({
+      success: true,
+      data: analytics
+    });
+  } catch (error) {
+    console.error("Analytics Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch analytics data"
     });
   }
 };

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route , Navigate } from "react-router-dom";
 
 import Home from "../pages/Home";
 import PgDetails from "../pages/PgDetails";
@@ -9,6 +9,7 @@ import Auth from "../pages/auth/Auth";
 
 import PGAdminLayout from "../layouts/PGAdminLayout";
 import ProtectedRoute from "./ProtectedRoute";
+import OwnerAnalytics from "../admin/pgAdmin/OwnerAnalytics";
 
 import Dashboard from "../admin/pgAdmin/Dashboard";
 import AddPG from "../admin/pgAdmin/AddPG";
@@ -33,7 +34,7 @@ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home />} />
         <Route path="/pgs" element={<ExplorePGs />} />
         <Route path="/about" element={<About />} />
         <Route path="/faqs" element={<FAQ />} />
@@ -147,8 +148,9 @@ const AppRoutes = () => {
           <Route path="edit-pg/:id" element={<EditPG />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="students" element={<Students />} />
+          <Route path="analytics" element={<OwnerAnalytics />} />
         </Route>
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<Navigate to="/pgs" replace />} />
       </Routes>
     </BrowserRouter>
   );

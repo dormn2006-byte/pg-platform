@@ -27,11 +27,9 @@ const Navbar = () => {
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
-          <img 
-            src="https://i.ibb.co/TqtkM8HV/logo.jpg" 
-            alt="Dormn Logo" 
-            className="h-10 w-10 md:h-11 md:w-11 rounded-xl object-cover transition-transform duration-300 group-hover:rotate-6" 
-          />
+          <div className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-xl bg-[#E56A54] text-xl font-black text-white shadow-sm transition-transform duration-300 group-hover:rotate-6">
+            D
+          </div>
           <div>
             <h1 className="text-xl font-black tracking-tight text-[#0D3A1D] sm:text-2xl md:text-[1.6rem]">
               Dormn
