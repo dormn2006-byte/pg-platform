@@ -17,6 +17,7 @@ export const createPG = async (pgData) => {
     rules,
     google_map_link,
     profile_image,
+    sharing_options,
   } = pgData;
 
   const query = `
@@ -35,9 +36,10 @@ export const createPG = async (pgData) => {
       rules,
       profile_image,
       google_map_link,
-      status
+      status,
+      sharing_options
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const [result] = await db.execute(query, [
@@ -56,6 +58,7 @@ export const createPG = async (pgData) => {
     profile_image,
     google_map_link,
     'pending',
+    sharing_options, // NEW: Insert into database
   ]);
 
   return result;
@@ -150,6 +153,7 @@ export const updatePG = async (id, pgData) => {
     rules,
     google_map_link,
     profile_image,
+    sharing_options, // NEW: Extract sharing options
   } = pgData;
 
   const query = `
@@ -167,7 +171,8 @@ export const updatePG = async (id, pgData) => {
       amenities = ?,
       rules = ?,
       google_map_link = ?,
-      profile_image = ?
+      profile_image = ?,
+      sharing_options = ?
     WHERE id = ?
   `;
 
@@ -185,6 +190,7 @@ export const updatePG = async (id, pgData) => {
     rules,
     google_map_link,
     profile_image,
+    sharing_options, // NEW: Update in database
     id,
   ]);
 
@@ -224,4 +230,200 @@ export const savePGImages = async (pgId, images) => {
       i === 0 ? 1 : 0,
     ]);
   }
+};
+// ==========================================
+// SAVED PGS (FAVORITES) MODELS
+// ==========================================
+
+// Toggle Save/Unsave a PG
+export const toggleSavePG = async (userId, pgId) => {
+  // First, check if the user has already saved this PG
+  const checkQuery = `SELECT * FROM saved_pgs WHERE user_id = ? AND pg_id = ?`;
+  const [existing] = await db.execute(checkQuery, [userId, pgId]);
+
+  if (existing.length > 0) {
+    // If it exists, UN-SAVE it (Delete)
+    const deleteQuery = `DELETE FROM saved_pgs WHERE user_id = ? AND pg_id = ?`;
+    await db.execute(deleteQuery, [userId, pgId]);
+    return { isSaved: false, message: "PG removed from saved list" };
+  } else {
+    // If it doesn't exist, SAVE it (Insert)
+    const insertQuery = `INSERT INTO saved_pgs (user_id, pg_id) VALUES (?, ?)`;
+    await db.execute(insertQuery, [userId, pgId]);
+    return { isSaved: true, message: "PG saved successfully" };
+  }
+};
+
+// Get all PGs saved by a specific user
+export const getSavedPGsByUser = async (userId) => {
+  const query = `
+    SELECT 
+      pgs.*,
+      users.full_name AS owner_name,
+      users.email AS owner_email
+    FROM pgs
+    JOIN saved_pgs ON pgs.id = saved_pgs.pg_id
+    LEFT JOIN users ON pgs.owner_id = users.id
+    WHERE saved_pgs.user_id = ? AND pgs.status = 'approved'
+    ORDER BY saved_pgs.created_at DESC
+  `;
+
+  const [rows] = await db.execute(query, [userId]);
+  return rows;
+};
+
+// ==========================================
+// NEW ADVANCED SEARCH & FILTER MODELS
+// ==========================================
+
+// Get distinct locations and landmarks for frontend dropdowns
+export const getFilterOptions = async () => {
+  // We only fetch distinct options from 'approved' PGs to ensure we don't show empty search results
+  const cityQuery = `SELECT DISTINCT city FROM pgs WHERE status = 'approved' AND city IS NOT NULL AND city != ''`;
+  const areaQuery = `SELECT DISTINCT area FROM pgs WHERE status = 'approved' AND area IS NOT NULL AND area != ''`;
+  const collegeQuery = `SELECT DISTINCT nearby_college FROM pgs WHERE status = 'approved' AND nearby_college IS NOT NULL AND nearby_college != ''`;
+
+  const [cities] = await db.execute(cityQuery);
+  const [areas] = await db.execute(areaQuery);
+  const [colleges] = await db.execute(collegeQuery);
+
+  return {
+    cities: cities.map(row => row.city),
+    areas: areas.map(row => row.area),
+    colleges: colleges.map(row => row.nearby_college),
+  };
+};
+
+// Advanced dynamic search query
+export const searchPGs = async (filters) => {
+  const { pg_type, city, area, nearby_college, min_price, max_price } = filters;
+
+  let query = `
+    SELECT
+      pgs.*,
+      users.full_name AS owner_name,
+      users.email AS owner_email
+    FROM pgs
+    LEFT JOIN users ON pgs.owner_id = users.id
+    WHERE pgs.status = 'approved'
+  `;
+  
+  const params = [];
+
+  // Dynamically append WHERE clauses only if the user provided the filter
+  if (pg_type) {
+    query += ` AND pgs.pg_type = ?`;
+    params.push(pg_type);
+  }
+  
+  if (city) {
+    query += ` AND pgs.city = ?`;
+    params.push(city);
+  }
+  
+  if (area) {
+    query += ` AND pgs.area = ?`;
+    params.push(area);
+  }
+  
+  if (nearby_college) {
+    query += ` AND pgs.nearby_college = ?`;
+    params.push(nearby_college);
+  }
+  
+  if (min_price) {
+    query += ` AND pgs.price >= ?`;
+    params.push(Number(min_price));
+  }
+  
+  if (max_price) {
+    query += ` AND pgs.price <= ?`;
+    params.push(Number(max_price));
+  }
+
+  // Finalize query with sorting
+  query += ` ORDER BY pgs.created_at DESC`;
+
+  const [rows] = await db.execute(query, params);
+  
+  return rows;
+};
+// ==========================================
+// OWNER ANALYTICS MODEL (FIXED)
+// ==========================================
+export const getOwnerAnalyticsData = async (ownerId) => {
+  // 1. Fetch all PGs owned by this user
+  const pgsQuery = `SELECT * FROM pgs WHERE owner_id = ?`;
+  const [pgs] = await db.execute(pgsQuery, [ownerId]);
+
+  if (pgs.length === 0) {
+    return {
+      totalPGs: 0,
+      approvedPGs: 0,
+      pendingPGs: 0,
+      totalRooms: 0,
+      totalStudents: 0,
+      totalBookings: 0,
+      estimatedMonthlyRevenue: 0,
+      pgTypeBreakdown: { boys: 0, girls: 0, coed: 0 },
+      bookingStats: { approved: 0, pending: 0, rejected: 0 },
+      recentBookings: [],
+      topPerformingPGs: []
+    };
+  }
+
+  const pgIds = pgs.map(p => p.id);
+
+  // 2. Fetch all bookings for these PGs
+  // FIX: Sorted by b.id DESC instead of non-existent b.created_at
+  const placeholders = pgIds.map(() => '?').join(',');
+  const bookingsQuery = `
+    SELECT b.*, p.title AS pg_title, p.city 
+    FROM bookings b
+    JOIN pgs p ON b.pg_id = p.id
+    WHERE b.pg_id IN (${placeholders})
+    ORDER BY b.id DESC
+  `;
+  const [bookings] = await db.execute(bookingsQuery, pgIds);
+
+  // 3. Process calculations
+  const approvedBookings = bookings.filter(b => b.status === 'approved');
+  const pendingBookings = bookings.filter(b => b.status === 'pending');
+  const rejectedBookings = bookings.filter(b => b.status === 'rejected');
+
+  const estimatedMonthlyRevenue = approvedBookings.reduce((sum, b) => sum + Number(b.booked_price || b.price || 0), 0);
+  
+  const totalRooms = pgs.reduce((sum, p) => sum + Number(p.available_rooms || 0), 0);
+
+  const pgTypeBreakdown = {
+    boys: pgs.filter(p => p.pg_type?.toLowerCase() === 'boys').length,
+    girls: pgs.filter(p => p.pg_type?.toLowerCase() === 'girls').length,
+    coed: pgs.filter(p => ['coed', 'both'].includes(p.pg_type?.toLowerCase())).length,
+  };
+
+  return {
+    totalPGs: pgs.length,
+    approvedPGs: pgs.filter(p => p.status === 'approved').length,
+    pendingPGs: pgs.filter(p => p.status === 'pending').length,
+    totalRooms,
+    totalStudents: approvedBookings.length,
+    totalBookings: bookings.length,
+    estimatedMonthlyRevenue,
+    pgTypeBreakdown,
+    bookingStats: {
+      approved: approvedBookings.length,
+      pending: pendingBookings.length,
+      rejected: rejectedBookings.length,
+    },
+    topPerformingPGs: pgs.map(pg => {
+      const pgApproved = approvedBookings.filter(b => b.pg_id === pg.id);
+      return {
+        id: pg.id,
+        title: pg.title,
+        city: pg.city,
+        studentsCount: pgApproved.length,
+        revenue: pgApproved.reduce((sum, b) => sum + Number(b.booked_price || pg.price || 0), 0)
+      };
+    }).sort((a, b) => b.revenue - a.revenue)
+  };
 };

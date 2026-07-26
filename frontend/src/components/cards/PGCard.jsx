@@ -1,7 +1,12 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { IMAGE_BASE_URL } from "../../services/api";
+import api from "../../services/api"; // Ensure you import your API service
 
 const PGCard = ({ pg }) => {
+  // Local state to track if this PG is saved by the user
+  const [isSaved, setIsSaved] = useState(false);
+
   const imageUrl = pg?.profile_image
     ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
     : pg?.image;
@@ -16,6 +21,27 @@ const PGCard = ({ pg }) => {
   } catch {
     amenities = [];
   }
+
+  // Handler for the Heart Icon
+  const handleSaveToggle = async (e) => {
+    e.preventDefault(); // Prevents clicking the heart from opening the link
+    e.stopPropagation();
+
+    // Optimistic UI Update: Instantly flip the heart visually
+    const previousState = isSaved;
+    setIsSaved(!isSaved);
+
+    try {
+      // Call the backend endpoint we created
+      const response = await api.post("/pg/save", { pgId: pg.id });
+      // Sync local state with actual server response
+      setIsSaved(response.data.isSaved);
+    } catch (error) {
+      // Revert if the API call fails
+      setIsSaved(previousState);
+      console.error("Failed to toggle save status:", error);
+    }
+  };
   
   return (
     <Link to={`/pg/${pg.id}`} className="group flex flex-col cursor-pointer">
@@ -34,16 +60,16 @@ const PGCard = ({ pg }) => {
 
         {/* Favorite Heart Icon (Top Right) */}
         <button 
-          onClick={(e) => e.preventDefault()} 
-          className="absolute right-3 top-3 p-1.5 transition-transform hover:scale-110 active:scale-95"
+          onClick={handleSaveToggle} 
+          className="absolute right-3 top-3 p-1.5 transition-transform hover:scale-110 active:scale-95 z-10"
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
             viewBox="0 0 24 24" 
-            fill="rgba(0, 0, 0, 0.4)" 
-            stroke="white" 
+            fill={isSaved ? "#f43f5e" : "rgba(0, 0, 0, 0.4)"} 
+            stroke={isSaved ? "#f43f5e" : "white"} 
             strokeWidth="1.5" 
-            className="w-6 h-6"
+            className="w-6 h-6 transition-colors duration-300"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
           </svg>

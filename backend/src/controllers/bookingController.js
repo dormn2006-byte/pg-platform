@@ -15,6 +15,8 @@ export const createBookingController = async (req, res) => {
     const {
       pg_id,
       message,
+      selected_room_type, // NEW: Capture the user's AC/Non-AC Sharing selection
+      booked_price,       // NEW: Capture the specific price they agreed to
     } = req.body;
 
     // Validation
@@ -41,6 +43,8 @@ export const createBookingController = async (req, res) => {
       pg_id,
       owner_id: pg.owner_id,
       message,
+      selected_room_type, // NEW: Pass to database model
+      booked_price,       // NEW: Pass to database model
     });
 
     return res.status(201).json({

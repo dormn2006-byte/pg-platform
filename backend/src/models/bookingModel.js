@@ -1,5 +1,3 @@
-
-
 import db from "../config/db.js";
 
 // Create Booking
@@ -8,15 +6,19 @@ export const createBooking = async ({
   pg_id,
   owner_id,
   message,
+  selected_room_type, // NEW: Extract selected room type
+  booked_price,       // NEW: Extract booked price
 }) => {
   const query = `
     INSERT INTO bookings (
       student_id,
       pg_id,
       owner_id,
-      message
+      message,
+      selected_room_type,
+      booked_price
     )
-    VALUES (?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   const [result] = await db.execute(query, [
@@ -24,6 +26,8 @@ export const createBooking = async ({
     pg_id,
     owner_id,
     message,
+    selected_room_type, // NEW: Insert into database
+    booked_price,       // NEW: Insert into database
   ]);
 
   return result;

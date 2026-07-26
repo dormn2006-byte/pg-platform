@@ -6,6 +6,7 @@ import {
   Building2,
   BookOpenCheck,
   Users,
+  BarChart3, // Import the Analytics icon
   LogOut,
   X,
 } from "lucide-react";
@@ -36,6 +37,12 @@ const navItems = [
     title: "Students",
     path: "/owner/students",
     icon: Users,
+  },
+  // NEW: Added Analytics option below Students
+  {
+    title: "Analytics",
+    path: "/owner/analytics",
+    icon: BarChart3,
   },
 ];
 

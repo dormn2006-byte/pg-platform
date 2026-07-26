@@ -28,7 +28,7 @@ console.log("Uploads folder:");
 console.log(path.join(__dirname, "uploads"));
 
 app.use(
-  "/uploads",
+  "/api/uploads",
   express.static(path.join(__dirname, "uploads"))
 );
 
