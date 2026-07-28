@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Explore PGs", path: "/pgs" },
+  { name: "Blogs", path: "/blogs" },
   { name: "About", path: "/about" },
   { name: "FAQs", path: "/faqs" },
   { name: "Contact", path: "/contact" },
@@ -25,12 +26,15 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-xl transition-all duration-300">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         
-        {/* Logo */}
+        {/* Logo with Real Image */}
         <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
-          <img 
-            src="https://i.ibb.co/TqtkM8HV/logo.jpg" 
-            alt="Dormn Logo" 
-            className="h-10 w-10 md:h-11 md:w-11 rounded-xl object-cover shadow-sm transition-transform duration-300 group-hover:rotate-6" 
+
+          
+          <img
+            src="/logo.jpg"
+            alt="Dormn Logo"
+            className="h-10 w-10 md:h-11 md:w-11 rounded-xl object-cover border border-gray-200 shadow-sm transition-transform duration-300 group-hover:rotate-6"
+
           />
           <div>
             <h1 className="text-xl font-black tracking-tight text-[#0D3A1D] sm:text-2xl md:text-[1.6rem]">

@@ -34,6 +34,10 @@ import StudentDashboard from "../pages/StudentDashboard";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import TermsConditions from "../pages/TermsConditions";
 
+import BlogList from "../pages/BlogList";
+import AmityPGGuide from "../pages/blogs/AmityPGGuide";
+import Sector62Guide from "../pages/blogs/Sector62Guide";
+
 const AppRoutes = () => {
   return (
     <BrowserRouter>
@@ -48,6 +52,10 @@ const AppRoutes = () => {
         <Route path="/terms" element={<TermsConditions />} />
         <Route path="/terms-and-conditions" element={<TermsConditions />} />
         <Route path="/pg/:id" element={<PgDetails />} />
+        <Route path="/blogs" element={<BlogList />} />
+        <Route path="/blogs/pg-near-amity-university-noida" element={<AmityPGGuide />} />
+        <Route path="/blogs/pg-in-sector-62-noida" element={<Sector62Guide />} />       
+
 
         {/* Auth Routes */}
         <Route path="/auth" element={<Auth />} />
