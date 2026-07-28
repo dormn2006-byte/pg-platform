@@ -65,7 +65,7 @@ export const featureSlides = [
       number: "4.9★",
       label: "Platform Rating",
       description: "Loved for simplicity and trust.",
-      gradient: "from-orange-400 to-orange-600",
+      gradient: "from-[#93B733] to-[#82a32d]",
     },
   ];
   

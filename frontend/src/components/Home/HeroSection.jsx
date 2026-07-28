@@ -99,7 +99,7 @@ const HeroSection = () => {
               </Link>
 
               <Link
-                to="/signup/owner"
+                to="/auth?role=owner&mode=signup"
                 className="w-full rounded-2xl border-2 border-gray-200 bg-white px-8 py-4 text-center text-sm font-bold text-[#0D3A1D] shadow-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-50 sm:w-auto md:text-base"
               >
                 Become an Owner

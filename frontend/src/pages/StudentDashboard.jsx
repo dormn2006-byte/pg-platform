@@ -180,14 +180,14 @@ const StudentDashboard = () => {
                 <Link
                   key={item.title}
                   to={item.link}
-                  className="group rounded-[1.5rem] border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:border-[#E56A54]/30 hover:shadow-md hover:-translate-y-1"
+                  className="group rounded-[1.5rem] border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:border-[#93B733]/30 hover:shadow-md hover:-translate-y-1"
                 >
-                  <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${item.bg} ${item.color} transition-colors group-hover:bg-[#E56A54] group-hover:text-white`}>
+                  <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${item.bg} ${item.color} transition-colors group-hover:bg-[#93B733] group-hover:text-white`}>
                     <Icon size={22} strokeWidth={2.5} />
                   </div>
                   <h3 className="text-lg font-bold text-[#3A2935] flex items-center justify-between">
                     {item.title}
-                    <ChevronRight size={16} className="text-gray-300 group-hover:text-[#E56A54] transition-transform group-hover:translate-x-1" />
+                    <ChevronRight size={16} className="text-gray-300 group-hover:text-[#93B733] transition-transform group-hover:translate-x-1" />
                   </h3>
                   <p className="mt-1 text-xs font-medium text-gray-500 line-clamp-2">
                     {item.description}
@@ -202,7 +202,7 @@ const StudentDashboard = () => {
         <div className="mt-10 md:mt-12 rounded-[2rem] border border-gray-100 bg-white p-6 md:p-8 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl md:text-2xl font-black tracking-tight">Booking Status</h2>
-            <Link to="/my-bookings" className="text-sm font-bold text-[#E56A54] hover:underline">
+            <Link to="/my-bookings" className="text-sm font-bold text-[#93B733] hover:underline">
               View All
             </Link>
           </div>
@@ -211,7 +211,7 @@ const StudentDashboard = () => {
             {recentBookings.length === 0 ? (
               <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 p-10 text-center">
                 <p className="text-sm font-bold text-gray-500">No booking activity yet.</p>
-                <Link to="/explore" className="mt-3 inline-block rounded-xl bg-[#E56A54] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#d65a45]">
+                <Link to="/explore" className="mt-3 inline-block rounded-xl bg-[#93B733] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#82a32d]">
                   Explore PGs
                 </Link>
               </div>
@@ -273,7 +273,7 @@ const StudentDashboard = () => {
 
                       {/* Roommate Placeholder */}
                       <div className="flex items-center gap-3 p-4">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#93B733]/15 text-[#93B733]">
                           <Users size={16} />
                         </div>
                         <div>

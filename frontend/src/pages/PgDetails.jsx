@@ -224,7 +224,7 @@ const PgDetails = () => {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#FAF9F5] text-[#3A2935] font-sans selection:bg-[#E56A54] selection:text-white pb-20">
+    <div className="min-h-screen overflow-x-hidden bg-[#FAF9F5] text-[#3A2935] font-sans selection:bg-[#93B733] selection:text-white pb-20">
       {/* Navbar */}
       <Navbar />
 
@@ -273,7 +273,7 @@ const PgDetails = () => {
                     onClick={() => setActiveImage(img)}
                     className={`overflow-hidden rounded-xl border-2 transition-all duration-300 ${
                       activeImage === img
-                        ? "border-[#E56A54] shadow-md opacity-100"
+                        ? "border-[#93B733] shadow-md opacity-100"
                         : "border-transparent opacity-70 hover:opacity-100"
                     }`}
                   >
@@ -295,7 +295,7 @@ const PgDetails = () => {
                 </span>
 
                 {pg.sponsored && (
-                  <span className="rounded-lg bg-orange-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#E56A54]">
+                  <span className="rounded-lg bg-[#93B733]/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#93B733]">
                     Sponsored
                   </span>
                 )}
@@ -310,7 +310,7 @@ const PgDetails = () => {
               </h1>
 
               <p className="mt-3 text-sm font-medium text-gray-500 md:text-base flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-[#E56A54]" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-[#93B733]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
                 {`${pg.area || ""}, ${pg.city || ""}`}
@@ -318,7 +318,7 @@ const PgDetails = () => {
 
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2 rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-2.5 text-sm font-bold text-[#3A2935]">
-                  <span className="text-[#E56A54]">★</span> {pg.rating || "New"} Ratings
+                  <span className="text-[#93B733]">★</span> {pg.rating || "New"} Ratings
                 </div>
                 <div className="flex items-center gap-2 rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-2.5 text-sm font-bold text-[#3A2935]">
                   <span className="text-xl">🏠</span> {String(pg.pg_type || "PG").toUpperCase()}
@@ -362,7 +362,7 @@ const PgDetails = () => {
                       key={index}
                       className="flex items-center gap-3 rounded-xl bg-gray-50 px-5 py-4 text-sm font-medium text-gray-700"
                     >
-                      <span className="h-2 w-2 rounded-full bg-[#E56A54] flex-shrink-0"></span>
+                      <span className="h-2 w-2 rounded-full bg-[#93B733] flex-shrink-0"></span>
                       {rule}
                     </div>
                   ))}
@@ -385,7 +385,7 @@ const PgDetails = () => {
               <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] md:rounded-[2.5rem] md:p-8">
                 <div className="flex items-end justify-between border-b-2 border-gray-100 pb-6">
                   <div>
-                    <h4 className="text-3xl font-black text-[#E56A54]">
+                    <h4 className="text-3xl font-black text-[#93B733]">
                       ₹{selectedRoom.price ? selectedRoom.price.toLocaleString() : Number(pg.price || 0).toLocaleString()}
                     </h4>
                     <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mt-1">
@@ -417,13 +417,13 @@ const PgDetails = () => {
                                 })}
                                 className={`p-3 text-left rounded-xl border-2 transition-all ${
                                   selectedRoom.type === type && selectedRoom.isAc 
-                                  ? 'border-[#E56A54] bg-orange-50/50' 
+                                  ? 'border-[#93B733] bg-[#93B733]/10' 
                                   : 'border-gray-100 bg-gray-50 hover:border-gray-200'
                                 }`}
                               >
                                 <div className="text-xs font-bold capitalize text-[#3A2935]">{type}</div>
                                 <div className="text-[10px] text-gray-400 mb-0.5">AC Room</div>
-                                <div className="text-xs font-black text-[#E56A54]">₹{Number(options.ac_price).toLocaleString()}</div>
+                                <div className="text-xs font-black text-[#93B733]">₹{Number(options.ac_price).toLocaleString()}</div>
                               </button>
                             )}
                             
@@ -434,13 +434,13 @@ const PgDetails = () => {
                                 })}
                                 className={`p-3 text-left rounded-xl border-2 transition-all ${
                                   selectedRoom.type === type && !selectedRoom.isAc 
-                                  ? 'border-[#E56A54] bg-orange-50/50' 
+                                  ? 'border-[#93B733] bg-[#93B733]/10' 
                                   : 'border-gray-100 bg-gray-50 hover:border-gray-200'
                                 }`}
                               >
                                 <div className="text-xs font-bold capitalize text-[#3A2935]">{type}</div>
                                 <div className="text-[10px] text-gray-400 mb-0.5">Non-AC Room</div>
-                                <div className="text-xs font-black text-[#E56A54]">₹{Number(options.non_ac_price).toLocaleString()}</div>
+                                <div className="text-xs font-black text-[#93B733]">₹{Number(options.non_ac_price).toLocaleString()}</div>
                               </button>
                             )}
                           </div>
@@ -453,7 +453,7 @@ const PgDetails = () => {
                 <div className="mt-6 space-y-3">
                   <button
                     onClick={handleBookVisit}
-                    className="w-full rounded-2xl bg-[#E56A54] px-5 py-4 text-sm font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-[#d65a45]"
+                    className="w-full rounded-2xl bg-[#93B733] px-5 py-4 text-sm font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-[#82a32d]"
                   >
                     Request a Visit
                   </button>

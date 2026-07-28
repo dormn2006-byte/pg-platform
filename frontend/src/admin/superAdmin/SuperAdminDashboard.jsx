@@ -145,7 +145,7 @@ const Dashboard = () => {
           value={stats.pendingPGs}
           subtitle="Awaiting Approval"
           icon={<Clock3 size={28} />}
-          color="from-yellow-500 to-orange-500"
+          color="from-[#93B733] to-[#82a32d]"
         />
 
         <AdminCard

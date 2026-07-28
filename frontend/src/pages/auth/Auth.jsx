@@ -1,5 +1,5 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../services/api";
 
@@ -52,11 +52,24 @@ const MarqueeRow = ({ images, direction = "left", speed = "60s" }) => {
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login } = useContext(AuthContext);
 
+  const roleParam = searchParams.get("role");
+  const modeParam = searchParams.get("mode");
+
   // Unified State for Modes
-  const [authMode, setAuthMode] = useState("login");
-  const [userRole, setUserRole] = useState("student");
+  const [authMode, setAuthMode] = useState(modeParam === "signup" ? "signup" : "login");
+  const [userRole, setUserRole] = useState(roleParam === "owner" ? "owner" : "student");
+
+  useEffect(() => {
+    if (roleParam === "owner" || roleParam === "student") {
+      setUserRole(roleParam);
+    }
+    if (modeParam === "signup" || modeParam === "login") {
+      setAuthMode(modeParam);
+    }
+  }, [roleParam, modeParam]);
   
   // Dual Auth Login States
   const [loginMethod, setLoginMethod] = useState("password"); // 'password' or 'otp'
@@ -419,7 +432,7 @@ const Auth = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-6 w-full rounded-2xl bg-[#93B733] px-6 py-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(229,106,84,0.3)] transition-all hover:scale-[1.02] hover:bg-[#d65a45] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                className="mt-6 w-full rounded-2xl bg-[#93B733] px-6 py-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(147,183,51,0.3)] transition-all hover:scale-[1.02] hover:bg-[#82a32d] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading 
                   ? "Processing..." 

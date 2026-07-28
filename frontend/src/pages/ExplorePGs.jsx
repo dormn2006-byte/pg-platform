@@ -184,7 +184,7 @@ const ExplorePGs = () => {
   const isDiscoverMode = !search.trim() && !filters.pgType && !filters.city && !filters.area && !filters.landmark && activeFilter === "All" && currentMin === minSliderLimit && currentMax === maxSliderLimit;
 
   const InputWrapper = ({ children, icon: Icon }) => (
-    <div className="flex h-[52px] w-full items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 transition-all focus-within:border-[#E56A54] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#E56A54] shadow-sm">
+    <div className="flex h-[52px] w-full items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 transition-all focus-within:border-[#93B733] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#93B733] shadow-sm">
       <Icon size={18} className="text-gray-400 flex-shrink-0" />
       {children}
     </div>
@@ -201,7 +201,7 @@ const ExplorePGs = () => {
           appearance: none;
           width: 18px;
           height: 18px;
-          background: #E56A54;
+          background: #93B733;
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 6px rgba(0,0,0,0.25);
@@ -211,7 +211,7 @@ const ExplorePGs = () => {
           pointer-events: auto;
           width: 18px;
           height: 18px;
-          background: #E56A54;
+          background: #93B733;
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 6px rgba(0,0,0,0.25);
@@ -219,7 +219,7 @@ const ExplorePGs = () => {
         }
       `}</style>
       
-      <div className="bg-[#FAF9F5] min-h-screen font-sans pb-20 selection:bg-[#E56A54] selection:text-white">
+      <div className="bg-[#FAF9F5] min-h-screen font-sans pb-20 selection:bg-[#93B733] selection:text-white">
         
         {/* Sticky Advanced Search & Filter Bar */}
         <section className="sticky top-[68px] z-30 bg-[#FAF9F5]/95 backdrop-blur-xl pt-4 pb-3 border-b border-gray-200/60 shadow-[0_4px_15px_-10px_rgba(0,0,0,0.05)] transition-all duration-300">
@@ -236,7 +236,7 @@ const ExplorePGs = () => {
                   onChange={(e) => setSearch(e.target.value)}
                   className="flex-grow min-h-[40px] text-[14px] sm:text-base font-medium text-gray-800 outline-none placeholder:text-gray-500 bg-transparent"
                 />
-                <button className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-[#E56A54] text-white shadow-sm hover:bg-[#d65a45] transition-colors">
+                <button className="h-10 w-10 shrink-0 flex items-center justify-center rounded-full bg-[#93B733] text-white shadow-sm hover:bg-[#82a32d] transition-colors">
                   <Search size={18} />
                 </button>
               </div>
@@ -310,14 +310,14 @@ const ExplorePGs = () => {
                     <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1">
                       <IndianRupee size={12} /> Budget Range
                     </span>
-                    <span className="text-[#E56A54] text-xs font-black">
+                    <span className="text-[#93B733] text-xs font-black">
                       ₹{currentMin.toLocaleString()} - ₹{currentMax.toLocaleString()}{currentMax === maxSliderLimit ? '+' : ''}
                     </span>
                   </div>
                   
                   <div className="relative w-full h-1.5 bg-gray-200 rounded-lg flex items-center">
                     <div 
-                      className="absolute h-full bg-[#E56A54] rounded-lg opacity-80"
+                      className="absolute h-full bg-[#93B733] rounded-lg opacity-80"
                       style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
                     ></div>
 
@@ -350,7 +350,7 @@ const ExplorePGs = () => {
                 <button
                   type="button" 
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="flex items-center gap-1.5 text-xs font-bold text-gray-600 hover:text-[#E56A54] md:hidden"
+                  className="flex items-center gap-1.5 text-xs font-bold text-gray-600 hover:text-[#93B733] md:hidden"
                 >
                   <SlidersHorizontal size={14} />
                   {isExpanded ? "Show Fewer Filters" : "More Filters (Landmark, Budget)"}
@@ -366,7 +366,7 @@ const ExplorePGs = () => {
                     setActiveFilter("All");
                     setSearch("");
                   }}
-                  className="text-xs font-bold text-[#E56A54] hover:underline ml-auto"
+                  className="text-xs font-bold text-[#93B733] hover:underline ml-auto"
                 >
                   Reset All Filters
                 </button>
@@ -386,7 +386,7 @@ const ExplorePGs = () => {
                     onClick={() => setActiveFilter(filter)}
                     className={`flex-shrink-0 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-[13px] sm:text-sm transition-all border ${
                       isActive 
-                        ? "border-[#E56A54] bg-[#E56A54] text-white font-bold shadow-sm" 
+                        ? "border-[#93B733] bg-[#93B733] text-white font-bold shadow-sm" 
                         : "border-gray-300 bg-white text-gray-600 font-medium hover:border-gray-500 hover:text-gray-900"
                     }`}
                   >
@@ -409,13 +409,13 @@ const ExplorePGs = () => {
               
               {/* Premium Promo Banner */}
               <div className="px-5 sm:px-6 lg:px-10 mb-14 animate-[fadeIn_0.5s_ease-out_0.2s_forwards]">
-                <div className="relative overflow-hidden rounded-[2rem] bg-[#3A2935] px-6 py-10 sm:px-12 sm:py-16 md:rounded-[3rem]">
-                  <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#E56A54]/30 blur-3xl"></div>
+                <div className="relative overflow-hidden rounded-[2rem] bg-[#0D3A1D] px-6 py-10 sm:px-12 sm:py-16 md:rounded-[3rem]">
+                  <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#93B733]/30 blur-3xl"></div>
                   <div className="relative z-10 md:w-2/3 lg:w-1/2">
-                    <p className="text-xs font-bold uppercase tracking-widest text-[#E56A54]">Partner with Dormn</p>
+                    <p className="text-xs font-bold uppercase tracking-widest text-[#93B733]">Partner with Dormn</p>
                     <h3 className="mt-3 text-2xl font-black text-white sm:text-4xl md:text-5xl">Have a property? <br/>List it in minutes.</h3>
                     <p className="mt-4 text-sm font-medium text-gray-300 sm:text-base hidden sm:block">Join hundreds of verified owners. Get instant bookings, verified students, and secure payouts.</p>
-                    <Link to="/signup/owner" className="mt-6 sm:mt-8 inline-block rounded-xl bg-[#E56A54] px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105">
+                    <Link to="/auth?role=owner&mode=signup" className="mt-6 sm:mt-8 inline-block rounded-xl bg-[#93B733] px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105">
                       Become an Owner
                     </Link>
                   </div>
@@ -439,7 +439,7 @@ const ExplorePGs = () => {
                     setFilters({ pgType: "", city: "", area: "", landmark: "", minPrice: "3000", maxPrice: "50000" });
                     setActiveFilter("All");
                   }}
-                  className="text-xs sm:text-sm font-bold text-[#E56A54] hover:underline"
+                  className="text-xs sm:text-sm font-bold text-[#93B733] hover:underline"
                 >
                   Clear Filters
                 </button>
