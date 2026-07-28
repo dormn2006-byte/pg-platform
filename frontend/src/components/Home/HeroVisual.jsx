@@ -8,10 +8,10 @@ const HeroVisual = ({ featuredPG }) => {
       
       {/* Zen Glowing Auras Behind the Frame */}
       <div className="absolute -right-10 -top-10 h-64 w-64 animate-pulse rounded-full bg-[#93B733]/15 blur-[3rem] duration-1000 md:h-80 md:w-80"></div>
-      <div className="absolute -bottom-10 -left-10 h-64 w-64 rounded-full bg-orange-300/15 blur-[3rem] md:h-80 md:w-80"></div>
+      <div className="absolute -bottom-10 -left-10 h-64 w-64 rounded-full bg-[#93B733]/15 blur-[3rem] md:h-80 md:w-80"></div>
 
       {/* Main Physical Frame (Solves the white-on-white border issue) */}
-      <div className="relative z-10 rounded-[2.5rem] bg-white p-2 shadow-[0_20px_60px_-15px_rgba(229,106,84,0.3)] transition-transform duration-700 hover:scale-[1.02] md:rounded-[3rem] md:p-3">
+      <div className="relative z-10 rounded-[2.5rem] bg-white p-2 shadow-[0_20px_60px_-15px_rgba(147,183,51,0.3)] transition-transform duration-700 hover:scale-[1.02] md:rounded-[3rem] md:p-3">
         
         {/* Inner Image Container (Slightly shorter as requested) */}
         <div className="group relative h-[380px] w-full overflow-hidden rounded-[2rem] md:h-[500px] md:rounded-[2.5rem]">
@@ -33,7 +33,7 @@ const HeroVisual = ({ featuredPG }) => {
           {/* --- CARD 1: Verified Stay (Inside, Top Left) --- */}
           <div className="absolute left-3 top-3 flex max-w-[190px] flex-col gap-1.5 rounded-2xl border border-white/50 bg-white/85 p-3.5 shadow-lg backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:bg-white/95 sm:left-4 sm:top-4 md:max-w-[220px] md:p-4">
             <div className="flex items-center gap-2.5">
-              <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-orange-100">
+              <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-[#93B733]/15">
                 <span className="absolute h-full w-full animate-ping rounded-full bg-[#93B733] opacity-20"></span>
                 <svg className="h-3.5 w-3.5 text-[#93B733]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />

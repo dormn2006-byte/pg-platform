@@ -135,7 +135,7 @@ const About = () => {
             </div>
 
             <div className="relative">
-              <div className="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-orange-200/40 blur-3xl"></div>
+              <div className="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-[#93B733]/20 blur-3xl"></div>
               
               <div className="relative overflow-hidden rounded-[2.5rem] border-[6px] border-white bg-gray-100 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] md:rounded-[3rem]">
                 <img
@@ -184,7 +184,7 @@ const About = () => {
                 </div>
 
                 <div className="order-1 lg:order-2">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3.5 py-1 text-xs font-extrabold text-[#93B733]">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#93B733]/20 bg-[#93B733]/10 px-3.5 py-1 text-xs font-extrabold text-[#93B733]">
                     <Sparkles className="h-3.5 w-3.5" />
                     Section 1 • Strategic Mission
                   </div>
@@ -206,7 +206,7 @@ const About = () => {
                       <p className="text-xs font-bold text-[#93B733]">Traditional PG Search</p>
                       <p className="mt-1 text-xs font-medium text-gray-500">Unorganized, manual, &amp; zero transparency</p>
                     </div>
-                    <div className="rounded-xl bg-orange-50/60 p-3.5 border border-orange-100">
+                    <div className="rounded-xl bg-[#93B733]/10 p-3.5 border border-[#93B733]/20">
                       <p className="text-xs font-bold text-[#0D3A1D]">The Dormn Standard</p>
                       <p className="mt-1 text-xs font-semibold text-gray-600">Structured, verified, &amp; aesthetic stays</p>
                     </div>
@@ -224,7 +224,7 @@ const About = () => {
         <section className="bg-white px-5 py-20 lg:px-8 lg:py-28 border-y border-gray-100">
           <Container>
             <div className="mb-12 text-center md:mb-16 max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3.5 py-1 text-xs font-extrabold text-[#93B733]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#93B733]/20 bg-[#93B733]/10 px-3.5 py-1 text-xs font-extrabold text-[#93B733]">
                 Section 2 • Dual-Sided Ecosystem
               </div>
               <h2 className="mt-4 text-3xl font-black tracking-tight text-[#0D3A1D] sm:text-4xl md:text-5xl">
@@ -239,7 +239,7 @@ const About = () => {
               
               {/* For Tenant: Frictionless Discovery */}
               <div className="group rounded-[2.5rem] border-2 border-gray-100 bg-[#FAF9F5] p-8 transition-all duration-300 hover:border-[#93B733]/40 hover:bg-white hover:shadow-xl sm:p-10">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-orange-200 bg-white text-[#93B733] shadow-sm">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[#93B733]/20 bg-white text-[#93B733] shadow-sm">
                   <Compass className="h-7 w-7" />
                 </div>
 
@@ -364,7 +364,7 @@ const About = () => {
                   key={feature.title}
                   className="rounded-[2rem] border-2 border-gray-100 bg-gray-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gray-200 hover:bg-white hover:shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] sm:p-8 md:p-10"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-orange-100 bg-orange-50 shadow-sm sm:h-16 sm:w-16 md:h-16 md:w-16 text-[#93B733]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[#93B733]/20 bg-[#93B733]/10 shadow-sm sm:h-16 sm:w-16 md:h-16 md:w-16 text-[#93B733]">
                     {(() => {
                       const IconComponent = iconMap[feature.icon] || Sparkles;
                       return <IconComponent className="h-6 w-6 sm:h-8 sm:w-8" />;
@@ -402,7 +402,7 @@ const About = () => {
                 </p>
               </div>
 
-              <div className="mb-10 rounded-2xl border-2 border-orange-100 bg-orange-50/50 p-5 text-center">
+              <div className="mb-10 rounded-2xl border-2 border-[#93B733]/20 bg-[#93B733]/10 p-5 text-center">
                 <p className="text-sm font-bold text-[#93B733]">
                   Current roadmap items will gradually move from planning to live platform features as Dormn expands.
                 </p>
@@ -450,12 +450,12 @@ const About = () => {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 md:mt-10">
                   <Link
                     to="/pgs"
-                    className="w-full rounded-2xl bg-[#93B733] px-8 py-4 text-center text-sm font-bold tracking-wide text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-[#d65a45] sm:w-auto md:text-base"
+                    className="w-full rounded-2xl bg-[#93B733] px-8 py-4 text-center text-sm font-bold tracking-wide text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-[#82a32d] sm:w-auto md:text-base"
                   >
                     Explore PGs
                   </Link>
                   <Link
-                    to="/signup/owner"
+                    to="/auth?role=owner&mode=signup"
                     className="w-full rounded-2xl border-2 border-gray-400 bg-transparent px-8 py-4 text-center text-sm font-bold tracking-wide text-white transition-colors hover:border-white hover:bg-white/10 sm:w-auto md:text-base"
                   >
                     Become an Owner

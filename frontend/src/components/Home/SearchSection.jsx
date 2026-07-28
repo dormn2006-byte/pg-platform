@@ -61,7 +61,7 @@ const SearchSection = ({
 
   // Reusable styled wrapper
   const InputWrapper = ({ children, icon: Icon }) => (
-    <div className="flex h-[54px] w-full items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 transition-all focus-within:border-[#E56A54] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#E56A54] shadow-sm">
+    <div className="flex h-[54px] w-full items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 transition-all focus-within:border-[#93B733] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#93B733] shadow-sm">
       <Icon size={18} className="text-gray-400 flex-shrink-0" />
       {children}
     </div>
@@ -78,7 +78,7 @@ const SearchSection = ({
           appearance: none;
           width: 20px;
           height: 20px;
-          background: #E56A54;
+          background: #93B733;
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 6px rgba(0,0,0,0.25);
@@ -88,7 +88,7 @@ const SearchSection = ({
           pointer-events: auto;
           width: 20px;
           height: 20px;
-          background: #E56A54;
+          background: #93B733;
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 6px rgba(0,0,0,0.25);
@@ -110,7 +110,7 @@ const SearchSection = ({
                   Select your preferences
                 </p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E56A54]/10 text-[#E56A54]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#93B733]/10 text-[#93B733]">
                 <Search size={18} />
               </div>
             </div>
@@ -186,14 +186,14 @@ const SearchSection = ({
                   <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1">
                     <IndianRupee size={12} /> Budget Range
                   </span>
-                  <span className="text-[#E56A54] text-xs font-black">
+                  <span className="text-[#93B733] text-xs font-black">
                     ₹{currentMin.toLocaleString()} - ₹{currentMax.toLocaleString()}{currentMax === maxSliderLimit ? '+' : ''}
                   </span>
                 </div>
                 
                 <div className="relative w-full h-1.5 bg-gray-200 rounded-lg flex items-center">
                   <div 
-                    className="absolute h-full bg-[#E56A54] rounded-lg opacity-80"
+                    className="absolute h-full bg-[#93B733] rounded-lg opacity-80"
                     style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
                   ></div>
 
@@ -229,7 +229,7 @@ const SearchSection = ({
                   e.preventDefault();
                   setIsExpanded((prev) => !prev);
                 }}
-                className="flex items-center gap-1.5 text-[13px] font-bold text-gray-500 transition-colors hover:text-[#E56A54] md:hidden"
+                className="flex items-center gap-1.5 text-[13px] font-bold text-gray-500 transition-colors hover:text-[#93B733] md:hidden"
               >
                 <SlidersHorizontal size={14} />
                 {isExpanded ? "Show Fewer Filters" : "Budget & Landmark"}
@@ -246,7 +246,7 @@ const SearchSection = ({
                   e.preventDefault();
                   handleSearch();
                 }}
-                className="flex w-full md:w-auto h-[54px] items-center justify-center gap-2 rounded-2xl bg-[#E56A54] px-10 text-sm font-black tracking-wide text-white shadow-[0_8px_20px_rgba(229,106,84,0.3)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#d65a45] hover:shadow-[0_12px_25px_rgba(229,106,84,0.4)] active:scale-[0.98]"
+                className="flex w-full md:w-auto h-[54px] items-center justify-center gap-2 rounded-2xl bg-[#93B733] px-10 text-sm font-black tracking-wide text-white shadow-[0_8px_20px_rgba(147,183,51,0.3)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#82a32d] hover:shadow-[0_12px_25px_rgba(147,183,51,0.4)] active:scale-[0.98]"
               >
                 Search Verified PGs
                 <Search size={16} className="text-white/90" />

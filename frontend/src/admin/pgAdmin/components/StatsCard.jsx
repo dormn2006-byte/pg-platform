@@ -12,7 +12,7 @@ const StatsCard = ({
     blue: "bg-blue-600 text-white",
     green: "bg-green-600 text-white",
     purple: "bg-purple-600 text-white",
-    orange: "bg-orange-500 text-white",
+    orange: "bg-[#93B733] text-white",
   };
 
   return (

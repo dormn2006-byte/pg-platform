@@ -6,12 +6,12 @@ const HomeServiceTopics = () => {
   return (
     <section className="relative overflow-hidden bg-[#FAF9F5] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
       {/* Background Decorative Blur */}
-      <div className="absolute left-1/2 top-0 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-orange-200/30 blur-[100px]" />
+      <div className="absolute left-1/2 top-0 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-[#93B733]/20 blur-[100px]" />
 
       <Container>
         {/* Section Header */}
         <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border-2 border-orange-200 bg-white px-4 py-1.5 shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border-2 border-[#93B733]/20 bg-white px-4 py-1.5 shadow-sm">
             <Sparkles className="h-4 w-4 text-[#93B733]" />
             <span className="text-xs font-bold uppercase tracking-wider text-[#0D3A1D]">
               Problem-Solving Housing Tech
@@ -30,12 +30,12 @@ const HomeServiceTopics = () => {
           
           {/* Topic A: Verified Stays for Peace of Mind */}
           <div className="group relative flex flex-col justify-between overflow-hidden rounded-[2.5rem] border-2 border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#93B733]/40 hover:shadow-xl sm:p-10">
-            <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-orange-100/50 transition-transform duration-500 group-hover:scale-150" />
+            <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#93B733]/15 transition-transform duration-500 group-hover:scale-150" />
 
             <div className="relative z-10">
               {/* Badge & Icon */}
               <div className="flex items-center justify-between">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-orange-100 bg-orange-50 text-[#93B733] shadow-sm transition-all duration-300 group-hover:bg-[#93B733] group-hover:text-white">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[#93B733]/20 bg-[#93B733]/10 text-[#93B733] shadow-sm transition-all duration-300 group-hover:bg-[#93B733] group-hover:text-white">
                   <ShieldCheck className="h-7 w-7" />
                 </div>
                 <span className="rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">
@@ -83,7 +83,7 @@ const HomeServiceTopics = () => {
             <div className="relative z-10 mt-8 pt-6 border-t border-gray-100">
               <Link
                 to="/pgs"
-                className="inline-flex items-center gap-2 text-sm font-bold text-[#93B733] transition-all group-hover:gap-3 group-hover:text-[#d65a45]"
+                className="inline-flex items-center gap-2 text-sm font-bold text-[#93B733] transition-all group-hover:gap-3 group-hover:text-[#82a32d]"
               >
                 Browse Verified Listings
                 <ArrowRight className="h-4 w-4" />
@@ -145,8 +145,8 @@ const HomeServiceTopics = () => {
             {/* Action CTA */}
             <div className="relative z-10 mt-8 pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
               <Link
-                to="/pgs"
-                className="inline-flex items-center gap-2 text-sm font-bold text-[#93B733] transition-all group-hover:gap-3 group-hover:text-[#d65a45]"
+                to="/auth"
+                className="inline-flex items-center gap-2 text-sm font-bold text-[#93B733] transition-all group-hover:gap-3 group-hover:text-[#82a32d]"
               >
                 Start Direct Booking
                 <ArrowRight className="h-4 w-4" />

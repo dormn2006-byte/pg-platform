@@ -27,9 +27,11 @@ const Navbar = () => {
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
-          <div className="flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-xl bg-[#E56A54] text-xl font-black text-white shadow-sm transition-transform duration-300 group-hover:rotate-6">
-            D
-          </div>
+          <img 
+            src="https://i.ibb.co/TqtkM8HV/logo.jpg" 
+            alt="Dormn Logo" 
+            className="h-10 w-10 md:h-11 md:w-11 rounded-xl object-cover shadow-sm transition-transform duration-300 group-hover:rotate-6" 
+          />
           <div>
             <h1 className="text-xl font-black tracking-tight text-[#0D3A1D] sm:text-2xl md:text-[1.6rem]">
               Dormn
@@ -118,7 +120,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link
-                to="/signup/owner"
+                to="/auth?role=owner&mode=signup"
                 className="hidden rounded-xl border-2 border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#0D3A1D] transition-all hover:border-gray-300 hover:bg-gray-50 md:flex"
               >
                 Become an Owner
@@ -207,7 +209,7 @@ const Navbar = () => {
               ) : (
                 <div className="flex flex-col gap-2">
                   <Link
-                    to="/signup/owner"
+                    to="/auth?role=owner&mode=signup"
                     onClick={() => setMobileMenuOpen(false)}
                     className="rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-center text-sm font-bold text-[#0D3A1D]"
                   >
