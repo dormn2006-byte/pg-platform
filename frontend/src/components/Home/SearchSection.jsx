@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Container from "../../layouts/Container";
 import { 
   Search, 
@@ -59,16 +59,72 @@ const SearchSection = ({
   const minPercent = ((currentMin - minSliderLimit) / (maxSliderLimit - minSliderLimit)) * 100;
   const maxPercent = ((currentMax - minSliderLimit) / (maxSliderLimit - minSliderLimit)) * 100;
 
-  // Reusable styled wrapper
-  const InputWrapper = ({ children, icon: Icon }) => (
-    <div className="flex h-[54px] w-full items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 transition-all focus-within:border-[#93B733] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#93B733] shadow-sm">
-      <Icon size={18} className="text-gray-400 flex-shrink-0" />
-      {children}
-    </div>
-  );
+  // Custom Select Component for Professional UI
+  const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
-  // Base classes for the select inputs
-  const selectBaseClasses = "w-full bg-transparent text-sm outline-none font-medium appearance-none cursor-pointer";
+    // Close dropdown when clicking outside
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const selectedOption = options.find(opt => opt.value === value);
+    const displayValue = selectedOption ? selectedOption.label : placeholder;
+
+    return (
+      <div 
+        ref={dropdownRef} 
+        className="relative w-full h-[54px]"
+      >
+        <div 
+          onClick={() => setIsOpen(!isOpen)}
+          className={`flex h-full w-full cursor-pointer items-center gap-3 rounded-2xl border bg-gray-50 px-4 shadow-sm transition-all ${
+            isOpen ? "border-[#93B733] bg-white ring-1 ring-[#93B733]" : "border-gray-200 hover:border-gray-300"
+          }`}
+        >
+          <Icon size={18} className={`${isOpen ? "text-[#93B733]" : "text-gray-400"} flex-shrink-0 transition-colors`} />
+          <span className={`flex-1 text-sm font-medium ${value ? "text-[#3A2935]" : "text-gray-500"}`}>
+            {displayValue}
+          </span>
+          <ChevronDown size={16} className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        </div>
+
+        {/* Dropdown Menu */}
+        {isOpen && (
+          <div className="absolute left-0 top-[60px] z-50 w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl animate-[fadeIn_0.15s_ease-out_forwards]">
+            <div className="max-h-[240px] overflow-y-auto p-1.5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200">
+              <div 
+                onClick={() => { onChange(""); setIsOpen(false); }}
+                className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                  !value ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                }`}
+              >
+                {placeholder}
+              </div>
+              {options.map((opt) => (
+                <div
+                  key={opt.value}
+                  onClick={() => { onChange(opt.value); setIsOpen(false); }}
+                  className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                    value === opt.value ? "bg-[#93B733]/10 text-[#93B733]" : "text-[#3A2935] hover:bg-gray-50"
+                  }`}
+                >
+                  {opt.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -119,65 +175,49 @@ const SearchSection = ({
               
               {/* === ROW 1: PRIMARY FILTERS === */}
               
-              <InputWrapper icon={Home}>
-                <select
-                  value={filters.pgType || ""}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, pgType: e.target.value }))}
-                  className={`${selectBaseClasses} ${!filters.pgType ? "text-gray-500" : "text-[#3A2935]"}`}
-                >
-                  <option value="" className="text-gray-500">All PG Types</option>
-                  <option value="boys" className="text-[#3A2935]">Boys PG</option>
-                  <option value="girls" className="text-[#3A2935]">Girls PG</option>
-                  <option value="coed" className="text-[#3A2935]">COED PG</option>
-                </select>
-              </InputWrapper>
+              <CustomSelect 
+                icon={Home}
+                value={filters.pgType || ""}
+                onChange={(val) => setFilters((prev) => ({ ...prev, pgType: val }))}
+                placeholder="All PG Types"
+                options={[
+                  { value: "boys", label: "Boys PG" },
+                  { value: "girls", label: "Girls PG" },
+                  { value: "coed", label: "COED PG" }
+                ]}
+              />
 
-              <InputWrapper icon={MapPin}>
-                <select
-                  value={filters.city || filters.location || ""}
-                  onChange={(e) => setFilters((prev) => ({ 
+              <CustomSelect 
+                icon={MapPin}
+                value={filters.city || filters.location || ""}
+                onChange={(val) => setFilters((prev) => ({ 
                     ...prev, 
-                    city: e.target.value,
+                    city: val,
                     area: "",       // Automatically clear Area when city changes
                     landmark: ""    // Automatically clear Landmark when city changes
-                  }))}
-                  className={`${selectBaseClasses} ${!(filters.city || filters.location) ? "text-gray-500" : "text-[#3A2935]"}`}
-                >
-                  <option value="" className="text-gray-500">All Cities</option>
-                  {availableCities.map((city) => (
-                    <option key={city} value={city} className="text-[#3A2935]">{city}</option>
-                  ))}
-                </select>
-              </InputWrapper>
+                }))}
+                placeholder="All Cities"
+                options={availableCities.map(c => ({ value: c, label: c }))}
+              />
 
-              <InputWrapper icon={Map}>
-                <select
-                  value={filters.area || ""}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, area: e.target.value }))}
-                  className={`${selectBaseClasses} ${!filters.area ? "text-gray-500" : "text-[#3A2935]"}`}
-                >
-                  <option value="" className="text-gray-500">All Areas / Sectors</option>
-                  {availableAreas.map((area) => (
-                    <option key={area} value={area} className="text-[#3A2935]">{area}</option>
-                  ))}
-                </select>
-              </InputWrapper>
+              <CustomSelect 
+                icon={Map}
+                value={filters.area || ""}
+                onChange={(val) => setFilters((prev) => ({ ...prev, area: val }))}
+                placeholder="All Areas / Sectors"
+                options={availableAreas.map(a => ({ value: a, label: a }))}
+              />
 
               {/* === SECONDARY FILTERS === */}
               
               <div className={`${isExpanded ? 'block' : 'hidden'} md:block col-span-1 lg:col-span-1`}>
-                <InputWrapper icon={GraduationCap}>
-                  <select
-                    value={filters.landmark || ""}
-                    onChange={(e) => setFilters((prev) => ({ ...prev, landmark: e.target.value }))}
-                    className={`${selectBaseClasses} ${!filters.landmark ? "text-gray-500" : "text-[#3A2935]"}`}
-                  >
-                    <option value="" className="text-gray-500">Nearby Landmark / Univ</option>
-                    {availableLandmarks.map((landmark) => (
-                      <option key={landmark} value={landmark} className="text-[#3A2935]">{landmark}</option>
-                    ))}
-                  </select>
-                </InputWrapper>
+                <CustomSelect 
+                  icon={GraduationCap}
+                  value={filters.landmark || ""}
+                  onChange={(val) => setFilters((prev) => ({ ...prev, landmark: val }))}
+                  placeholder="Nearby Landmark / Univ"
+                  options={availableLandmarks.map(l => ({ value: l, label: l }))}
+                />
               </div>
 
               {/* === DUAL-RANGE BUDGET SLIDER === */}

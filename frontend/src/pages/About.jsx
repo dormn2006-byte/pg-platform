@@ -137,12 +137,14 @@ const About = () => {
             <div className="relative">
               <div className="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-[#93B733]/20 blur-3xl"></div>
               
-              <div className="relative overflow-hidden rounded-[2.5rem] border-[6px] border-white bg-gray-100 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] md:rounded-[3rem]">
-                <img
-                  src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1600&auto=format&fit=crop"
-                  alt="Student PG"
-                  className="h-[320px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[420px] lg:h-[560px]"
-                />
+              <div className="relative rounded-[2.5rem] border border-transparent bg-white p-2 shadow-[0_20px_50px_-12px_rgba(147,183,51,0.15)] transition-all duration-700 hover:scale-[1.02] hover:border-[#93B733]/60 md:rounded-[3rem] md:p-3">
+                <div className="overflow-hidden rounded-[2rem] md:rounded-[2.5rem]">
+                  <img
+                    src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1600&auto=format&fit=crop"
+                    alt="Student PG"
+                    className="h-[320px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[420px] lg:h-[560px]"
+                  />
+                </div>
               </div>
             </div>
           </Container>
@@ -175,12 +177,14 @@ const About = () => {
             <div className="relative overflow-hidden rounded-[2.5rem] border-2 border-gray-100 bg-white p-8 shadow-sm md:rounded-[3rem] md:p-14">
               <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                 
-                <div className="order-2 overflow-hidden rounded-[2rem] border-4 border-gray-50 bg-gray-100 lg:order-1">
-                  <img
-                    src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop"
-                    alt="Student Housing Transformation"
-                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                  />
+                <div className="rounded-[2rem] border border-transparent bg-white p-2 shadow-[0_15px_40px_-10px_rgba(147,183,51,0.15)] transition-all duration-700 hover:scale-[1.02] hover:border-[#93B733]/60">
+                  <div className="overflow-hidden rounded-[1.5rem]">
+                    <img
+                      src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop"
+                      alt="Student Housing Transformation"
+                      className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
                 </div>
 
                 <div className="order-1 lg:order-2">
@@ -334,12 +338,14 @@ const About = () => {
                   </div>
                 </div>
 
-                <div className="overflow-hidden rounded-[2.5rem] border-[6px] border-white bg-gray-100 shadow-md md:rounded-[3rem]">
-                  <img
-                    src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop"
-                    alt="Verified PG Rooms Quality Oversight"
-                    className="h-[320px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[420px] lg:h-[480px]"
-                  />
+                <div className="rounded-[2.5rem] border border-transparent bg-white p-2 shadow-[0_15px_40px_-10px_rgba(147,183,51,0.15)] transition-all duration-700 hover:scale-[1.02] hover:border-[#93B733]/60 md:rounded-[3rem] md:p-3">
+                  <div className="overflow-hidden rounded-[2rem] md:rounded-[2.5rem]">
+                    <img
+                      src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop"
+                      alt="Verified PG Rooms Quality Oversight"
+                      className="h-[320px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[420px] lg:h-[480px]"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

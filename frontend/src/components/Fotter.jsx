@@ -131,42 +131,45 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Column 2: Quick Links */}
-          <div className="lg:col-span-2 space-y-4">
-            <h3 className="text-xs font-black uppercase tracking-widest text-[#93B733]">
-              Quick Links
-            </h3>
-            <ul className="space-y-2.5 text-xs sm:text-sm font-semibold">
-              {quickLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-gray-300 transition-all hover:text-[#93B733] hover:translate-x-1 inline-block"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Middle Columns Wrapper (Side-by-side on mobile) */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-4 sm:gap-8">
+            {/* Column 2: Quick Links */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-widest text-[#93B733]">
+                Quick Links
+              </h3>
+              <ul className="space-y-2.5 text-xs sm:text-sm font-semibold">
+                {quickLinks.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      to={link.path}
+                      className="text-gray-300 transition-all hover:text-[#93B733] hover:translate-x-1 inline-block"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Column 3: Legal & Portals */}
-          <div className="lg:col-span-2 space-y-4">
-            <h3 className="text-xs font-black uppercase tracking-widest text-[#93B733]">
-              Legal &amp; Portals
-            </h3>
-            <ul className="space-y-2.5 text-xs sm:text-sm font-semibold">
-              {legalAndOwnerLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-gray-300 transition-all hover:text-[#93B733] hover:translate-x-1 inline-block"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Column 3: Legal & Portals */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-widest text-[#93B733]">
+                Legal &amp; Portals
+              </h3>
+              <ul className="space-y-2.5 text-xs sm:text-sm font-semibold">
+                {legalAndOwnerLinks.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      to={link.path}
+                      className="text-gray-300 transition-all hover:text-[#93B733] hover:translate-x-1 inline-block"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Column 4: Subscribe to Email Updates */}
