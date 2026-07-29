@@ -3,6 +3,7 @@ import HeroSection from "../components/Home/HeroSection";
 import SearchSection from "../components/Home/SearchSection";
 import FeaturedListings from "../components/Home/FeaturedListings";
 import HomeServiceTopics from "../components/Home/HomeServiceTopics";
+import ReviewsSection from "../components/Home/ReviewsSection";
 import FeaturesShowcase from "../components/Home/FeaturesShowcase";
 import PublicLayout from "../layouts/PublicLayout";
 import API from "../services/api";
@@ -136,6 +137,8 @@ const Home = () => {
       />
 
       <HomeServiceTopics />
+
+      <ReviewsSection />
 
       <FeaturesShowcase />
     </PublicLayout>

@@ -11,7 +11,7 @@ const HeroVisual = ({ featuredPG }) => {
       <div className="absolute -bottom-10 -left-10 h-64 w-64 rounded-full bg-[#93B733]/15 blur-[3rem] md:h-80 md:w-80"></div>
 
       {/* Main Physical Frame (Solves the white-on-white border issue) */}
-      <div className="relative z-10 rounded-[2.5rem] bg-white p-2 shadow-[0_20px_60px_-15px_rgba(147,183,51,0.3)] transition-transform duration-700 hover:scale-[1.02] md:rounded-[3rem] md:p-3">
+      <div className="relative z-10 rounded-[2.5rem] border border-transparent bg-white p-2 shadow-[0_20px_60px_-15px_rgba(147,183,51,0.3)] transition-all duration-700 hover:scale-[1.02] hover:border-[#93B733]/60 md:rounded-[3rem] md:p-3">
         
         {/* Inner Image Container (Slightly shorter as requested) */}
         <div className="group relative h-[380px] w-full overflow-hidden rounded-[2rem] md:h-[500px] md:rounded-[2.5rem]">
@@ -21,7 +21,11 @@ const HeroVisual = ({ featuredPG }) => {
             alt="Luxury Student PG"
             loading="eager"
             fetchPriority="high"
-            className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+            className="block h-full w-full bg-gray-100 object-cover transition-transform duration-1000 group-hover:scale-110"
+            onError={(e) => {
+              e.target.onerror = null; // prevent infinite loop
+              e.target.src = "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1000&auto=format&fit=crop";
+            }}
           />
 
           {/* Zen Overlay: Soft gradient to ensure text readability & add mood */}
