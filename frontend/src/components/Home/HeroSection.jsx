@@ -1,55 +1,28 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import HeroVisual from "./HeroVisual";
 import Container from "../../layouts/Container";
-import API from "../../services/api";
 
-const HeroSection = () => {
-  const [stats, setStats] = useState([
-    { number: "0+", label: "Verified PGs" },
-    { number: "0+", label: "Students" },
-    { number: "0+", label: "Owners" },
-  ]);
-  const [featuredPG, setFeaturedPG] = useState(null);
+const HeroSection = ({ pgs = [] }) => {
+  const featuredPG = pgs.length > 0 ? pgs[0] : null;
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await API.get("/pg/all");
-        const pgs = res.data?.pgs || res.data?.data || res.data || [];
-
-        if (Array.isArray(pgs) && pgs.length > 0) {
-          setFeaturedPG(pgs[0]);
-        }
-
-        setStats([
-          {
-            number: `${pgs.length}+`,
-            label: "Verified PGs",
-          },
-          {
-            number: `${Math.max(pgs.length * 5, 20)}+`,
-            label: "Students",
-          },
-          {
-            number: `${new Set(pgs.map((pg) => pg.owner_id)).size}+`,
-            label: "Owners",
-          },
-        ]);
-      } catch (error) {
-        console.error("Hero stats load failed:", error);
-      }
-    };
-
-    fetchStats();
-  }, []);
+  const stats = [
+    {
+      number: `${pgs.length}+`,
+      label: "Verified PGs",
+    },
+    {
+      number: `${Math.max(pgs.length * 5, 20)}+`,
+      label: "Students",
+    },
+    {
+      number: `${new Set(pgs.map((pg) => pg.owner_id)).size}+`,
+      label: "Owners",
+    },
+  ];
 
   return (
     <>
-      {/* Injecting a bold, trendy Gen Z font directly into the component */}
-      <style>
-        {`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&display=swap');`}
-      </style>
+
 
       <section className="relative overflow-hidden bg-[#FAF9F5] px-4 pb-12 pt-6 sm:px-5 sm:pb-16 sm:pt-8 md:px-8 md:pb-20 md:pt-12 lg:px-12">
         <Container className="relative grid items-center gap-12 sm:gap-14 md:gap-16 lg:grid-cols-2">
@@ -60,7 +33,7 @@ const HeroSection = () => {
             {/* Top Badge - Structured Bento Style */}
             <div className="inline-flex max-w-full items-center gap-2.5 rounded-full border-2 border-gray-200 bg-white px-4 py-2 shadow-sm transition-transform hover:-translate-y-0.5">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#93B733] opacity-75"></span>
+                <span className="absolute inline-flex h-full w-full opacity-40 rounded-full bg-[#93B733]"></span>
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#93B733]"></span>
               </span>
               <p className="text-xs font-bold tracking-wide text-[#0D3A1D] sm:text-sm">
@@ -113,13 +86,13 @@ const HeroSection = () => {
                   key={item.label}
                   className="group flex flex-col items-center justify-center rounded-[1.5rem] border-2 border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#93B733]/40 hover:shadow-md md:rounded-[2rem] md:p-6"
                 >
-                  <h3
+                  <p
                     style={{ fontFamily: "'Outfit', sans-serif" }}
                     className="text-2xl font-black text-[#0D3A1D] transition-colors group-hover:text-[#93B733] sm:text-3xl md:text-4xl"
                   >
                     {item.number}
-                  </h3>
-                  <p className="mt-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-gray-400 sm:text-xs">
+                  </p>
+                  <p className="mt-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-gray-600 sm:text-xs">
                     {item.label}
                   </p>
                 </div>

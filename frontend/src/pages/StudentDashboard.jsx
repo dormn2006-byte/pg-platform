@@ -109,7 +109,7 @@ const StudentDashboard = () => {
     <div className="min-h-screen bg-[#FAF9F5] text-[#3A2935] font-sans pb-12">
       <Navbar />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 md:py-12 lg:px-8">
+      <div className="mx-auto max-w-[1440px] 2xl:max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-10 py-8 md:py-12">
         
         {/* Welcome Header */}
         <div className="mb-8 md:mb-10 rounded-[2rem] border border-gray-100 bg-white p-6 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">

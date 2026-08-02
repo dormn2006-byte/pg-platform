@@ -12,6 +12,73 @@ import {
   ChevronUp
 } from "lucide-react";
 
+// Custom Select Component for Professional UI
+const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find(opt => opt.value === value);
+  const displayValue = selectedOption ? selectedOption.label : placeholder;
+
+  return (
+    <div 
+      ref={dropdownRef} 
+      className="relative w-full h-[54px]"
+    >
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex h-full w-full cursor-pointer items-center gap-3 rounded-2xl border bg-gray-50 px-4 shadow-sm transition-all ${
+          isOpen ? "border-[#93B733] bg-white ring-1 ring-[#93B733]" : "border-gray-200 hover:border-gray-300"
+        }`}
+      >
+        <Icon size={18} className={`${isOpen ? "text-[#93B733]" : "text-gray-400"} flex-shrink-0 transition-colors`} />
+        <span className={`flex-1 text-sm font-medium ${value ? "text-[#3A2935]" : "text-gray-500"}`}>
+          {displayValue}
+        </span>
+        <ChevronDown size={16} className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+      </div>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute left-0 top-[60px] z-50 w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl animate-[fadeIn_0.15s_ease-out_forwards]">
+          <div className="max-h-[240px] overflow-y-auto p-1.5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200">
+            <div 
+              onClick={() => { onChange(""); setIsOpen(false); }}
+              className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                !value ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+              }`}
+            >
+              {placeholder}
+            </div>
+            {options.map((opt) => (
+              <div
+                key={opt.value}
+                onClick={() => { onChange(opt.value); setIsOpen(false); }}
+                className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                  value === opt.value ? "bg-[#93B733]/10 text-[#93B733]" : "text-[#3A2935] hover:bg-gray-50"
+                }`}
+              >
+                {opt.label}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const SearchSection = ({
   filters = {}, 
   setFilters,
@@ -59,109 +126,18 @@ const SearchSection = ({
   const minPercent = ((currentMin - minSliderLimit) / (maxSliderLimit - minSliderLimit)) * 100;
   const maxPercent = ((currentMax - minSliderLimit) / (maxSliderLimit - minSliderLimit)) * 100;
 
-  // Custom Select Component for Professional UI
-  const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
-
-    // Close dropdown when clicking outside
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-          setIsOpen(false);
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const selectedOption = options.find(opt => opt.value === value);
-    const displayValue = selectedOption ? selectedOption.label : placeholder;
-
-    return (
-      <div 
-        ref={dropdownRef} 
-        className="relative w-full h-[54px]"
-      >
-        <div 
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex h-full w-full cursor-pointer items-center gap-3 rounded-2xl border bg-gray-50 px-4 shadow-sm transition-all ${
-            isOpen ? "border-[#93B733] bg-white ring-1 ring-[#93B733]" : "border-gray-200 hover:border-gray-300"
-          }`}
-        >
-          <Icon size={18} className={`${isOpen ? "text-[#93B733]" : "text-gray-400"} flex-shrink-0 transition-colors`} />
-          <span className={`flex-1 text-sm font-medium ${value ? "text-[#3A2935]" : "text-gray-500"}`}>
-            {displayValue}
-          </span>
-          <ChevronDown size={16} className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-        </div>
-
-        {/* Dropdown Menu */}
-        {isOpen && (
-          <div className="absolute left-0 top-[60px] z-50 w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl animate-[fadeIn_0.15s_ease-out_forwards]">
-            <div className="max-h-[240px] overflow-y-auto p-1.5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200">
-              <div 
-                onClick={() => { onChange(""); setIsOpen(false); }}
-                className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  !value ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-                }`}
-              >
-                {placeholder}
-              </div>
-              {options.map((opt) => (
-                <div
-                  key={opt.value}
-                  onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                  className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    value === opt.value ? "bg-[#93B733]/10 text-[#93B733]" : "text-[#3A2935] hover:bg-gray-50"
-                  }`}
-                >
-                  {opt.label}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <>
-      <style>{`
-        .dual-range::-webkit-slider-thumb {
-          pointer-events: auto;
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          background: #93B733;
-          border-radius: 50%;
-          cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-          border: 2px solid white;
-        }
-        .dual-range::-moz-range-thumb {
-          pointer-events: auto;
-          width: 20px;
-          height: 20px;
-          background: #93B733;
-          border-radius: 50%;
-          cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-          border: 2px solid white;
-        }
-      `}</style>
-
       <section className="relative z-20 -mt-8 px-4 sm:px-0 md:-mt-12 lg:-mt-16">
-        <Container className="max-w-6xl">
+        <Container className="max-w-[1440px] 2xl:max-w-[1600px]">
           <div className="rounded-[2rem] border border-gray-100 bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.06)] sm:p-6 md:rounded-[2.5rem] md:p-8">
             
             {/* Mobile Header */}
             <div className="mb-5 flex items-center justify-between md:hidden">
               <div>
-                <h3 className="text-lg font-black text-[#3A2935] tracking-tight">
+                <h2 className="text-lg font-black text-[#3A2935] tracking-tight">
                   Find Your PG
-                </h3>
+                </h2>
                 <p className="mt-0.5 text-[11px] font-medium text-gray-500">
                   Select your preferences
                 </p>
@@ -223,10 +199,10 @@ const SearchSection = ({
               {/* === DUAL-RANGE BUDGET SLIDER === */}
               <div className={`${isExpanded ? 'flex' : 'hidden'} md:flex flex-col justify-center px-5 h-[54px] w-full rounded-2xl border border-gray-200 bg-gray-50 shadow-sm col-span-1 md:col-span-2 lg:col-span-2 lg:col-start-2`}>
                 <div className="flex justify-between items-center w-full mb-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-600 flex items-center gap-1">
                     <IndianRupee size={12} /> Budget Range
                   </span>
-                  <span className="text-[#93B733] text-xs font-black">
+                  <span className="text-[#4E700F] text-xs font-black">
                     ₹{currentMin.toLocaleString()} - ₹{currentMax.toLocaleString()}{currentMax === maxSliderLimit ? '+' : ''}
                   </span>
                 </div>
@@ -239,6 +215,7 @@ const SearchSection = ({
 
                   <input
                     type="range"
+                    aria-label="Minimum budget"
                     min={minSliderLimit}
                     max={maxSliderLimit}
                     step="500"
@@ -249,6 +226,7 @@ const SearchSection = ({
 
                   <input
                     type="range"
+                    aria-label="Maximum budget"
                     min={minSliderLimit}
                     max={maxSliderLimit}
                     step="500"
@@ -276,7 +254,7 @@ const SearchSection = ({
                 {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
 
-              <p className="hidden md:block text-[12px] font-medium text-gray-400">
+              <p className="hidden md:block text-[12px] font-medium text-gray-600">
                 Select your preferences and click search to find matching PGs.
               </p>
 
@@ -286,7 +264,7 @@ const SearchSection = ({
                   e.preventDefault();
                   handleSearch();
                 }}
-                className="flex w-full md:w-auto h-[54px] items-center justify-center gap-2 rounded-2xl bg-[#93B733] px-10 text-sm font-black tracking-wide text-white shadow-[0_8px_20px_rgba(147,183,51,0.3)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#82a32d] hover:shadow-[0_12px_25px_rgba(147,183,51,0.4)] active:scale-[0.98]"
+                className="flex w-full md:w-auto h-[54px] items-center justify-center gap-2 rounded-2xl bg-[#4A6C0B] px-10 text-sm font-black tracking-wide text-white shadow-[0_8px_20px_rgba(74,108,11,0.3)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3d5909] hover:shadow-[0_12px_25px_rgba(74,108,11,0.4)] active:scale-[0.98]"
               >
                 Search Verified PGs
                 <Search size={16} className="text-white/90" />

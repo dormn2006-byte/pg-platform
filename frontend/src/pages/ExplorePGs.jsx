@@ -21,8 +21,8 @@ const quickFilters = ["All", "Boys", "Girls", "COED", "AC Room", "Non AC"];
 const SectionSlider = ({ title, subtitle, pgs }) => {
   if (!pgs || pgs.length === 0) return null;
   return (
-    <div className="mb-14 animate-[fadeIn_0.5s_ease-out_forwards]">
-      <div className="mb-4 pl-5 sm:pl-6 lg:pl-10">
+    <div className="mb-14 max-w-[1440px] 2xl:max-w-[1600px] mx-auto animate-[fadeIn_0.5s_ease-out_forwards]">
+      <div className="mb-4 pl-4 sm:pl-6 md:pl-8 lg:pl-10">
         <h2 className="text-[22px] sm:text-2xl md:text-3xl font-black text-[#3A2935] tracking-tight">{title}</h2>
         {subtitle && <p className="mt-1 text-xs sm:text-sm font-medium text-gray-500">{subtitle}</p>}
       </div>
@@ -183,71 +183,71 @@ const ExplorePGs = () => {
 
   const isDiscoverMode = !search.trim() && !filters.pgType && !filters.city && !filters.area && !filters.landmark && activeFilter === "All" && currentMin === minSliderLimit && currentMax === maxSliderLimit;
 
-  // Custom Select Component for Professional UI
-  const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
+// Custom Select Component for Professional UI
+const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-          setIsOpen(false);
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    const selectedOption = options.find(opt => opt.value === value);
-    const displayValue = selectedOption ? selectedOption.label : placeholder;
+  const selectedOption = options.find(opt => opt.value === value);
+  const displayValue = selectedOption ? selectedOption.label : placeholder;
 
-    return (
+  return (
+    <div 
+      ref={dropdownRef} 
+      className="relative w-full h-[52px]"
+    >
       <div 
-        ref={dropdownRef} 
-        className="relative w-full h-[52px]"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex h-full w-full cursor-pointer items-center gap-3 rounded-2xl border bg-gray-50 px-4 shadow-sm transition-all ${
+          isOpen ? "border-[#93B733] bg-white ring-1 ring-[#93B733]" : "border-gray-200 hover:border-gray-300"
+        }`}
       >
-        <div 
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex h-full w-full cursor-pointer items-center gap-3 rounded-2xl border bg-gray-50 px-4 shadow-sm transition-all ${
-            isOpen ? "border-[#93B733] bg-white ring-1 ring-[#93B733]" : "border-gray-200 hover:border-gray-300"
-          }`}
-        >
-          <Icon size={18} className={`${isOpen ? "text-[#93B733]" : "text-gray-400"} flex-shrink-0 transition-colors`} />
-          <span className={`flex-1 text-sm font-medium ${value ? "text-[#3A2935]" : "text-gray-500"}`}>
-            {displayValue}
-          </span>
-          <ChevronDown size={16} className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-        </div>
+        <Icon size={18} className={`${isOpen ? "text-[#93B733]" : "text-gray-400"} flex-shrink-0 transition-colors`} />
+        <span className={`flex-1 text-sm font-medium ${value ? "text-[#3A2935]" : "text-gray-500"}`}>
+          {displayValue}
+        </span>
+        <ChevronDown size={16} className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+      </div>
 
-        {/* Dropdown Menu */}
-        {isOpen && (
-          <div className="absolute left-0 top-[58px] z-50 w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl animate-[fadeIn_0.15s_ease-out_forwards]">
-            <div className="max-h-[240px] overflow-y-auto p-1.5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200">
-              <div 
-                onClick={() => { onChange(""); setIsOpen(false); }}
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute left-0 top-[58px] z-50 w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl animate-[fadeIn_0.15s_ease-out_forwards]">
+          <div className="max-h-[240px] overflow-y-auto p-1.5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200">
+            <div 
+              onClick={() => { onChange(""); setIsOpen(false); }}
+              className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                !value ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+              }`}
+            >
+              {placeholder}
+            </div>
+            {options.map((opt) => (
+              <div
+                key={opt.value}
+                onClick={() => { onChange(opt.value); setIsOpen(false); }}
                 className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  !value ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                  value === opt.value ? "bg-[#93B733]/10 text-[#93B733]" : "text-[#3A2935] hover:bg-gray-50"
                 }`}
               >
-                {placeholder}
+                {opt.label}
               </div>
-              {options.map((opt) => (
-                <div
-                  key={opt.value}
-                  onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                  className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    value === opt.value ? "bg-[#93B733]/10 text-[#93B733]" : "text-[#3A2935] hover:bg-gray-50"
-                  }`}
-                >
-                  {opt.label}
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
-        )}
-      </div>
-    );
-  };
+        </div>
+      )}
+    </div>
+  );
+};
 
   return (
     <PublicLayout>
@@ -281,10 +281,10 @@ const ExplorePGs = () => {
         {/* Sticky Advanced Search & Filter Bar */}
         <section className="sticky top-[68px] z-30 bg-[#FAF9F5]/95 backdrop-blur-xl pt-4 pb-3 border-b border-gray-200/60 shadow-[0_4px_15px_-10px_rgba(0,0,0,0.05)] transition-all duration-300">
           
-          <Container className="max-w-6xl mb-4">
+          <Container className="max-w-[1440px] 2xl:max-w-[1600px] mb-4">
             
             {/* Search Input Bar */}
-            <div className="max-w-3xl mx-auto mb-4">
+            <div className="max-w-4xl mx-auto mb-4">
               <div className="flex items-center bg-white border border-gray-300 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] py-1.5 px-1.5 pl-4 sm:pl-6 transition-all focus-within:border-gray-400 focus-within:shadow-md">
                 <input
                   type="text"
@@ -441,7 +441,7 @@ const ExplorePGs = () => {
 
         <div className="pt-8">
           {loading ? (
-             <div className="px-5 sm:px-6 lg:px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+             <div className="max-w-[1440px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                {[...Array(8)].map((_, i) => <SkeletonCard key={i} />)}
              </div>
           ) : isDiscoverMode ? (
@@ -449,7 +449,7 @@ const ExplorePGs = () => {
               <SectionSlider title="Trending in Jodhpur" subtitle="The most booked PGs in the Blue City this week." pgs={jodhpurPGs.length > 0 ? jodhpurPGs : pgListings.slice(0, 4)} />
               
               {/* Premium Promo Banner */}
-              <div className="px-5 sm:px-6 lg:px-10 mb-14 animate-[fadeIn_0.5s_ease-out_0.2s_forwards]">
+              <div className="max-w-[1440px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 mb-14 animate-[fadeIn_0.5s_ease-out_0.2s_forwards]">
                 <div className="relative overflow-hidden rounded-[2rem] bg-[#0D3A1D] px-6 py-10 sm:px-12 sm:py-16 md:rounded-[3rem]">
                   <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#93B733]/30 blur-3xl"></div>
                   <div className="relative z-10 md:w-2/3 lg:w-1/2">
@@ -469,7 +469,7 @@ const ExplorePGs = () => {
           ) : (
             
             /* ACTIVE SEARCH MODE (Grid View) */
-            <section className="px-5 sm:px-6 lg:px-10 animate-[fadeIn_0.3s_ease-out_forwards]">
+            <section className="max-w-[1440px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 animate-[fadeIn_0.3s_ease-out_forwards]">
               <div className="mb-6 sm:mb-8 flex items-center justify-between border-b border-gray-200 pb-4">
                 <h2 className="text-xl sm:text-2xl font-black text-[#3A2935]">
                   {filteredPGs.length > 0 ? `${filteredPGs.length} Stays found` : "No exact matches"}

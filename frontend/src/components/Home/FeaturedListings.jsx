@@ -1,3 +1,4 @@
+import { memo } from "react";
 import PGCard from "../cards/PGCard";
 import ListingSlider from "./ListingSlider";
 import Container from "../../layouts/Container";
@@ -20,7 +21,7 @@ const FeaturedListings = ({ featuredPGs = [], loading = false }) => {
 
           <Link
             to="/explore"
-            className="text-[#93B733] text-sm sm:text-base font-medium hover:underline flex items-center group whitespace-nowrap pb-1"
+            className="text-[#4E700F] text-sm sm:text-base font-medium hover:underline flex items-center group whitespace-nowrap pb-1"
           >
             View all PGs
             <svg 
@@ -57,4 +58,4 @@ const FeaturedListings = ({ featuredPGs = [], loading = false }) => {
   );
 };
 
-export default FeaturedListings;
+export default memo(FeaturedListings);

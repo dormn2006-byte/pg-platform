@@ -172,7 +172,7 @@ const Students = () => {
               {/* Left Profile Section */}
               <div className="flex items-center gap-4 lg:w-[40%] shrink-0">
                 <img
-                  src={student.profile_image ? `${IMAGE_BASE_URL}/uploads/${student.profile_image}` : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=200&auto=format&fit=crop"}
+                  src={student.profile_image ? `${IMAGE_BASE_URL}/uploads/${student.profile_image}` : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2393B733'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%230D3A1D' font-family='sans-serif' font-weight='bold' font-size='40'%3ES%3C/text%3E%3C/svg%3E"}
                   alt={student.title}
                   className="h-16 w-16 shrink-0 rounded-2xl object-cover sm:h-20 sm:w-20 shadow-sm"
                 />

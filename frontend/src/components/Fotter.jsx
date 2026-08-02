@@ -31,12 +31,12 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-[#07130B] text-white font-sans">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-[#07130B] text-white font-sans pb-20 lg:pb-0">
       {/* Background Brand Glows */}
       <div className="absolute left-[-100px] top-[-100px] h-96 w-96 rounded-full bg-[#93B733]/15 blur-[100px] pointer-events-none" />
       <div className="absolute right-[-100px] bottom-[-100px] h-96 w-96 rounded-full bg-[#93B733]/10 blur-[120px] pointer-events-none" />
 
-      <div className="relative mx-auto max-w-7xl px-4 pt-12 sm:px-6 sm:pt-16 lg:px-8 lg:pt-16">
+      <div className="relative mx-auto max-w-[1440px] 2xl:max-w-[1600px] px-4 pt-12 sm:px-6 md:px-8 lg:px-10 sm:pt-16 lg:pt-16">
 
         {/* Main Footer Grid */}
         <div className="grid grid-cols-1 gap-10 border-b border-white/10 pb-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
@@ -45,9 +45,11 @@ const Footer = () => {
           <div className="lg:col-span-4 space-y-4">
             <Link to="/" className="inline-flex items-center gap-3 group">
               <img
-                src="https://i.ibb.co/TqtkM8HV/logo.jpg"
+                src="/logo-sm.webp"
                 alt="Dormn Logo"
-                className="h-12 w-12 rounded-2xl object-cover shadow-md transition-transform duration-300 group-hover:rotate-6"
+                className="h-12 w-12 object-contain transition-transform duration-300 group-hover:rotate-6"
+                loading="lazy"
+                decoding="async"
               />
               <div>
                 <h2 className="text-2xl font-black tracking-tight text-white">
@@ -87,33 +89,41 @@ const Footer = () => {
               {[
                 {
                   name: "Instagram",
-                  href: "https://instagram.com",
+                  href: "https://www.instagram.com/dormnofficial?igsh=aDh5b3dkYjdoZXN4",
                   icon: (
-                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-                    </svg>
+                    <img 
+                      src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" 
+                      alt="Instagram" 
+                      className="h-[18px] w-[18px] object-contain"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ),
                 },
                 {
                   name: "LinkedIn",
-                  href: "https://linkedin.com",
+                  href: "https://www.linkedin.com/in/dormn-nexus-84139b426",
                   icon: (
-                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                      <rect width="4" height="12" x="2" y="9"/>
-                      <circle cx="4" cy="4" r="2"/>
-                    </svg>
+                    <img 
+                      src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" 
+                      alt="LinkedIn" 
+                      className="h-[18px] w-[18px] object-contain"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ),
                 },
                 {
                   name: "Twitter",
-                  href: "https://twitter.com",
+                  href: "https://x.com/DormnOfficial",
                   icon: (
-                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
-                    </svg>
+                    <img 
+                      src="https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg" 
+                      alt="Twitter" 
+                      className="h-[18px] w-[18px] object-contain invert"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ),
                 },
               ].map((item) => (
@@ -212,7 +222,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Copyright Footer */}
-        <div className="py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold text-gray-400">
+        <div className="py-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-gray-400">
           <p>© 2026 Dormn. All rights reserved. Built for students &amp; property owners.</p>
           
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-end">

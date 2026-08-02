@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/:path((?!api|assets|icons|audio|auth-bg|favicon).*)", "destination": "/index.html" }
+  ]
+}

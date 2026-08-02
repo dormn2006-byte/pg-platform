@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, lazy, Suspense } from "react";
 import HeroSection from "../components/Home/HeroSection";
 import SearchSection from "../components/Home/SearchSection";
 import FeaturedListings from "../components/Home/FeaturedListings";
-import HomeServiceTopics from "../components/Home/HomeServiceTopics";
-import ReviewsSection from "../components/Home/ReviewsSection";
-import FeaturesShowcase from "../components/Home/FeaturesShowcase";
+const HomeServiceTopics = lazy(() => import("../components/Home/HomeServiceTopics"));
+const ReviewsSection = lazy(() => import("../components/Home/ReviewsSection"));
+const FeaturesShowcase = lazy(() => import("../components/Home/FeaturesShowcase"));
 import PublicLayout from "../layouts/PublicLayout";
 import API from "../services/api";
 
@@ -38,37 +38,39 @@ const Home = () => {
     landmarks: []
   });
 
-  const filteredPGs = featuredPGs.filter((pg) => {
-    const keywordMatch =
-      !activeFilters.keyword ||
-      pg.title?.toLowerCase().includes(activeFilters.keyword.toLowerCase()) ||
-      pg.city?.toLowerCase().includes(activeFilters.keyword.toLowerCase()) ||
-      pg.address?.toLowerCase().includes(activeFilters.keyword.toLowerCase()) ||
-      pg.area?.toLowerCase().includes(activeFilters.keyword.toLowerCase());
+  const filteredPGs = useMemo(() => {
+    return featuredPGs.filter((pg) => {
+      const keywordMatch =
+        !activeFilters.keyword ||
+        pg.title?.toLowerCase().includes(activeFilters.keyword.toLowerCase()) ||
+        pg.city?.toLowerCase().includes(activeFilters.keyword.toLowerCase()) ||
+        pg.address?.toLowerCase().includes(activeFilters.keyword.toLowerCase()) ||
+        pg.area?.toLowerCase().includes(activeFilters.keyword.toLowerCase());
 
-    const typeMatch =
-      !activeFilters.pgType ||
-      pg.pg_type?.toLowerCase() === activeFilters.pgType.toLowerCase();
+      const typeMatch =
+        !activeFilters.pgType ||
+        pg.pg_type?.toLowerCase() === activeFilters.pgType.toLowerCase();
 
-    const activeCity = activeFilters.city || activeFilters.location || "";
-    const cityMatch =
-      !activeCity ||
-      pg.city?.toLowerCase() === activeCity.toLowerCase();
+      const activeCity = activeFilters.city || activeFilters.location || "";
+      const cityMatch =
+        !activeCity ||
+        pg.city?.toLowerCase() === activeCity.toLowerCase();
 
-    const areaMatch =
-      !activeFilters.area ||
-      pg.area?.toLowerCase() === activeFilters.area.toLowerCase();
+      const areaMatch =
+        !activeFilters.area ||
+        pg.area?.toLowerCase() === activeFilters.area.toLowerCase();
 
-    const landmarkMatch =
-      !activeFilters.landmark ||
-      pg.nearby_college?.toLowerCase() === activeFilters.landmark.toLowerCase();
+      const landmarkMatch =
+        !activeFilters.landmark ||
+        pg.nearby_college?.toLowerCase() === activeFilters.landmark.toLowerCase();
 
-    const pgPrice = Number(pg.price || 0);
-    const minPriceMatch = !activeFilters.minPrice || pgPrice >= Number(activeFilters.minPrice);
-    const maxPriceMatch = !activeFilters.maxPrice || pgPrice <= Number(activeFilters.maxPrice);
+      const pgPrice = Number(pg.price || 0);
+      const minPriceMatch = !activeFilters.minPrice || pgPrice >= Number(activeFilters.minPrice);
+      const maxPriceMatch = !activeFilters.maxPrice || pgPrice <= Number(activeFilters.maxPrice);
 
-    return keywordMatch && typeMatch && cityMatch && areaMatch && landmarkMatch && minPriceMatch && maxPriceMatch;
-  });
+      return keywordMatch && typeMatch && cityMatch && areaMatch && landmarkMatch && minPriceMatch && maxPriceMatch;
+    });
+  }, [featuredPGs, activeFilters]);
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -105,21 +107,21 @@ const Home = () => {
     setActiveFilters(searchFilters);
   };
 
-  // ==========================================
-  // NEW: CASCADING DROPDOWN LOGIC
-  // Dynamically filters areas and landmarks based on the selected City!
-  // ==========================================
-  const availableAreas = filters.city
-    ? [...new Set(featuredPGs.filter((pg) => pg.city?.toLowerCase() === filters.city.toLowerCase() && pg.area).map((pg) => pg.area))]
-    : dynamicOptions.areas;
+  const availableAreas = useMemo(() => {
+    return filters.city
+      ? [...new Set(featuredPGs.filter((pg) => pg.city?.toLowerCase() === filters.city.toLowerCase() && pg.area).map((pg) => pg.area))]
+      : dynamicOptions.areas;
+  }, [filters.city, featuredPGs, dynamicOptions.areas]);
 
-  const availableLandmarks = filters.city
-    ? [...new Set(featuredPGs.filter((pg) => pg.city?.toLowerCase() === filters.city.toLowerCase() && pg.nearby_college).map((pg) => pg.nearby_college))]
-    : dynamicOptions.landmarks;
+  const availableLandmarks = useMemo(() => {
+    return filters.city
+      ? [...new Set(featuredPGs.filter((pg) => pg.city?.toLowerCase() === filters.city.toLowerCase() && pg.nearby_college).map((pg) => pg.nearby_college))]
+      : dynamicOptions.landmarks;
+  }, [filters.city, featuredPGs, dynamicOptions.landmarks]);
 
   return (
     <PublicLayout>
-      <HeroSection />
+      <HeroSection pgs={featuredPGs} />
 
       <SearchSection
         filters={filters}
@@ -136,11 +138,17 @@ const Home = () => {
         loading={loading}
       />
 
-      <HomeServiceTopics />
+      <Suspense fallback={null}>
+        <HomeServiceTopics />
+      </Suspense>
 
-      <ReviewsSection />
+      <Suspense fallback={null}>
+        <ReviewsSection />
+      </Suspense>
 
-      <FeaturesShowcase />
+      <Suspense fallback={null}>
+        <FeaturesShowcase />
+      </Suspense>
     </PublicLayout>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import API from "../services/api";
 import PublicLayout from "../layouts/PublicLayout";
 import Container from "../layouts/Container";
 import { ShieldCheck, Compass, TrendingUp, Sparkles, CheckCircle, Lock, Building2 } from "lucide-react";
@@ -59,7 +59,7 @@ const About = () => {
   useEffect(() => {
     const loadAboutStats = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/pgs');
+        const res = await API.get('/pg/all');
         const pgs = res.data?.pgs || [];
 
         const cities = new Set(
@@ -138,12 +138,41 @@ const About = () => {
               <div className="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-[#93B733]/20 blur-3xl"></div>
               
               <div className="relative rounded-[2.5rem] border border-transparent bg-white p-2 shadow-[0_20px_50px_-12px_rgba(147,183,51,0.15)] transition-all duration-700 hover:scale-[1.02] hover:border-[#93B733]/60 md:rounded-[3rem] md:p-3">
-                <div className="overflow-hidden rounded-[2rem] md:rounded-[2.5rem]">
-                  <img
-                    src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1600&auto=format&fit=crop"
-                    alt="Student PG"
-                    className="h-[320px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[420px] lg:h-[560px]"
-                  />
+                <div className="flex h-[320px] w-full flex-col justify-between overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0D3A1D] via-[#144A27] to-[#0D3A1D] p-8 text-white sm:h-[420px] lg:h-[560px]">
+                  <div className="flex items-center justify-between">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 backdrop-blur-md">
+                      <Sparkles className="h-4 w-4 text-[#93B733]" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-white">Verified Stays</span>
+                    </div>
+                    <span className="rounded-xl bg-[#93B733] px-3 py-1 text-xs font-black text-[#0D3A1D]">Zero Brokerage</span>
+                  </div>
+
+                  <div className="my-auto text-center">
+                    <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-[#93B733]/20 border border-[#93B733]/30 backdrop-blur-sm">
+                      <ShieldCheck className="h-10 w-10 text-[#93B733]" />
+                    </div>
+                    <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl lg:text-4xl">
+                      Dormn Certified Housing
+                    </h3>
+                    <p className="mx-auto mt-2 max-w-md text-xs font-medium text-gray-300 sm:text-sm">
+                      100% verified rooms, transparent pricing, and direct owner connections across Noida.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+                    <div className="text-center">
+                      <p className="text-lg font-black text-[#93B733] sm:text-xl">500+</p>
+                      <p className="text-[10px] font-semibold text-gray-300">Verified PGs</p>
+                    </div>
+                    <div className="text-center border-x border-white/10">
+                      <p className="text-lg font-black text-[#93B733] sm:text-xl">100%</p>
+                      <p className="text-[10px] font-semibold text-gray-300">Direct Owners</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-lg font-black text-[#93B733] sm:text-xl">0</p>
+                      <p className="text-[10px] font-semibold text-gray-300">Brokerage Fees</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -158,10 +187,10 @@ const About = () => {
                 key={item.label}
                 className="group flex flex-col items-center justify-center rounded-[1.5rem] border-2 border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#93B733]/40 hover:shadow-md md:rounded-[2rem] md:p-8"
               >
-                <h3 className="text-3xl font-black text-[#0D3A1D] transition-colors group-hover:text-[#93B733] sm:text-4xl md:text-5xl">
+                <p className="text-3xl font-black text-[#0D3A1D] transition-colors group-hover:text-[#93B733] sm:text-4xl md:text-5xl">
                   {item.number}
-                </h3>
-                <p className="mt-2 text-center text-[10px] font-bold uppercase tracking-widest text-gray-500 sm:text-xs">
+                </p>
+                <p className="mt-2 text-center text-[10px] font-bold uppercase tracking-widest text-gray-600 sm:text-xs">
                   {item.label}
                 </p>
               </div>
@@ -178,12 +207,35 @@ const About = () => {
               <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                 
                 <div className="rounded-[2rem] border border-transparent bg-white p-2 shadow-[0_15px_40px_-10px_rgba(147,183,51,0.15)] transition-all duration-700 hover:scale-[1.02] hover:border-[#93B733]/60">
-                  <div className="overflow-hidden rounded-[1.5rem]">
-                    <img
-                      src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1600&auto=format&fit=crop"
-                      alt="Student Housing Transformation"
-                      className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
+                  <div className="flex h-full min-h-[300px] w-full flex-col justify-between overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-[#FAF9F5] via-emerald-50/40 to-[#FAF9F5] p-6 border border-emerald-100/60">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#93B733] text-[#0D3A1D] font-black text-sm">
+                          D
+                        </div>
+                        <span className="text-sm font-extrabold text-[#0D3A1D]">Mission Control</span>
+                      </div>
+                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-bold text-emerald-800">Active Oversight</span>
+                    </div>
+
+                    <div className="my-6 space-y-3">
+                      <div className="rounded-xl bg-white p-3.5 shadow-sm border border-gray-100 flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0D3A1D]">Physical Audits</span>
+                        <span className="text-xs font-bold text-emerald-600">✓ Verified</span>
+                      </div>
+                      <div className="rounded-xl bg-white p-3.5 shadow-sm border border-gray-100 flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0D3A1D]">Direct Host Contact</span>
+                        <span className="text-xs font-bold text-emerald-600">✓ Connected</span>
+                      </div>
+                      <div className="rounded-xl bg-white p-3.5 shadow-sm border border-gray-100 flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0D3A1D]">Zero Brokerage Guarantee</span>
+                        <span className="text-xs font-bold text-[#93B733]">100% Policy</span>
+                      </div>
+                    </div>
+
+                    <p className="text-center text-xs font-semibold text-gray-500">
+                      Redefining student living with trust and transparency.
+                    </p>
                   </div>
                 </div>
 
@@ -339,12 +391,41 @@ const About = () => {
                 </div>
 
                 <div className="rounded-[2.5rem] border border-transparent bg-white p-2 shadow-[0_15px_40px_-10px_rgba(147,183,51,0.15)] transition-all duration-700 hover:scale-[1.02] hover:border-[#93B733]/60 md:rounded-[3rem] md:p-3">
-                  <div className="overflow-hidden rounded-[2rem] md:rounded-[2.5rem]">
-                    <img
-                      src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop"
-                      alt="Verified PG Rooms Quality Oversight"
-                      className="h-[320px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[420px] lg:h-[480px]"
-                    />
+                  <div className="flex h-[320px] w-full flex-col justify-between overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0D3A1D] to-[#1A5C30] p-6 text-white sm:h-[420px] lg:h-[480px]">
+                    <div className="flex items-center justify-between">
+                      <span className="rounded-full bg-[#93B733]/20 px-3 py-1 text-xs font-bold text-[#93B733] border border-[#93B733]/30">SuperAdmin Quality Control</span>
+                      <ShieldCheck className="h-6 w-6 text-[#93B733]" />
+                    </div>
+
+                    <div className="my-auto space-y-4">
+                      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#93B733] text-[#0D3A1D]">
+                            <CheckCircle className="h-6 w-6" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-extrabold text-white">Listing Verification Protocol</h4>
+                            <p className="text-xs font-medium text-gray-300">Every photo & host ID is manually audited</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#93B733]/20 text-[#93B733] border border-[#93B733]/30">
+                            <Lock className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-extrabold text-white">Zero Scam Enforcement</h4>
+                            <p className="text-xs font-medium text-gray-300">Strict ban policy for fraudulent posts</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-white/10 p-3 text-center text-xs font-bold text-[#93B733] backdrop-blur-sm">
+                      Dormn Quality Guarantee
+                    </div>
                   </div>
                 </div>
               </div>

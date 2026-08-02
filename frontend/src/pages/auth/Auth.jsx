@@ -5,25 +5,25 @@ import api from "../../services/api";
 
 // Highly reliable, aesthetic architectural and interior images
 const bgImages = [
-  "https://i.ibb.co/C5GDQmpM/Whats-App-Image-2026-07-22-at-10-25-14-PM-1.jpg",
-  "https://i.ibb.co/4gNDywLT/Whats-App-Image-2026-07-22-at-10-25-14-PM-2.jpg",
-  "https://i.ibb.co/wFS2fkVB/Whats-App-Image-2026-07-22-at-10-25-14-PM.jpg",
-  "https://i.ibb.co/QjKKf1qX/Whats-App-Image-2026-07-22-at-10-25-15-PM-1.jpg",
-  "https://i.ibb.co/mVpcqHBC/Whats-App-Image-2026-07-22-at-10-25-15-PM.jpg",
-  "https://i.ibb.co/k6sN9jVq/Whats-App-Image-2026-07-22-at-10-25-16-PM-1.jpg",
-  "https://i.ibb.co/SD8TtG3G/Whats-App-Image-2026-07-22-at-10-25-16-PM.jpg",
-  "https://i.ibb.co/4RmNHjDG/Whats-App-Image-2026-07-22-at-10-25-17-PM-1.jpg",
-  "https://i.ibb.co/Jj0nmpZ5/Whats-App-Image-2026-07-22-at-10-25-17-PM.jpg",
-  "https://i.ibb.co/v0FgKrN/Whats-App-Image-2026-07-22-at-10-25-18-PM-1.jpg",
-  "https://i.ibb.co/84cvvP6D/Whats-App-Image-2026-07-22-at-10-25-18-PM.jpg",
-  "https://i.ibb.co/zWvbzQq6/Whats-App-Image-2026-07-22-at-10-25-19-PM-1.jpg",
-  "https://i.ibb.co/fzXpJdrN/Whats-App-Image-2026-07-22-at-10-25-19-PM-2.jpg",
-  "https://i.ibb.co/cSZ9nb9R/Whats-App-Image-2026-07-22-at-10-25-19-PM.jpg",
-  "https://i.ibb.co/PvZSXR9S/Whats-App-Image-2026-07-22-at-10-25-20-PM-1.jpg",
-  "https://i.ibb.co/KxF8ZDhn/Whats-App-Image-2026-07-22-at-10-25-20-PM.jpg",
-  "https://i.ibb.co/0R7WB4JW/Whats-App-Image-2026-07-22-at-10-25-21-PM-1.jpg",
-  "https://i.ibb.co/ymXj0qYN/Whats-App-Image-2026-07-22-at-10-25-21-PM.jpg",
-  "https://i.ibb.co/JXDr22s/Whats-App-Image-2026-07-22-at-10-25-22-PM.jpg"
+  "/auth-bg/bg-1.webp",
+  "/auth-bg/bg-2.webp",
+  "/auth-bg/bg-3.webp",
+  "/auth-bg/bg-4.webp",
+  "/auth-bg/bg-5.webp",
+  "/auth-bg/bg-6.webp",
+  "/auth-bg/bg-7.webp",
+  "/auth-bg/bg-8.webp",
+  "/auth-bg/bg-9.webp",
+  "/auth-bg/bg-10.webp",
+  "/auth-bg/bg-11.webp",
+  "/auth-bg/bg-12.webp",
+  "/auth-bg/bg-13.webp",
+  "/auth-bg/bg-14.webp",
+  "/auth-bg/bg-15.webp",
+  "/auth-bg/bg-16.webp",
+  "/auth-bg/bg-17.webp",
+  "/auth-bg/bg-18.webp",
+  "/auth-bg/bg-19.webp"
 ];
 
 const MarqueeRow = ({ images, direction = "left", speed = "60s" }) => {

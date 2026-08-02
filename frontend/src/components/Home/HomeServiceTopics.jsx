@@ -1,12 +1,13 @@
+import { memo } from "react";
 import { ShieldCheck, MessageSquare, CheckCircle, Zap, ArrowRight, PhoneCall, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import Container from "../../layouts/Container";
 
 const HomeServiceTopics = () => {
   return (
-    <section className="relative overflow-hidden bg-[#FAF9F5] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+    <section className="relative overflow-hidden bg-[#FAF9F5] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24 [content-visibility:auto] [contain-intrinsic-size:1px_800px]">
       {/* Background Decorative Blur */}
-      <div className="absolute left-1/2 top-0 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-[#93B733]/20 blur-[100px]" />
+      <div className="absolute left-1/2 top-0 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-[#93B733]/20 blur-[60px]" />
 
       <Container>
         {/* Section Header */}
@@ -18,7 +19,7 @@ const HomeServiceTopics = () => {
             </span>
           </div>
           <h2 className="mt-4 text-3xl font-black tracking-tight text-[#0D3A1D] sm:text-4xl md:text-5xl">
-            Why Students & Owners <span className="text-[#93B733]">Trust Dormn</span>
+            Why Students & Owners <span className="text-[#4E700F]">Trust Dormn</span>
           </h2>
           <p className="mt-4 text-base font-medium leading-relaxed text-gray-600 sm:text-lg">
             We solve the core pain points of student accommodation—eliminating uncertainty and bridging communication gaps.
@@ -45,7 +46,7 @@ const HomeServiceTopics = () => {
 
               {/* Title & Headline */}
               <div className="mt-6">
-                <p className="text-xs font-extrabold uppercase tracking-widest text-[#93B733]">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-[#4E700F]">
                   Topic A • Verification Pipeline
                 </p>
                 <h3 className="mt-2 text-2xl font-black text-[#0D3A1D] sm:text-3xl">
@@ -83,7 +84,7 @@ const HomeServiceTopics = () => {
             <div className="relative z-10 mt-8 pt-6 border-t border-gray-100">
               <Link
                 to="/pgs"
-                className="inline-flex items-center gap-2 text-sm font-bold text-[#93B733] transition-all group-hover:gap-3 group-hover:text-[#82a32d]"
+                className="inline-flex items-center gap-2 text-sm font-bold text-[#4E700F] transition-all group-hover:gap-3 group-hover:text-[#3e590c]"
               >
                 Browse Verified Listings
                 <ArrowRight className="h-4 w-4" />
@@ -108,7 +109,7 @@ const HomeServiceTopics = () => {
 
               {/* Title & Headline */}
               <div className="mt-6">
-                <p className="text-xs font-extrabold uppercase tracking-widest text-[#93B733]">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-[#4E700F]">
                   Topic B • Inquiry & Management System
                 </p>
                 <h3 className="mt-2 text-2xl font-black text-[#0D3A1D] sm:text-3xl">
@@ -146,7 +147,7 @@ const HomeServiceTopics = () => {
             <div className="relative z-10 mt-8 pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
               <Link
                 to="/auth"
-                className="inline-flex items-center gap-2 text-sm font-bold text-[#93B733] transition-all group-hover:gap-3 group-hover:text-[#82a32d]"
+                className="inline-flex items-center gap-2 text-sm font-bold text-[#4E700F] transition-all group-hover:gap-3 group-hover:text-[#3e590c]"
               >
                 Start Direct Booking
                 <ArrowRight className="h-4 w-4" />
@@ -165,4 +166,4 @@ const HomeServiceTopics = () => {
   );
 };
 
-export default HomeServiceTopics;
+export default memo(HomeServiceTopics);
