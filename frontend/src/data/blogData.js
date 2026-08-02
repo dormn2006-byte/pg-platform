@@ -8,7 +8,7 @@ export const blogPosts = [
       area: "Sector 125 / Amity",
       readTime: "5 min read",
       date: "July 2026",
-      image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=1200&auto=format&fit=crop",
+      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%230D3A1D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2393B733' font-family='sans-serif' font-weight='bold' font-size='24'%3EDormn Blog%3C/text%3E%3C/svg%3E",
       content: `
         Moving to Noida for your studies at Amity University? Finding the right accommodation in Sector 125 or Sector 126 is crucial for a smooth college life. 
   
@@ -34,7 +34,7 @@ export const blogPosts = [
       area: "Sector 62",
       readTime: "6 min read",
       date: "July 2026",
-      image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200&auto=format&fit=crop",
+      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%230D3A1D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2393B733' font-family='sans-serif' font-weight='bold' font-size='24'%3EDormn Blog%3C/text%3E%3C/svg%3E",
       content: `
         Noida Sector 62 is the ultimate hub for IT professionals, corporate interns, and university students. Located near Stellar IT Park, Logix Cyber Park, and the Noida Electronic City Metro Station, Sector 62 offers seamless connectivity.
   
@@ -55,7 +55,7 @@ export const blogPosts = [
       area: "Knowledge Park",
       readTime: "4 min read",
       date: "July 2026",
-      image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200&auto=format&fit=crop",
+      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%230D3A1D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2393B733' font-family='sans-serif' font-weight='bold' font-size='24'%3EDormn Blog%3C/text%3E%3C/svg%3E",
       content: `
         Knowledge Park in Greater Noida is home to over 50 major educational institutions. If you are joining colleges in Knowledge Park 2 or 3, finding a budget-friendly stay with quality food is top priority.
   

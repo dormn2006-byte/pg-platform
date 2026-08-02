@@ -29,21 +29,14 @@ const StudentDetails = () => {
     setError("");
     const token = localStorage.getItem("token");
 
-axios.get(
-
-  `http://localhost:8000/api/superadmin/student/${studentId}`,
-
-  {
-
-    headers: {
-
-      Authorization: `Bearer ${token}`,
-
-    },
-
-  }
-
-)
+    axios.get(
+      `http://localhost:8000/api/superadmin/student/${studentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
       .then((response) => {
         setStudent(response.data.student || response.data.data || response.data);
         setBookings(response.data.bookings || []);

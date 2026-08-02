@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const StatCard = ({ stat }) => {
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md md:rounded-[2.5rem]">
@@ -28,4 +30,4 @@ const StatCard = ({ stat }) => {
   );
 };
 
-export default StatCard;
+export default memo(StatCard);

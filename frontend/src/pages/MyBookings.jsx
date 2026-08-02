@@ -47,7 +47,7 @@ const MyBookings = () => {
     <div className="min-h-screen bg-[#050B1A] text-white">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-[1440px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-10">
         <h1 className="text-4xl font-bold mb-2">My Bookings</h1>
         <p className="text-gray-400 mb-8">
           Track all PG visit requests and booking approvals.

@@ -9,7 +9,7 @@ export const mockPGs = [
       room: "AC Room",
       sponsored: true,
       image:
-        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=900&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=800&auto=format&fit=crop",
     },
   
     {
@@ -22,7 +22,7 @@ export const mockPGs = [
       room: "Non AC",
       sponsored: false,
       image:
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=900&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop",
     },
   
     {
@@ -35,6 +35,6 @@ export const mockPGs = [
       room: "AC Room",
       sponsored: true,
       image:
-        "https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=900&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=800&auto=format&fit=crop",
     },
   ];

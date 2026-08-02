@@ -66,7 +66,7 @@ const OwnerBookings = () => {
 
   return (
     <div className="min-h-screen bg-[#0B1120] text-white p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
+      <div className="max-w-[1440px] 2xl:max-w-[1600px] mx-auto space-y-6 md:space-y-8">
         
         {/* Header */}
         <div>

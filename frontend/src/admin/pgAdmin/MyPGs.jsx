@@ -159,7 +159,7 @@ const MyPGs = () => {
                   src={
                     pg.profile_image
                       ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
-                      : "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"
+                      : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%230D3A1D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2393B733' font-family='sans-serif' font-weight='bold' font-size='24'%3EDormn Verified Stay%3C/text%3E%3C/svg%3E"
                   }
                   alt={pg.title}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

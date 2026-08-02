@@ -1,239 +1,164 @@
-import { Link, useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
-
-const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Explore PGs", path: "/pgs" },
-  { name: "Blogs", path: "/blogs" },
-  { name: "About", path: "/about" },
-  { name: "FAQs", path: "/faqs" },
-  { name: "Contact", path: "/contact" },
-];
+import MacOSDock from "./ui/mac-os-dock";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
 
-  const userInitial =
-    user?.full_name?.charAt(0)?.toUpperCase() ||
-    user?.name?.charAt(0)?.toUpperCase() ||
-    "U";
+  // Track scroll direction to hide/show mobile dock
+  const [hideMobileDock, setHideMobileDock] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentY = window.scrollY;
+
+          if (currentY < 50) {
+            setHideMobileDock(false);
+          } else if (currentY > lastScrollY.current + 10) {
+            setHideMobileDock(false);
+          } else if (currentY < lastScrollY.current - 10) {
+            setHideMobileDock(true);
+          }
+
+          lastScrollY.current = currentY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Define dock apps for core navigation links
+  const dockApps = [
+    {
+      id: "/",
+      name: "Home",
+      icon: "/icons/home.webp"
+    },
+    {
+      id: "/pgs",
+      name: "Explore",
+      icon: "/icons/explore.webp"
+    },
+    {
+      id: "/blogs",
+      name: "Blogs",
+      icon: "/icons/blog.webp"
+    },
+    {
+      id: "/about",
+      name: "About Us",
+      icon: "/icons/aboutus.webp"
+    },
+    {
+      id: "/faqs",
+      name: "FAQs",
+      icon: "/icons/faq.webp"
+    },
+    {
+      id: "/contact",
+      name: "Contact",
+      icon: "/icons/contact.webp"
+    }
+  ];
+
+  const handleAppClick = (appId) => {
+    navigate(appId);
+  };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-xl transition-all duration-300">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        
-        {/* Logo with Real Image */}
-        <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
-
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-gray-200/50 bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1440px] 2xl:max-w-[1600px] h-20 items-center justify-between px-4 sm:px-6 md:px-8 lg:px-10">
           
-          <img
-            src="/logo.jpg"
-            alt="Dormn Logo"
-            className="h-10 w-10 md:h-11 md:w-11 rounded-xl object-cover border border-gray-200 shadow-sm transition-transform duration-300 group-hover:rotate-6"
-
-          />
-          <div>
-            <h1 className="text-xl font-black tracking-tight text-[#0D3A1D] sm:text-2xl md:text-[1.6rem]">
-              Dormn
-            </h1>
-            <p className="hidden text-[10px] font-bold uppercase tracking-wider text-gray-400 sm:block">
-              Next Gen Housing
-            </p>
-          </div>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-8 lg:flex">
-          {navLinks.map((link) => {
-            const isActive = location.pathname === link.path;
-            return (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`relative text-sm font-bold transition-colors duration-300 ${
-                  isActive ? "text-[#93B733]" : "text-gray-500 hover:text-[#0D3A1D]"
-                }`}
-              >
-                {link.name}
-                {/* Active Indicator Dot */}
-                {isActive && (
-                  <span className="absolute -bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#93B733]"></span>
-                )}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Right Side (Auth & Mobile Toggle) */}
-        <div className="flex items-center gap-3 md:gap-4">
-          {user ? (
-            <div className="relative flex items-center">
-              <button
-                onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2.5 rounded-2xl border-2 border-gray-100 bg-white p-1.5 pr-4 shadow-sm transition-all hover:border-gray-200 hover:shadow-md"
-              >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D3A1D] font-bold text-white">
-                  {userInitial}
-                </div>
-                <div className="hidden text-left sm:block">
-                  <p className="max-w-[120px] truncate text-xs font-bold text-[#0D3A1D]">
-                    {user.full_name || user.name}
-                  </p>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                    {user.role}
-                  </p>
-                </div>
-              </button>
-
-              {/* Profile Dropdown */}
-              {profileOpen && (
-                <div className="absolute right-0 top-14 z-50 w-56 rounded-2xl border border-gray-100 bg-white p-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
-                  <div className="border-b border-gray-100 px-3 pb-3 pt-2">
-                    <p className="truncate text-sm font-bold text-[#0D3A1D]">
-                      {user.full_name || user.name}
-                    </p>
-                    <p className="text-[10px] font-bold uppercase text-gray-400">
-                      {user.role}
-                    </p>
-                  </div>
-
-                  <Link
-                    to="/student/dashboard"
-                    onClick={() => setProfileOpen(false)}
-                    className="mt-2 block rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-[#0D3A1D]"
-                  >
-                    Dashboard
-                  </Link>
-
-                  <button
-                    onClick={() => {
-                      logout();
-                      setProfileOpen(false);
-                    }}
-                    className="mt-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-500 transition-colors hover:bg-red-50 hover:text-red-600"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
+          {/* Left Side: Logo & Name */}
+          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+            <img
+              src="/logo-sm.webp"
+              alt="Dormn Logo"
+              className="h-10 w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 object-contain transition-transform duration-300 group-hover:rotate-6"
+            />
+            <div>
+              <h1 className="text-xl font-black tracking-tight text-[#0D3A1D] sm:text-2xl leading-none">
+                Dormn
+              </h1>
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-[#4E700F] leading-none mt-1 sm:text-[11px]">
+                Next Gen Housing
+              </p>
             </div>
-          ) : (
-            <>
-              <Link
-                to="/auth?role=owner&mode=signup"
-                className="hidden rounded-xl border-2 border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#0D3A1D] transition-all hover:border-gray-300 hover:bg-gray-50 md:flex"
-              >
-                Become an Owner
-              </Link>
+          </Link>
 
-              <Link
-                to="/auth"
-                className="rounded-xl border-2 border-[#0D3A1D] bg-[#0D3A1D] px-5 py-2.5 text-sm font-bold text-white shadow-[2px_2px_0px_#93B733] transition-all duration-300 hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-[#93B733] hover:border-[#93B733] hover:shadow-[1px_1px_0px_#0D3A1D]"
-              >
-                Sign In
-              </Link>
-            </>
-          )}
+          {/* Center: MacOS Dock (Desktop only - Bounded to prevent button collisions) */}
+          <div className="hidden lg:flex items-center justify-center flex-1 lg:max-w-lg xl:max-w-2xl mx-4">
+            <MacOSDock
+              apps={dockApps}
+              onAppClick={handleAppClick}
+              openApps={[location.pathname]}
+            />
+          </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 text-[#0D3A1D] transition-colors hover:bg-gray-200 lg:hidden"
-          >
-            {mobileMenuOpen ? (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+          {/* Right Side: Become Owner & Auth buttons */}
+          <div className="flex items-center gap-3 shrink-0">
+            {user ? (
+              <>
+                <Link
+                  to={user.role === "superadmin" ? "/superadmin/dashboard" : user.role === "owner" ? "/owner/dashboard" : "/student/dashboard"}
+                  className="rounded-2xl bg-[#0D3A1D] px-6 py-2.5 text-base font-extrabold text-white transition-all hover:bg-[#07130B] shadow-[0_4px_12px_rgba(13,58,29,0.15)]"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    logout();
+                    navigate("/");
+                  }}
+                  className="rounded-2xl border-2 border-red-200 bg-red-50 px-6 py-2.5 text-base font-extrabold text-red-600 transition-all hover:bg-red-100"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <>
+                <Link
+                  to="/auth?role=owner&mode=signup"
+                  className="hidden sm:inline-flex rounded-2xl border-2 border-gray-200 bg-white px-6 py-2.5 text-base font-extrabold text-[#0D3A1D] transition-all hover:bg-gray-50 hover:border-gray-300"
+                >
+                  Become an Owner
+                </Link>
+                <Link
+                  to="/auth"
+                  className="rounded-2xl bg-[#0D3A1D] px-6 py-2.5 text-base font-extrabold text-white transition-all hover:bg-[#07130B] shadow-[0_4px_12px_rgba(13,58,29,0.15)]"
+                >
+                  Sign In
+                </Link>
+              </>
             )}
-          </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Floating MacOS Dock at Bottom (Mobile/Tablet only - outside header to avoid parent interference) */}
+      <div className={`lg:hidden fixed bottom-4 left-0 right-0 z-50 flex justify-center pointer-events-none transition-all duration-300 ${hideMobileDock ? 'translate-y-32 opacity-0' : 'translate-y-0 opacity-100'}`}>
+        <div className="pointer-events-auto">
+          <MacOSDock
+            apps={dockApps}
+            onAppClick={handleAppClick}
+            openApps={[location.pathname]}
+          />
         </div>
       </div>
-
-      {/* Mobile Menu Dropdown */}
-      {mobileMenuOpen && (
-        <div className="absolute left-0 top-full w-full border-b border-gray-200 bg-white/95 shadow-xl backdrop-blur-xl lg:hidden">
-          <div className="flex flex-col p-4">
-            {user && (
-              <div className="mb-4 rounded-xl bg-gray-50 p-4 border border-gray-100">
-                <p className="font-bold text-[#0D3A1D]">
-                  {user.full_name || user.name}
-                </p>
-                <p className="text-[10px] font-bold uppercase text-gray-500">
-                  {user.role}
-                </p>
-              </div>
-            )}
-            
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => {
-                const isActive = location.pathname === link.path;
-                return (
-                  <Link
-                    key={link.name}
-                    to={link.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`rounded-xl px-4 py-3 text-sm font-bold transition-colors ${
-                      isActive ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-600 hover:bg-gray-50 hover:text-[#0D3A1D]"
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                );
-              })}
-            </div>
-
-            <div className="mt-4 border-t border-gray-100 pt-4">
-              {user ? (
-                <div className="flex flex-col gap-2">
-                  <Link
-                    to="/student/dashboard"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl bg-gray-50 px-4 py-3 text-center text-sm font-bold text-[#0D3A1D]"
-                  >
-                    Dashboard
-                  </Link>
-                  <button
-                    onClick={() => {
-                      logout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="rounded-xl bg-red-50 px-4 py-3 text-center text-sm font-bold text-red-600"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <Link
-                    to="/auth?role=owner&mode=signup"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl border-2 border-gray-200 bg-white px-4 py-3 text-center text-sm font-bold text-[#0D3A1D]"
-                  >
-                    Become an Owner
-                  </Link>
-                  <Link
-                    to="/auth"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl bg-[#0D3A1D] px-4 py-3 text-center text-sm font-bold text-white"
-                  >
-                    Sign In
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </nav>
+    </>
   );
 };
 
-export default Navbar;
+export default Navbar;

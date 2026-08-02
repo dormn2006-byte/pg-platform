@@ -29,7 +29,7 @@ const Contact = () => {
   return (
     <PublicLayout>
       <div className="bg-[#FAF9F5] min-h-screen py-10 sm:py-16 lg:py-20 font-sans selection:bg-[#93B733] selection:text-white">
-        <Container className="max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Container className="max-w-[1440px] 2xl:max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-10">
           
           {/* Header Section */}
           <div className="mx-auto max-w-3xl text-center mb-12 lg:mb-16">

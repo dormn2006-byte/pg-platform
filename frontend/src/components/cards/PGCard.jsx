@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { IMAGE_BASE_URL } from "../../services/api";
 import api from "../../services/api"; // Ensure you import your API service
@@ -7,20 +7,29 @@ const PGCard = ({ pg }) => {
   // Local state to track if this PG is saved by the user
   const [isSaved, setIsSaved] = useState(false);
 
+  const defaultImages = [
+    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=600&auto=format&fit=crop"
+  ];
+  const fallbackImg = defaultImages[(pg?.id || 0) % defaultImages.length];
+
   const imageUrl = pg?.profile_image
     ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
-    : pg?.image;
+    : (pg?.image || fallbackImg);
 
   const location = [pg?.area, pg?.city].filter(Boolean).join(", ");
 
-  let amenities = [];
-  try {
-    amenities = typeof pg?.amenities === "string"
-      ? JSON.parse(pg.amenities)
-      : pg?.amenities || [];
-  } catch {
-    amenities = [];
-  }
+  const amenities = useMemo(() => {
+    try {
+      return typeof pg?.amenities === "string"
+        ? JSON.parse(pg.amenities)
+        : pg?.amenities || [];
+    } catch {
+      return [];
+    }
+  }, [pg?.amenities]);
 
   // Handler for the Heart Icon
   const handleSaveToggle = async (e) => {
@@ -50,10 +59,13 @@ const PGCard = ({ pg }) => {
         <img
           src={imageUrl}
           alt={pg.title}
+          width={400}
+          height={256}
           loading="lazy"
+          decoding="async"
           onError={(e) => {
-            e.target.src =
-              "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=900&auto=format&fit=crop";
+            e.target.onerror = null;
+            e.target.src = fallbackImg;
           }}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -61,6 +73,7 @@ const PGCard = ({ pg }) => {
         {/* Favorite Heart Icon (Top Right) */}
         <button 
           onClick={handleSaveToggle} 
+          aria-label={isSaved ? "Remove from saved" : "Save this PG"}
           className="absolute right-3 top-3 p-1.5 transition-transform hover:scale-110 active:scale-95 z-10"
         >
           <svg 
@@ -98,10 +111,10 @@ const PGCard = ({ pg }) => {
         </div>
 
         {/* Location & Amenities */}
-        <p className="text-[14px] text-gray-500 truncate">
+        <p className="text-[14px] text-gray-600 truncate">
           {location || "Location not available"}
         </p>
-        <p className="text-[14px] text-gray-500 truncate">
+        <p className="text-[14px] text-gray-600 truncate">
           {amenities.slice(0, 3).join(" • ") || "Standard Amenities"}
         </p>
 
@@ -117,4 +130,4 @@ const PGCard = ({ pg }) => {
 };
 
 export { PGCard };
-export default PGCard;
+export default memo(PGCard);
