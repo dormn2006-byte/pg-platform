@@ -3,6 +3,6 @@
   "outputDirectory": "frontend/dist",
   "framework": "vite",
   "rewrites": [
-    { "source": "/((?!api|assets|icons|audio|auth-bg|favicon).*)", "destination": "/index.html" }
+    { "source": "/:path((?!api|assets|icons|audio|auth-bg|favicon).*)", "destination": "/index.html" }
   ]
 }
