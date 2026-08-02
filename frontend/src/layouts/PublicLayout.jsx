@@ -7,8 +7,8 @@ const PublicLayout = ({ children }) => {
     <div className="min-h-screen overflow-x-hidden bg-[#F0F2F5] text-[#0D3A1D] font-sans selection:bg-[#93B733] selection:text-white">
       <Navbar />
 
-      {/* Public Page Content - top padding on desktop, bottom padding on mobile (clears bottom dock) */}
-      <main className="pt-4 pb-28 lg:pt-4 lg:pb-6">{children}</main>
+      {/* Public Page Content */}
+      <main className="pt-4 pb-0 lg:pt-4 lg:pb-0">{children}</main>
 
       {/* Global Public Footer */}
       <Suspense fallback={null}>

@@ -18,13 +18,16 @@ const Navbar = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentY = window.scrollY;
+          const atBottom = (window.innerHeight + currentY) >= (document.documentElement.scrollHeight - 50);
 
-          if (currentY < 50) {
+          if (currentY < 10 || atBottom) {
             setHideMobileDock(false);
-          } else if (currentY > lastScrollY.current + 10) {
-            setHideMobileDock(false);
-          } else if (currentY < lastScrollY.current - 10) {
+          } else if (currentY > lastScrollY.current + 5) {
+            // Scroll down: Hide dock
             setHideMobileDock(true);
+          } else if (currentY < lastScrollY.current - 5) {
+            // Scroll up: Show dock
+            setHideMobileDock(false);
           }
 
           lastScrollY.current = currentY;
@@ -40,36 +43,12 @@ const Navbar = () => {
 
   // Define dock apps for core navigation links
   const dockApps = [
-    {
-      id: "/",
-      name: "Home",
-      icon: "/icons/home.webp"
-    },
-    {
-      id: "/pgs",
-      name: "Explore",
-      icon: "/icons/explore.webp"
-    },
-    {
-      id: "/blogs",
-      name: "Blogs",
-      icon: "/icons/blog.webp"
-    },
-    {
-      id: "/about",
-      name: "About Us",
-      icon: "/icons/aboutus.webp"
-    },
-    {
-      id: "/faqs",
-      name: "FAQs",
-      icon: "/icons/faq.webp"
-    },
-    {
-      id: "/contact",
-      name: "Contact",
-      icon: "/icons/contact.webp"
-    }
+    { id: "/", name: "Home", icon: "/icons/home.webp" },
+    { id: "/pgs", name: "Explore", icon: "/icons/explore.webp" },
+    { id: "/blogs", name: "Blogs", icon: "/icons/blog.webp" },
+    { id: "/about", name: "About Us", icon: "/icons/aboutus.webp" },
+    { id: "/faqs", name: "FAQs", icon: "/icons/faq.webp" },
+    { id: "/contact", name: "Contact", icon: "/icons/contact.webp" }
   ];
 
   const handleAppClick = (appId) => {
@@ -98,7 +77,7 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Center: MacOS Dock (Desktop only - Bounded to prevent button collisions) */}
+          {/* Center: MacOS Dock (Desktop only) */}
           <div className="hidden lg:flex items-center justify-center flex-1 lg:max-w-lg xl:max-w-2xl mx-4">
             <MacOSDock
               apps={dockApps}
@@ -147,7 +126,7 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Floating MacOS Dock at Bottom (Mobile/Tablet only - outside header to avoid parent interference) */}
+      {/* Floating MacOS Dock at Bottom (Mobile/Tablet only) */}
       <div className={`lg:hidden fixed bottom-4 left-0 right-0 z-50 flex justify-center pointer-events-none transition-all duration-300 ${hideMobileDock ? 'translate-y-32 opacity-0' : 'translate-y-0 opacity-100'}`}>
         <div className="pointer-events-auto">
           <MacOSDock
@@ -161,4 +140,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar;
