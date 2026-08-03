@@ -50,11 +50,14 @@ const PageLoader = () => (
   </div>
 );
 
+import { AudioProvider } from "../context/AudioContext";
+
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <Suspense fallback={null}><GlobalAudioPlayer /></Suspense>
-      <Suspense fallback={<PageLoader />}>
+    <AudioProvider>
+      <BrowserRouter>
+        <Suspense fallback={null}><GlobalAudioPlayer /></Suspense>
+        <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/pgs" element={<ExplorePGs />} />
@@ -182,7 +185,8 @@ const AppRoutes = () => {
           <Route path="*" element={<Navigate to="/pgs" replace />} />
         </Routes>
       </Suspense>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AudioProvider>
   );
 };
 

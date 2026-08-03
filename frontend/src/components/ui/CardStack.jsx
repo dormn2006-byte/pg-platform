@@ -340,9 +340,11 @@ function DefaultFanCard({ item, active }) {
       </div>
 
       {/* Optional decorative element */}
-      <div className="absolute bottom-4 right-6 text-6xl text-gray-100 opacity-50 font-serif leading-none select-none pointer-events-none">
-        "
-      </div>
+      {item.description && (
+        <div className="absolute bottom-4 right-6 text-6xl text-gray-100 opacity-50 font-serif leading-none select-none pointer-events-none">
+          "
+        </div>
+      )}
     </div>
   );
 }
