@@ -1,6 +1,6 @@
 import { useState, useEffect, memo, useCallback } from "react";
 import { featureSlides } from "../../data/homeData";
-import { Rocket, ShieldCheck, Smartphone } from "lucide-react";
+import { Rocket, ShieldCheck, Smartphone, ChevronLeft, ChevronRight } from "lucide-react";
 
 const iconMap = { instant: Rocket, verified: ShieldCheck, mobile: Smartphone };
 
@@ -25,6 +25,8 @@ const FeaturesShowcase = () => {
   }, [isMobile]);
 
   const setSlide = useCallback((idx) => setActiveIdx(idx), []);
+  const prevSlide = useCallback(() => setActiveIdx(p => (p === 0 ? featureSlides.length - 1 : p - 1)), []);
+  const nextSlide = useCallback(() => setActiveIdx(p => (p + 1) % featureSlides.length), []);
 
   return (
     <section className="mx-auto max-w-[1440px] 2xl:max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-10 py-16 sm:py-24 [content-visibility:auto] [contain-intrinsic-size:1px_400px]">
@@ -38,16 +40,26 @@ const FeaturesShowcase = () => {
       </div>
 
       {isMobile ? (
-        <div className="flex flex-col items-center w-full">
-          <div className="w-full overflow-hidden">
+        <div className="relative mt-4 w-full flex flex-col items-center px-4">
+          {/* Left Arrow Button */}
+          <button 
+            onClick={prevSlide}
+            className="absolute left-[-6px] top-[42%] -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gray-200/80 bg-white text-[#93B733] shadow-md active:scale-95 transition-all pointer-events-auto"
+            aria-label="Previous Feature"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          {/* Carousel Slider */}
+          <div className="w-full overflow-hidden rounded-[2rem]">
             <div 
-              className="flex transition-transform duration-500 ease-out"
+              className="flex transition-transform duration-500 ease-out w-full"
               style={{ transform: `translateX(-${activeIdx * 100}%)` }}
             >
               {featureSlides.map((feature, i) => {
                 const Icon = iconMap[feature.icon] || Rocket;
                 return (
-                  <div key={i} className="w-full flex-shrink-0 px-2">
+                  <div key={i} className="w-full flex-shrink-0 px-1">
                     <div className={glassCard} style={glassCardBg}>
                       {/* Dark green shiny ambient glow overlay at top right */}
                       <div className="absolute -right-8 -top-8 h-36 w-36 rounded-full bg-gradient-to-br from-[#0D3A1D]/40 via-[#93B733]/30 to-transparent blur-xl pointer-events-none" />
@@ -64,6 +76,16 @@ const FeaturesShowcase = () => {
             </div>
           </div>
 
+          {/* Right Arrow Button */}
+          <button 
+            onClick={nextSlide}
+            className="absolute right-[-6px] top-[42%] -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-gray-200/80 bg-white text-[#93B733] shadow-md active:scale-95 transition-all pointer-events-auto"
+            aria-label="Next Feature"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+
+          {/* Dots Indicator */}
           <div className="mt-6 flex gap-2">
             {featureSlides.map((_, idx) => (
               <button

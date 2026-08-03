@@ -40,12 +40,15 @@ const features = [
 ];
 
 const futureFeatures = [
-  "AI-based PG recommendations",
+  "AI-based PG recommendations & assistance",
   "Verified roommate matching",
   "Live room availability tracking",
-  "Digital rent and payment management",
+  "Digital rent & payment management",
   "Smart student community system",
-  "Location and college based PG discovery",
+  "Location & college-based PG discovery",
+  "Club & event passes",
+  "Enrollment system",
+  "PDF generation & receipt system",
 ];
 
 const About = () => {
@@ -495,16 +498,16 @@ const About = () => {
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-2.5 sm:gap-4 grid-cols-2 lg:grid-cols-3">
                 {futureFeatures.map((feature) => (
                   <div
                     key={feature}
-                    className="flex items-center gap-4 rounded-2xl border-2 border-gray-100 bg-gray-50 p-5 transition-colors hover:border-[#93B733]/30 hover:bg-white"
+                    className="flex items-center gap-2.5 sm:gap-4 rounded-xl sm:rounded-2xl border-2 border-gray-100 bg-gray-50 p-3 sm:p-5 transition-colors hover:border-[#93B733]/30 hover:bg-white"
                   >
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#93B733]/10 text-sm font-black text-[#93B733]">
+                    <div className="flex h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#93B733]/10 text-xs sm:text-sm font-black text-[#93B733]">
                       ✓
                     </div>
-                    <h3 className="text-sm font-bold text-[#0D3A1D] md:text-base">
+                    <h3 className="text-xs font-extrabold text-[#0D3A1D] sm:text-base leading-tight">
                       {feature}
                     </h3>
                   </div>
