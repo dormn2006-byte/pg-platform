@@ -198,11 +198,11 @@ export const loginUser = async (req, res) => {
     );
 
     // Asynchronous Login Alert Notification
-    if (typeof sendLoginAlert === "function") {
-      sendLoginAlert(user.email, user.full_name).catch((err) => 
-        console.error("Login notification alert failed to send:", err)
-      );
-    }
+    //if (typeof sendLoginAlert === "function") {
+     // sendLoginAlert(user.email, user.full_name).catch((err) => 
+    //    console.error("Login notification alert failed to send:", err)
+     // );
+  //  }
 
     // Return Authentication Payload
     return res.status(200).json({

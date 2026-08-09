@@ -51,6 +51,7 @@ const PageLoader = () => (
 );
 
 import { AudioProvider } from "../context/AudioContext";
+import ManageReviews from "../admin/superAdmin/ManageReviews";
 
 const AppRoutes = () => {
   return (
@@ -122,6 +123,14 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute role="superadmin">
                 <ManageStudents />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superadmin/manage-reviews"
+            element={
+              <ProtectedRoute role="superadmin">
+                <ManageReviews />
               </ProtectedRoute>
             }
           />

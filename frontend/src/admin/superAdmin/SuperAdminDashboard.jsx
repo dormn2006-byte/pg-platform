@@ -128,6 +128,14 @@ const Dashboard = () => {
           >
             Student Details
           </button>
+
+          {/* NEW BUTTON FOR REVIEWS ADDED HERE */}
+          <button
+            onClick={() => navigate("/superadmin/manage-reviews")}
+            className="rounded-xl bg-orange-500/20 px-4 py-3 text-sm font-semibold text-orange-300 transition hover:bg-orange-500/30"
+          >
+            Manage Reviews
+          </button>
         </div>
       </div>
 

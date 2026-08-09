@@ -142,12 +142,7 @@ export const getSinglePGController = async (req, res) => {
       });
     }
 
-    console.log("Returning PG Details:", {
-      id: pg.id,
-      title: pg.title,
-      profile_image: pg.profile_image,
-      galleryCount: pg.gallery?.length || 0,
-    });
+    
 
     return res.status(200).json({
       success: true,
