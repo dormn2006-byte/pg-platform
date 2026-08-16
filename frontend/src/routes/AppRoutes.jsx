@@ -19,7 +19,6 @@ const MyBookings = lazy(() => import("../pages/MyBookings"));
 const StudentDashboard = lazy(() => import("../pages/StudentDashboard"));
 const SavedPGs = lazy(() => import("../pages/SavedPGs"));
 const StudentSettings = lazy(() => import("../pages/StudentSettings"));
-const MyPG = lazy(() => import("../pages/MyPG"));
 
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("../pages/TermsConditions"));
@@ -56,6 +55,7 @@ const PageLoader = () => (
 );
 
 import { AudioProvider } from "../context/AudioContext";
+import ManageReviews from "../admin/superAdmin/ManageReviews";
 
 const AppRoutes = () => {
   return (
@@ -132,18 +132,18 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="/my-pg"
-            element={
-              <ProtectedRoute role="student">
-                <MyPG />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/superadmin/manage-students"
             element={
               <ProtectedRoute role="superadmin">
                 <ManageStudents />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superadmin/manage-reviews"
+            element={
+              <ProtectedRoute role="superadmin">
+                <ManageReviews />
               </ProtectedRoute>
             }
           />

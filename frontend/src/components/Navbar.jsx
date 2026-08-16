@@ -27,13 +27,6 @@ const Navbar = () => {
       { id: "/pgs", name: "Explore", icon: "/icons/explore.webp" },
     ];
 
-    if (user && user.role === "student") {
-      apps.push({
-        id: "/my-pg",
-        name: "My PG",
-        icon: <Building2 size={24} className="text-[#0D3A1D]" />
-      });
-    }
 
     apps.push(
       { id: "/blogs", name: "Blogs", icon: "/icons/blog.webp" },
@@ -216,18 +209,6 @@ const Navbar = () => {
                         Dashboard
                       </button>
 
-                      {user.role === "student" && (
-                        <button
-                          onClick={() => {
-                            setIsProfileMenuOpen(false);
-                            navigate("/my-pg");
-                          }}
-                          className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-extrabold text-[#0D3A1D] hover:bg-blue-50 hover:text-blue-700 transition-all"
-                        >
-                          <Building2 className="h-4 w-4 text-blue-600" />
-                          My PG
-                        </button>
-                      )}
 
                       <button
                         onClick={() => {

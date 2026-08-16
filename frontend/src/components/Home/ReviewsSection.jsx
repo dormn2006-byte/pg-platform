@@ -1,29 +1,50 @@
 import { useState, useEffect, memo, useCallback } from "react";
+import { useNavigate } from "react-router-dom"; 
 import { Star, PlusCircle, X, CheckCircle2 } from "lucide-react";
 import Container from "../../layouts/Container";
 import { CardStack } from "../ui/CardStack";
+import axios from "axios";
 
-const INITIAL_REVIEWS = [
-  { id: 1, title: "Rahul Sharma", tag: "Amity University Student", rating: 5 },
-  { id: 2, title: "Sneha Gupta", tag: "Software Engineer, Tech Park", rating: 5 },
-  { id: 3, title: "Vikram Singh", tag: "JIIT Student", rating: 5 },
-  { id: 4, title: "Priya Desai", tag: "Intern in Sector 62", rating: 5 },
-  { id: 5, title: "Ankit Verma", tag: "Working Professional", rating: 5 },
-];
+// 🚀 SMART URL: Connects to 8000 locally, and standard /api on production
+const API_BASE_URL = window.location.hostname === "localhost" 
+  ? "http://localhost:3000/api" 
+  : "/api";
 
 const ReviewsSection = () => {
-  const [reviews, setReviews] = useState(INITIAL_REVIEWS);
+  const navigate = useNavigate(); 
+  
+  // 🛡️ CRITICAL FIX: Start with an empty array. No more fake placeholders!
+  const [reviews, setReviews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
+  
   const [dimensions, setDimensions] = useState({ width: 420, height: 180 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: "",
-    tag: "",
     rating: 5,
     description: "",
   });
 
+  // Fetch Reviews on Load from Backend
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/reviews`);
+        if (response.data.success) {
+          setReviews(response.data.reviews); 
+        }
+      } catch (error) {
+        console.error("Failed to fetch reviews", error);
+      } finally {
+        // Stop loading whether it succeeds or fails
+        setIsLoading(false);
+      }
+    };
+    fetchReviews();
+  }, []);
+
+  // Window Resize Logic
   useEffect(() => {
     const handleResize = () => {
       const isMobile = window.innerWidth < 768;
@@ -34,7 +55,6 @@ const ReviewsSection = () => {
     };
 
     handleResize();
-
     let ticking = false;
     const throttledResize = () => {
       if (!ticking) {
@@ -59,27 +79,66 @@ const ReviewsSection = () => {
     setFormData((prev) => ({ ...prev, rating }));
   }, []);
 
-  const handleSubmit = useCallback((e) => {
+  // Check Login BEFORE Opening Modal
+  const handleAddReviewClick = () => {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      navigate("/login"); 
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  // Submit Handler
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title.trim() || !formData.tag.trim()) return;
+    if (!formData.description.trim()) return;
 
-    const newEntry = {
-      id: Date.now(),
-      title: formData.title.trim(),
-      tag: formData.tag.trim(),
-      rating: formData.rating,
-      description: formData.description.trim(),
-    };
+    try {
+      const token = localStorage.getItem("token");
 
-    setReviews((prev) => [newEntry, ...prev]);
-    setSubmitted(true);
+      if (!token) {
+        navigate("/login");
+        return;
+      }
 
-    setTimeout(() => {
-      setSubmitted(false);
-      setIsModalOpen(false);
-      setFormData({ title: "", tag: "", rating: 5, description: "" });
-    }, 1500);
-  }, [formData]);
+      await axios.post(
+        `${API_BASE_URL}/reviews/create`,
+        {
+          rating: formData.rating,
+          description: formData.description.trim(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Refresh the reviews directly from the backend to guarantee accuracy
+      const refresh = await axios.get(`${API_BASE_URL}/reviews`);
+      if (refresh.data.success) {
+        setReviews(refresh.data.reviews);
+      }
+
+      setSubmitted(true);
+
+      setTimeout(() => {
+        setSubmitted(false);
+        setIsModalOpen(false);
+        setFormData({ rating: 5, description: "" });
+      }, 1500);
+
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      if (error.response?.status === 401) {
+        navigate("/login");
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    }
+  };
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -106,24 +165,37 @@ const ReviewsSection = () => {
         </div>
 
         {/* 3D Interactive Review Cards Stack */}
-        <div className="mx-auto mt-8 w-full max-w-4xl flex justify-center pb-8">
-          <CardStack
-            items={reviews}
-            initialIndex={0}
-            maxVisible={5}
-            autoAdvance
-            intervalMs={3000}
-            pauseOnHover
-            showDots
-            cardWidth={dimensions.width}
-            cardHeight={dimensions.height}
-          />
+        <div className="mx-auto mt-8 w-full max-w-4xl flex justify-center pb-8 min-h-[220px]">
+          {/* 🛡️ THE FIX: Handle Loading, Empty, and Render States properly */}
+          {isLoading ? (
+             <div className="flex flex-col items-center justify-center h-full text-gray-400">
+               <p className="text-sm font-semibold animate-pulse text-[#93B733]">Loading verified reviews...</p>
+             </div>
+          ) : reviews.length > 0 ? (
+            <CardStack
+              key={reviews.length} // Extra safety layer to reset animations if length changes
+              items={reviews}
+              initialIndex={0}
+              maxVisible={Math.min(5, reviews.length)}
+              autoAdvance
+              intervalMs={3000}
+              pauseOnHover
+              showDots
+              cardWidth={dimensions.width}
+              cardHeight={dimensions.height}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-gray-400">
+              <p className="text-lg font-semibold text-gray-500">No reviews yet.</p>
+              <p className="text-sm mt-1">Be the first to share your experience!</p>
+            </div>
+          )}
         </div>
 
-        {/* Add Review Button under Card Stack */}
+        {/* Add Review Button */}
         <div className="flex justify-center pt-2">
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleAddReviewClick} 
             className="inline-flex items-center gap-2.5 rounded-2xl bg-[#0D3A1D] px-6 py-3.5 text-sm font-black text-white shadow-lg transition-all hover:bg-[#07130B] hover:scale-[1.03] active:scale-[0.98]"
           >
             <PlusCircle className="h-5 w-5 text-[#93B733]" />
@@ -140,7 +212,7 @@ const ReviewsSection = () => {
             <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
               <div>
                 <h3 className="text-xl font-black text-[#0D3A1D] tracking-tight">Write a Review</h3>
-                <p className="text-xs font-semibold text-gray-500">Share your stay experience with future students</p>
+                <p className="text-xs font-semibold text-gray-500">Your verified name will be used.</p>
               </div>
               <button
                 onClick={closeModal}
@@ -159,36 +231,7 @@ const ReviewsSection = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-[#0D3A1D] mb-1.5">
-                    Your Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="title"
-                    required
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Rahul Sharma"
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs font-semibold text-[#0D3A1D] outline-none focus:border-[#93B733] focus:bg-white transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-[#0D3A1D] mb-1.5">
-                    College / Profession Tag *
-                  </label>
-                  <input
-                    type="text"
-                    name="tag"
-                    required
-                    value={formData.tag}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Amity University Student"
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs font-semibold text-[#0D3A1D] outline-none focus:border-[#93B733] focus:bg-white transition-all"
-                  />
-                </div>
-
+                
                 <div>
                   <label className="block text-xs font-extrabold uppercase tracking-wider text-[#0D3A1D] mb-1.5">
                     Rating
@@ -202,7 +245,7 @@ const ReviewsSection = () => {
                         className="p-1 transition-transform hover:scale-110"
                       >
                         <Star
-                          className={`h-6 w-6 ${
+                          className={`h-8 w-8 ${
                             star <= formData.rating
                               ? "fill-[#93B733] text-[#93B733]"
                               : "fill-gray-200 text-gray-200"
@@ -215,14 +258,15 @@ const ReviewsSection = () => {
 
                 <div>
                   <label className="block text-xs font-extrabold uppercase tracking-wider text-[#0D3A1D] mb-1.5">
-                    Review Details (Optional)
+                    Review Details *
                   </label>
                   <textarea
                     name="description"
-                    rows={3}
+                    required
+                    rows={4}
                     value={formData.description}
                     onChange={handleInputChange}
-                    placeholder="Tell us about your experience..."
+                    placeholder="Tell us what you loved about your stay..."
                     className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs font-semibold text-[#0D3A1D] outline-none focus:border-[#93B733] focus:bg-white transition-all resize-none"
                   />
                 </div>

@@ -191,7 +191,7 @@ export function CardStack({
                 <m.div
                   key={item.id}
                   className={cn(
-                    "absolute bottom-0 rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-xl",
+                    "absolute bottom-0 rounded-3xl border border-gray-100 bg-white overflow-hidden shadow-2xl",
                     "will-change-transform select-none",
                     isActive
                       ? "cursor-grab active:cursor-grabbing"
@@ -263,12 +263,12 @@ export function CardStack({
                   key={it.id}
                   onClick={() => setActive(idx)}
                   className={cn(
-                    "h-2 w-2 rounded-full transition",
+                    "h-2.5 w-2.5 rounded-full transition-all duration-300",
                     on
-                      ? "bg-[#93B733]"
+                      ? "bg-[#93B733] scale-125"
                       : "bg-[#93B733]/30 hover:bg-[#93B733]/50"
                   )}
-                  aria-label={`Go to ${it.title}`}
+                  aria-label={`Go to review ${idx + 1}`}
                 />
               );
             })}
@@ -278,7 +278,7 @@ export function CardStack({
               href={activeItem.href}
               target="_blank"
               rel="noreferrer"
-              className="text-gray-400 hover:text-[#93B733] transition"
+              className="text-gray-400 hover:text-[#93B733] transition ml-2"
               aria-label="Open link"
             >
               <SquareArrowOutUpRight className="h-4 w-4" />
@@ -290,59 +290,103 @@ export function CardStack({
   );
 }
 
-function DefaultFanCard({ item }) {
-  return (
-    <div className="relative flex h-full w-full flex-col justify-between rounded-2xl bg-white p-6">
-      <div className="flex flex-col gap-4">
-        {/* Header: Avatar and Info */}
-        <div className="flex items-center gap-3">
-          {item.imageSrc ? (
-            <img
-              src={item.imageSrc}
-              alt={item.title}
-              width={48}
-              height={48}
-              className="h-12 w-12 rounded-full object-cover shadow-sm border-2 border-white"
-              draggable={false}
-              loading="lazy"
-              decoding="async"
-            />
-          ) : (
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#93B733]/10 text-lg font-bold text-[#93B733]">
-              {item.title.charAt(0)}
-            </div>
-          )}
-          
-          <div className="flex flex-col">
-            <h3 className="text-base font-bold text-[#0D3A1D] leading-tight">
-              {item.title}
-            </h3>
-            {item.tag && (
-              <span className="text-xs font-medium text-gray-500">
-                {item.tag}
-              </span>
-            )}
-          </div>
-        </div>
+// 🚀 THIS IS THE COMPLETELY REWRITTEN CARD UI
+function DefaultFanCard({ item, active }) {
+  // Ensure we have a valid rating (fallback to 5 if undefined)
+  const rating = item.rating || 5;
 
-        {/* Stars */}
+
+  return (
+    <div className="relative flex h-full w-full flex-col justify-between rounded-3xl bg-white p-6 sm:p-8">
+      
+      {/* Top Row: Dynamic Stars & Badges */}
+      <div className="flex items-center justify-between mb-4 z-10">
+        
+        {/* Dynamic Stars */}
         <div className="flex gap-1">
-          {[...Array(5)].map((_, i) => (
-            <Star key={i} className="h-4 w-4 fill-[#93B733] text-[#93B733]" />
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={cn(
+                "h-4 w-4 sm:h-5 sm:w-5 transition-colors",
+                star <= rating
+                  ? "fill-[#93B733] text-[#93B733]" // Colored star
+                  : "fill-gray-100 text-gray-200"   // Empty star
+              )}
+            />
           ))}
         </div>
 
-        {/* Review Text */}
-        {item.description ? (
-          <p className="text-sm text-gray-600 leading-relaxed italic">
-            "{item.description}"
-          </p>
-        ) : null}
+        {/* Dynamic Badges based on Score */}
+        {rating === 5 && (
+          <span className="px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-green-700 bg-green-100 border border-green-200 rounded-full shadow-sm">
+            Exceptional 🌟
+          </span>
+        )}
+        {rating === 4 && (
+          <span className="px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-blue-700 bg-blue-100 border border-blue-200 rounded-full shadow-sm">
+            Great Stay ✨
+          </span>
+        )}
+        {rating === 3 && (
+          <span className="px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-yellow-700 bg-yellow-100 border border-yellow-200 rounded-full shadow-sm">
+            Average 😐
+          </span>
+        )}
+        {rating <= 2 && (
+          <span className="px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-red-700 bg-red-100 border border-red-200 rounded-full shadow-sm">
+            Needs Work 🚩
+          </span>
+        )}
       </div>
 
-      {/* Optional decorative element */}
+      {/* Middle: Review Description */}
+      <div className="flex-grow z-10">
+        {item.description ? (
+          <p className="text-sm sm:text-base font-medium text-gray-700 line-clamp-4 leading-relaxed italic">
+            "{item.description}"
+          </p>
+        ) : (
+          <p className="text-sm font-medium text-gray-400 italic">
+            No description provided by user.
+          </p>
+        )}
+      </div>
+
+      {/* Bottom: User Info (Verified from Database) */}
+      <div className="mt-4 pt-4 border-t border-gray-100 flex items-center gap-3.5 z-10">
+        {item.imageSrc ? (
+          <img
+            src={item.imageSrc}
+            alt={item.title}
+            width={44}
+            height={44}
+            className="h-11 w-11 rounded-full object-cover shadow-sm border-2 border-white"
+            draggable={false}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#93B733]/15 text-lg font-black text-[#0D3A1D]">
+            {item.title ? item.title.charAt(0).toUpperCase() : "U"}
+          </div>
+        )}
+        
+        <div className="flex flex-col">
+          <h3 className="text-sm font-black text-[#0D3A1D] leading-tight">
+            {item.title || "Verified User"}
+          </h3>
+          {item.tag && (
+            <span className="text-xs font-semibold text-gray-500 mt-0.5">
+              {item.tag}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Giant Decorative Background Quote Mark */}
       {item.description && (
-        <div className="absolute bottom-4 right-6 text-6xl text-gray-100 opacity-50 font-serif leading-none select-none pointer-events-none">
+        <div className="absolute bottom-12 right-6 text-8xl text-gray-50 opacity-70 font-serif leading-none select-none pointer-events-none">
           "
         </div>
       )}

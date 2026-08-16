@@ -6,8 +6,8 @@ import authRoutes from "./routes/authRoutes.js";
 import pgRoutes from "./routes/pgRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js";
-import studentPortalRoutes from './routes/studentPortalRoutes.js';
 import fs from "fs";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 
 // deployment test
@@ -19,6 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/pg", pgRoutes);
+app.use("/api/reviews", reviewRoutes); // for reviews
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -35,7 +36,6 @@ app.use(
 
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/superadmin", superAdminRoutes);
-app.use('/api/student-portal', studentPortalRoutes);
 app.get("/debug/uploads", (req, res) => {
 
   const uploadPath = path.join(__dirname, "uploads");
