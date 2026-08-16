@@ -1,11 +1,12 @@
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { useContext, useState, useEffect, useRef, useCallback, memo } from "react";
+import { useContext, useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { AudioContext } from "../context/AudioContext";
+import { AudioContext } from "../context/audioContextValue";
 import MacOSDock from "./ui/mac-os-dock";
-import { ChevronDown, LayoutDashboard, LogOut, Music, Pause, Play, SkipForward } from "lucide-react";
+import { ThemeSwitch } from "./ui/theme-switch-button";
+import { ChevronDown, LayoutDashboard, LogOut, Music, Pause, Play, SkipForward, Building2 } from "lucide-react";
 
-const DOCK_APPS = [
+const DEFAULT_DOCK_APPS = [
   { id: "/", name: "Home", icon: "/icons/home.webp" },
   { id: "/pgs", name: "Explore", icon: "/icons/explore.webp" },
   { id: "/blogs", name: "Blogs", icon: "/icons/blog.webp" },
@@ -19,6 +20,30 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
   const audioContext = useContext(AudioContext);
+
+  const dockApps = useMemo(() => {
+    const apps = [
+      { id: "/", name: "Home", icon: "/icons/home.webp" },
+      { id: "/pgs", name: "Explore", icon: "/icons/explore.webp" },
+    ];
+
+    if (user && user.role === "student") {
+      apps.push({
+        id: "/my-pg",
+        name: "My PG",
+        icon: <Building2 size={24} className="text-[#0D3A1D]" />
+      });
+    }
+
+    apps.push(
+      { id: "/blogs", name: "Blogs", icon: "/icons/blog.webp" },
+      { id: "/about", name: "About Us", icon: "/icons/aboutus.webp" },
+      { id: "/faqs", name: "FAQs", icon: "/icons/faq.webp" },
+      { id: "/contact", name: "Contact", icon: "/icons/contact.webp" }
+    );
+
+    return apps;
+  }, [user]);
 
   const [hideMobileDock, setHideMobileDock] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -100,7 +125,7 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center justify-center flex-1 lg:max-w-lg xl:max-w-2xl mx-4">
             <MacOSDock
-              apps={DOCK_APPS}
+              apps={dockApps}
               onAppClick={handleAppClick}
               openApps={[location.pathname]}
             />
@@ -151,73 +176,90 @@ const Navbar = () => {
             )}
 
             {user ? (
-              <div className="relative" ref={profileMenuRef}>
-                <button
-                  onClick={() => setIsProfileMenuOpen(prev => !prev)}
-                  className="flex items-center gap-2.5 rounded-2xl border-2 border-gray-200/80 bg-white/90 px-3 py-1.5 shadow-sm hover:border-[#93B733]/40 hover:shadow-md transition-all duration-200 active:scale-[0.98]"
-                  aria-label="User Profile Menu"
-                >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D3A1D] text-white font-black text-sm uppercase shadow-sm">
-                    {user.name ? user.name.charAt(0) : (user.email ? user.email.charAt(0) : "U")}
-                  </div>
-                  <div className="hidden sm:flex flex-col text-left leading-tight">
-                    <span className="text-xs font-black text-[#0D3A1D] truncate max-w-[100px]">
-                      {user.name || "My Account"}
-                    </span>
-                    <span className="text-[10px] font-extrabold uppercase text-[#4E700F]">
-                      {user.role || "User"}
-                    </span>
-                  </div>
-                  <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${isProfileMenuOpen ? "rotate-180" : ""}`} />
-                </button>
-
-                {isProfileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-gray-200/80 bg-white/95 backdrop-blur-xl p-2 shadow-xl z-50 animate-[fadeIn_0.15s_ease-out_forwards]">
-                    <div className="px-3 py-2 border-b border-gray-100 mb-1">
-                      <p className="text-xs font-black text-[#0D3A1D] truncate">{user.name || "User Account"}</p>
-                      <p className="text-[10px] font-semibold text-gray-500 truncate">{user.email}</p>
+              <div className="flex items-center gap-3">
+                <ThemeSwitch />
+                <div className="relative" ref={profileMenuRef}>
+                  <button
+                    onClick={() => setIsProfileMenuOpen(prev => !prev)}
+                    className="flex items-center gap-2.5 rounded-2xl border-2 border-gray-200/80 bg-white/90 px-3 py-1.5 shadow-sm hover:border-[#93B733]/40 hover:shadow-md transition-all duration-200 active:scale-[0.98]"
+                    aria-label="User Profile Menu"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D3A1D] text-white font-black text-sm uppercase shadow-sm">
+                      {user.name ? user.name.charAt(0) : (user.email ? user.email.charAt(0) : "U")}
                     </div>
+                    <div className="hidden sm:flex flex-col text-left leading-tight">
+                      <span className="text-xs font-black text-[#0D3A1D] truncate max-w-[100px]">
+                        {user.name || "My Account"}
+                      </span>
+                      <span className="text-[10px] font-extrabold uppercase text-[#4E700F]">
+                        {user.role || "User"}
+                      </span>
+                    </div>
+                    <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${isProfileMenuOpen ? "rotate-180" : ""}`} />
+                  </button>
 
-                    <button
-                      onClick={() => {
-                        setIsProfileMenuOpen(false);
-                        navigate(getDashboardPath());
-                      }}
-                      className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-extrabold text-[#0D3A1D] hover:bg-[#93B733]/10 hover:text-[#4E700F] transition-all"
-                    >
-                      <LayoutDashboard className="h-4 w-4 text-[#93B733]" />
-                      Dashboard
-                    </button>
+                  {isProfileMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-gray-200/80 bg-white/95 backdrop-blur-xl p-2 shadow-xl z-50 animate-[fadeIn_0.15s_ease-out_forwards]">
+                      <div className="px-3 py-2 border-b border-gray-100 mb-1">
+                        <p className="text-xs font-black text-[#0D3A1D] truncate">{user.name || "User Account"}</p>
+                        <p className="text-[10px] font-semibold text-gray-500 truncate">{user.email}</p>
+                      </div>
 
-                    <button
-                      onClick={() => {
-                        setIsProfileMenuOpen(false);
-                        logout();
-                        navigate("/");
-                      }}
-                      className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-extrabold text-red-600 hover:bg-red-50 transition-all mt-1"
-                    >
-                      <LogOut className="h-4 w-4 text-red-500" />
-                      Logout
-                    </button>
-                  </div>
-                )}
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false);
+                          navigate(getDashboardPath());
+                        }}
+                        className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-extrabold text-[#0D3A1D] hover:bg-[#93B733]/10 hover:text-[#4E700F] transition-all"
+                      >
+                        <LayoutDashboard className="h-4 w-4 text-[#93B733]" />
+                        Dashboard
+                      </button>
+
+                      {user.role === "student" && (
+                        <button
+                          onClick={() => {
+                            setIsProfileMenuOpen(false);
+                            navigate("/my-pg");
+                          }}
+                          className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-extrabold text-[#0D3A1D] hover:bg-blue-50 hover:text-blue-700 transition-all"
+                        >
+                          <Building2 className="h-4 w-4 text-blue-600" />
+                          My PG
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false);
+                          logout();
+                          navigate("/");
+                        }}
+                        className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-extrabold text-red-600 hover:bg-red-50 transition-all mt-1"
+                      >
+                        <LogOut className="h-4 w-4 text-red-500" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
-              <>
+              <div className="flex items-center gap-3">
                 <Link
                   to="/auth?role=owner&mode=signup"
                   className="hidden sm:inline-flex rounded-2xl border-2 border-gray-200 bg-white px-6 py-2.5 text-base font-extrabold text-[#0D3A1D] transition-all hover:bg-gray-50 hover:border-gray-300"
                 >
                   Become an Owner
                 </Link>
+                <ThemeSwitch />
                 <Link
                   to="/auth"
                   className="rounded-2xl bg-[#0D3A1D] px-6 py-2.5 text-base font-extrabold text-white transition-all hover:bg-[#07130B] shadow-[0_4px_12px_rgba(13,58,29,0.15)]"
                 >
                   Sign In
                 </Link>
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -226,7 +268,7 @@ const Navbar = () => {
       <div className={`lg:hidden fixed bottom-4 left-0 right-0 z-50 flex justify-center pointer-events-none transition-all duration-300 ${hideMobileDock ? 'translate-y-32 opacity-0' : 'translate-y-0 opacity-100'}`}>
         <div className="pointer-events-auto">
           <MacOSDock
-            apps={DOCK_APPS}
+            apps={dockApps}
             onAppClick={handleAppClick}
             openApps={[location.pathname]}
           />

@@ -1,167 +1,221 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import api, { IMAGE_BASE_URL } from "../../services/api";
+import {
+  CheckCircle2,
+  XCircle,
+  Search,
+  Building2,
+  Phone,
+  Mail,
+  UserCheck,
+  Eye,
+  BookOpenCheck
+} from "lucide-react";
+import api from "../../services/api";
 
 const Bookings = () => {
   const navigate = useNavigate();
-  const [pgs, setPgs] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
-  useEffect(() => {
-    const fetchOwnerPGs = async () => {
-      try {
-        const { data } = await api.get("/pg/owner/my-pgs");
-        setPgs(data.pgs || []);
-      } catch (error) {
-        console.error("Bookings Fetch Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOwnerPGs();
+  const fetchBookings = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data } = await api.get("/bookings/owner-bookings");
+      setBookings(data.bookings || []);
+    } catch (error) {
+      console.error("Bookings Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const totalPGs = pgs.length;
-  const approvedPGs = pgs.filter(pg => pg.status === "approved").length;
-  const pendingPGs = pgs.filter(pg => pg.status === "pending").length;
-  const rejectedPGs = pgs.filter(pg => pg.status === "rejected").length;
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
+  const handleStatusChange = useCallback(async (bookingId, newStatus) => {
+    try {
+      await api.put(`/bookings/${bookingId}/status`, { status: newStatus });
+      fetchBookings();
+    } catch (error) {
+      console.error("Update Error:", error);
+      alert("Failed to update status in database");
+    }
+  }, [fetchBookings]);
+
+  // Counts for decision tabs
+  const pendingCount = useMemo(() => bookings.filter((b) => b.status === "pending").length, [bookings]);
+  const approvedCount = useMemo(() => bookings.filter((b) => b.status === "approved").length, [bookings]);
+
+  // Filtered List
+  const filteredBookings = useMemo(() => {
+    return bookings.filter((b) => {
+      const studentName = b.student_name || "";
+      const pgTitle = b.title || b.pg_title || "";
+      const matchesSearch =
+        studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pgTitle.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        selectedStatus === "all" ? true : b.status?.toLowerCase() === selectedStatus;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [bookings, searchTerm, selectedStatus]);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500">
-              Booking Management
-            </p>
-
-            <h1 className="mt-2 text-3xl font-black tracking-tight text-gray-900">
-              PG Bookings
-            </h1>
-
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-gray-500">
-              Track all PG bookings, payment confirmations and student move-in schedules.
-            </p>
-          </div>
-
-          <button className="rounded-2xl bg-black px-6 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]">
-            Export Report
-          </button>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid gap-5 md:grid-cols-4">
-        <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Total PGs</p>
-          <h2 className="mt-3 text-4xl font-black text-gray-900">{totalPGs}</h2>
-        </div>
-
-        <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Approved PGs</p>
-          <h2 className="mt-3 text-4xl font-black text-green-600">{approvedPGs}</h2>
-        </div>
-
-        <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Pending PGs</p>
-          <h2 className="mt-3 text-4xl font-black text-yellow-500">{pendingPGs}</h2>
-        </div>
-
-        <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-500">Rejected PGs</p>
-          <h2 className="mt-3 text-4xl font-black text-blue-600">{rejectedPGs}</h2>
-        </div>
-      </div>
-
-      {/* Bookings List */}
-      <div className="space-y-5">
-        {loading ? (
-          <div className="rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-            Loading PGs...
-          </div>
-        ) : pgs.length === 0 ? (
-          <div className="rounded-3xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-            No PGs Found
-          </div>
-        ) : (
-          pgs.map((pg) => (
-            <div
-              key={pg.id}
-              className="flex flex-col gap-5 rounded-[30px] border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl lg:flex-row lg:items-center"
+    <div className="space-y-6 max-w-[1600px] mx-auto">
+      
+      {/* Big Bold Filter Tabs & Search Bar */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] p-5 shadow-sm">
+        
+        {/* Large Prominent Filter Tabs */}
+        <div className="flex items-center gap-2.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+          {[
+            { id: "all", label: "All Applications", count: bookings.length },
+            { id: "pending", label: "Needs Decision", count: pendingCount },
+            { id: "approved", label: "Approved Tenants", count: approvedCount },
+            { id: "rejected", label: "Declined", count: bookings.filter((b) => b.status === "rejected").length },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setSelectedStatus(tab.id)}
+              className={`flex items-center gap-2.5 rounded-2xl px-5 py-3.5 text-sm font-black transition-all shrink-0 ${
+                selectedStatus === tab.id
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25"
+                  : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"
+              }`}
             >
-              <div className="flex items-center gap-4 lg:w-[320px]">
-                <img
-                  src={
-                    pg.profile_image
-                      ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
-                      : "https://via.placeholder.com/150"
-                  }
-                  alt={pg.title}
-                  className="h-20 w-20 rounded-2xl object-cover"
-                />
+              <span>{tab.label}</span>
+              <span className={`rounded-xl px-2.5 py-0.5 text-xs font-black ${
+                selectedStatus === tab.id ? "bg-white/20 text-white" : "bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-gray-200"
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </div>
 
-                <div>
-                  <h2 className="text-2xl font-black tracking-tight text-gray-900">
-                    {pg.title}
-                  </h2>
-
-                  <p className="mt-1 text-sm text-gray-500">
-                    {pg.city}
-                  </p>
-
-                  <p className="mt-1 text-sm font-medium text-gray-700">
-                    {pg.available_rooms || 0} Rooms Available
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid flex-1 gap-4 md:grid-cols-4">
-                <div className="rounded-2xl bg-gray-100 p-4">
-                  <p className="text-xs font-medium text-gray-500">PG Name</p>
-                  <h3 className="mt-2 text-lg font-bold text-gray-900">{pg.title}</h3>
-                </div>
-
-                <div className="rounded-2xl bg-gray-100 p-4">
-                  <p className="text-xs font-medium text-gray-500">Price</p>
-                  <h3 className="mt-2 text-lg font-bold text-gray-900">₹{pg.price}</h3>
-                </div>
-
-                <div className="rounded-2xl bg-gray-100 p-4">
-                  <p className="text-xs font-medium text-gray-500">Status</p>
-                  <span className={`mt-3 inline-flex rounded-full border px-4 py-2 text-xs font-bold ${pg.status === "approved" ? "bg-green-100 text-green-700 border-green-200" : pg.status === "rejected" ? "bg-red-100 text-red-700 border-red-200" : "bg-yellow-100 text-yellow-700 border-yellow-200"}`}>
-                    {pg.status}
-                  </span>
-                </div>
-
-                <div className="rounded-2xl bg-gray-100 p-4">
-                  <p className="text-xs font-medium text-gray-500">Created</p>
-                  <h3 className="mt-2 text-sm font-bold text-gray-900">
-                    {pg.created_at ? new Date(pg.created_at).toLocaleDateString() : "N/A"}
-                  </h3>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-3 lg:w-[260px] lg:justify-end">
-                <button
-                  onClick={() => navigate(`/pg/${pg.id}`)}
-                  className="rounded-2xl bg-black px-5 py-3 text-sm font-semibold text-white transition hover:scale-[1.02]"
-                >
-                  View PG
-                </button>
-
-                <button
-                  onClick={() => navigate(`/owner/edit-pg/${pg.id}`)}
-                  className="rounded-2xl border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
-                >
-                  Edit PG
-                </button>
-              </div>
-            </div>
-          ))
-        )}
+        {/* Large Search Field */}
+        <div className="relative w-full lg:w-80">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+          <input
+            type="text"
+            placeholder="Search by student or property..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded-2xl border border-gray-200 dark:border-white/15 bg-gray-50 dark:bg-white/5 py-3.5 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-[#141b2d]"
+          />
+        </div>
       </div>
+
+      {/* Booking Decision Cards - Big, Bold & Highly Understandable */}
+      {loading ? (
+        <div className="rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] p-16 text-center shadow-sm">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 dark:border-gray-800 border-t-blue-500 mx-auto mb-4"></div>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Loading student applications...</p>
+        </div>
+      ) : filteredBookings.length === 0 ? (
+        <div className="rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] p-16 text-center shadow-sm">
+          <BookOpenCheck size={48} className="text-gray-400 mx-auto mb-4" />
+          <h3 className="text-xl font-black text-gray-900 dark:text-white">No booking applications found</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Student booking requests will appear here once submitted.</p>
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {filteredBookings.map((b) => (
+            <div
+              key={b.id}
+              className={`flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 rounded-3xl border p-6 transition-all duration-200 ${
+                b.status === "pending"
+                  ? "border-amber-500/40 bg-amber-500/[0.03] shadow-md"
+                  : "border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220]"
+              }`}
+            >
+              {/* Left Profile & Contact Details */}
+              <div className="flex items-start gap-4 flex-1 min-w-0">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-teal-400 text-xl font-black text-white shadow-md">
+                  {(b.student_name || "S").charAt(0).toUpperCase()}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 flex-wrap mb-1">
+                    <h3 className="text-xl font-black text-gray-900 dark:text-white truncate leading-none">
+                      {b.student_name || "Student Applicant"}
+                    </h3>
+                    <span className="text-xs font-bold text-gray-400">#BK-{b.id}</span>
+                  </div>
+
+                  <p className="text-sm font-black text-blue-600 dark:text-blue-400 flex items-center gap-1.5 mb-2 mt-1">
+                    <Building2 size={16} />
+                    <span>{b.title || b.pg_title || "PG Property"}</span>
+                  </p>
+
+                  <div className="flex items-center gap-4 text-xs font-bold text-gray-500 dark:text-gray-400 flex-wrap">
+                    {b.student_email && (
+                      <span className="flex items-center gap-1.5">
+                        <Mail size={14} className="text-blue-500" />
+                        {b.student_email}
+                      </span>
+                    )}
+                    {b.student_phone && (
+                      <span className="flex items-center gap-1.5">
+                        <Phone size={14} className="text-emerald-500" />
+                        {b.student_phone}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Toolbar - Prominent Big Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto shrink-0 border-t lg:border-t-0 border-gray-100 dark:border-white/10 pt-4 lg:pt-0">
+                
+                {b.status === "pending" ? (
+                  <>
+                    <button
+                      onClick={() => handleStatusChange(b.id, "approved")}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 px-6 py-3.5 text-sm font-black text-white transition shadow-lg shadow-emerald-600/25"
+                    >
+                      <CheckCircle2 size={18} />
+                      <span>Approve Booking</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleStatusChange(b.id, "rejected")}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-rose-600 hover:bg-rose-500 px-5 py-3.5 text-sm font-black text-white transition shadow-lg shadow-rose-600/25"
+                    >
+                      <XCircle size={18} />
+                      <span>Decline</span>
+                    </button>
+                  </>
+                ) : (
+                  <span className={`inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-xs font-black uppercase tracking-wider border ${
+                    b.status === "approved"
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
+                      : "bg-rose-500/20 text-rose-400 border-rose-500/40"
+                  }`}>
+                    {b.status === "approved" ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                    <span>{b.status}</span>
+                  </span>
+                )}
+
+                <button
+                  onClick={() => navigate(`/pg/${b.pg_id}`)}
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 dark:border-white/15 bg-gray-50 dark:bg-white/5 px-5 py-3.5 text-sm font-black text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                >
+                  <Eye size={16} />
+                  <span>View PG</span>
+                </button>
+              </div>
+
+            </div>
+          ))}
+        </div>
+      )}
+
     </div>
   );
 };

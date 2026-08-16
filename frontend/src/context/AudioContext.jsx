@@ -1,7 +1,6 @@
-import { createContext, useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { playlist } from "../data/playlist";
-
-export const AudioContext = createContext();
+import { AudioContext } from "./audioContextValue";
 
 export const AudioProvider = ({ children }) => {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
@@ -13,7 +12,7 @@ export const AudioProvider = ({ children }) => {
     if (isPlaying && audioRef.current) {
       audioRef.current.play().catch(e => console.error("Playback prevented:", e));
     }
-  }, [currentTrackIndex]);
+  }, [currentTrackIndex, isPlaying]);
 
   const togglePlay = useCallback(() => {
     if (!audioRef.current) return;

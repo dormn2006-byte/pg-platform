@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../services/api";
@@ -62,15 +62,6 @@ const Auth = () => {
   const [authMode, setAuthMode] = useState(modeParam === "signup" ? "signup" : "login");
   const [userRole, setUserRole] = useState(roleParam === "owner" ? "owner" : "student");
 
-  useEffect(() => {
-    if (roleParam === "owner" || roleParam === "student") {
-      setUserRole(roleParam);
-    }
-    if (modeParam === "signup" || modeParam === "login") {
-      setAuthMode(modeParam);
-    }
-  }, [roleParam, modeParam]);
-  
   // Dual Auth Login States
   const [loginMethod, setLoginMethod] = useState("password"); // 'password' or 'otp'
   const [otpSent, setOtpSent] = useState(false);
@@ -156,7 +147,7 @@ const Auth = () => {
           } else if (user.role === "owner") {
             navigate("/owner/dashboard");
           } else {
-            navigate("/");
+            navigate("/student/dashboard");
           }
         }
       } else {
@@ -180,7 +171,7 @@ const Auth = () => {
           if (userRole === "owner") {
             navigate("/owner/dashboard");
           } else {
-            navigate("/");
+            navigate("/student/dashboard");
           }
         }
       }
@@ -227,9 +218,9 @@ const Auth = () => {
       <nav className="relative z-20 md:bg-transparent px-5 py-4 md:px-8 flex justify-between items-center bg-white/70 backdrop-blur-xl border-b border-white/20 md:border-none">
         <div onClick={() => navigate("/")} className="flex cursor-pointer items-center gap-3 group">
           <img 
-            src="https://i.ibb.co/TqtkM8HV/logo.jpg" 
+            src="/logo-sm.webp" 
             alt="Dormn Logo" 
-            className="h-10 w-10 rounded-xl object-cover shadow-lg shadow-black/10 transition-transform group-hover:scale-105" 
+            className="h-10 w-10 rounded-xl object-contain shadow-lg shadow-black/10 transition-transform group-hover:scale-105" 
           />
           <h1 className="text-xl font-black tracking-tight text-[#0D3A1D] md:text-white transition-colors">Dormn</h1>
         </div>

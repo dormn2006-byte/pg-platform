@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import pgRoutes from "./routes/pgRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js";
+import studentPortalRoutes from './routes/studentPortalRoutes.js';
 import fs from "fs";
 
 
@@ -34,6 +35,7 @@ app.use(
 
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/superadmin", superAdminRoutes);
+app.use('/api/student-portal', studentPortalRoutes);
 app.get("/debug/uploads", (req, res) => {
 
   const uploadPath = path.join(__dirname, "uploads");

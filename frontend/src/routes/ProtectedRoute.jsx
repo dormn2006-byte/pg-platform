@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children, role }) => {
 
   // User not logged in
   if (!token || !user) {
-    return <Navigate to="/login-selection" replace />;
+    return <Navigate to="/auth" replace />;
   }
   console.log("ProtectedRoute User:", user);
 console.log("Required Role:", role);

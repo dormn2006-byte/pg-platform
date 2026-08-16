@@ -40,8 +40,17 @@ const FeaturedListings = ({ featuredPGs = [], loading = false }) => {
       <Container className="pl-3 sm:pl-4 md:px-8 lg:px-12">
         <ListingSlider>
           {loading ? (
-            <div className="px-3 py-10 text-sm text-gray-500 sm:px-4">
-              Loading PG listings...
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex flex-col gap-3.5 w-full">
+                  <div className="w-full aspect-[20/19] rounded-2xl bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 animate-pulse" />
+                  <div className="flex flex-col gap-2 px-1">
+                    <div className="h-4 w-3/4 rounded-md bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                    <div className="h-3 w-1/2 rounded-md bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                    <div className="h-4 w-1/3 rounded-md bg-gray-200 dark:bg-gray-800 animate-pulse mt-1" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : featuredPGs.length > 0 ? (
             featuredPGs.map((pg) => (

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Container from "../layouts/Container";
 import PublicLayout from "../layouts/PublicLayout";
 import SEOHead from "../components/common/SEOHead";
-import { GraduationCap, Building2, ShieldCheck, MapPin, ArrowRight, Sparkles } from "lucide-react";
+import { GraduationCap, Building2, ArrowRight, Sparkles } from "lucide-react";
 
 const guides = [
   {
@@ -50,9 +50,9 @@ const BlogList = () => {
         
         {/* Full-Width Dark Green Hero Banner (Matching Screenshot Exactly) */}
         <section className="relative w-full bg-[#0D3A1D] py-14 sm:py-18 lg:py-20 text-white overflow-hidden">
-          {/* Subtle Zen Glow background */}
-          <div className="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-[#93B733]/15 blur-[5rem] pointer-events-none" />
-          <div className="absolute -left-20 -bottom-20 h-96 w-96 rounded-full bg-[#93B733]/10 blur-[5rem] pointer-events-none" />
+          {/* Deep Dark Green Ambient Glow background */}
+          <div className="absolute -right-10 top-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-gradient-to-l from-[#4E700F]/45 via-[#7A9C24]/25 to-transparent blur-[5.5rem] pointer-events-none opacity-90" />
+          <div className="absolute -left-20 -bottom-20 h-96 w-96 rounded-full bg-[#0D3A1D] blur-[5rem] pointer-events-none" />
 
           <Container className="max-w-[1440px] 2xl:max-w-[1600px] px-4 sm:px-6 md:px-8 lg:px-10 relative z-10">
             <div className="max-w-4xl">

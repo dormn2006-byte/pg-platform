@@ -17,7 +17,7 @@ const PGDetails = () => {
   const pgId = searchParams.get("id");
 
   const [pg, setPg] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(pgId));
   const [error, setError] = useState("");
 
   const { token } = useContext(AuthContext);
@@ -61,16 +61,20 @@ const PGDetails = () => {
       }
     };
 
-    if (!pgId) {
-       setError("PG ID is missing in URL");
-       setLoading(false);
-       return;
-    }
-
-    if (token) {
+    if (pgId && token) {
       fetchPGDetails();
     }
   }, [pgId, token]);
+
+  if (!pgId) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-8 py-6 text-red-300">
+          PG ID is missing in URL
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

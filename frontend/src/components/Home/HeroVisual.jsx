@@ -9,11 +9,11 @@ const HeroVisual = ({ featuredPG }) => {
       <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-[#93B733]/15 blur-[2rem] md:h-80 md:w-80"></div>
       <div className="absolute -bottom-10 -left-10 h-64 w-64 rounded-full bg-[#93B733]/15 blur-[2rem] md:h-80 md:w-80"></div>
 
-      {/* Main Physical Frame (Solves the white-on-white border issue) */}
-      <div className="relative z-10 rounded-[2.5rem] border border-transparent bg-white p-2 shadow-[0_20px_60px_-15px_rgba(147,183,51,0.3)] transition-all duration-700 hover:scale-[1.02] hover:border-[#93B733]/60 md:rounded-[3rem] md:p-3">
+      {/* Main Physical Frame with White Background & Cursor Hover Green Glow Animation */}
+      <div className="group/frame relative z-10 rounded-[2.5rem] border-2 border-white bg-white p-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.1)] transition-all duration-500 ease-in-out hover:scale-[1.02] hover:border-[#93B733] hover:shadow-[0_0_50px_rgba(147,183,51,0.65)] md:rounded-[3rem] md:p-3.5">
         
-        {/* Inner Image Container (Slightly shorter as requested) */}
-        <div className="group relative h-[380px] w-full overflow-hidden rounded-[2rem] md:h-[500px] md:rounded-[2.5rem]">
+        {/* Inner Image Container */}
+        <div className="group relative h-[380px] w-full overflow-hidden rounded-[2rem] border border-white/50 transition-all duration-500 ease-in-out group-hover/frame:border-[#93B733]/80 md:h-[500px] md:rounded-[2.5rem]">
           
           <img
             src={
@@ -63,12 +63,12 @@ const HeroVisual = ({ featuredPG }) => {
           {/* --- CARD 2: Fast Booking (Inside, Middle Right) --- */}
           <div className="absolute right-3 top-28 flex max-w-[160px] flex-col gap-1.5 rounded-2xl border border-white/50 bg-white/85 p-3.5 shadow-lg backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:bg-white/95 sm:right-4 sm:top-32 md:max-w-[200px] md:p-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-green-100">
-                <svg className="h-3.5 w-3.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white shadow-xs border border-gray-100">
+                <svg className="h-3.5 w-3.5 text-[#93B733]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <p className="text-[9px] font-black uppercase tracking-widest text-green-600 md:text-[11px]">
+              <p className="text-[9px] font-black uppercase tracking-widest text-[#0D3A1D] md:text-[11px]">
                 Fast Booking
               </p>
             </div>

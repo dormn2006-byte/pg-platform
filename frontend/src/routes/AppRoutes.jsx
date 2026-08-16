@@ -15,8 +15,12 @@ const About = lazy(() => import("../pages/About"));
 const FAQ = lazy(() => import("../pages/faq"));
 const Contact = lazy(() => import("../pages/Contact"));
 const MyBookings = lazy(() => import("../pages/MyBookings"));
-const OwnerBookings = lazy(() => import("../pages/OwnerBookings"));
+
 const StudentDashboard = lazy(() => import("../pages/StudentDashboard"));
+const SavedPGs = lazy(() => import("../pages/SavedPGs"));
+const StudentSettings = lazy(() => import("../pages/StudentSettings"));
+const MyPG = lazy(() => import("../pages/MyPG"));
+
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("../pages/TermsConditions"));
 
@@ -29,11 +33,12 @@ const PGAdminLayout = lazy(() => import("../layouts/PGAdminLayout"));
 const Dashboard = lazy(() => import("../admin/pgAdmin/Dashboard"));
 const AddPG = lazy(() => import("../admin/pgAdmin/AddPG"));
 const MyPGs = lazy(() => import("../admin/pgAdmin/MyPGs"));
+const Pricing = lazy(() => import("../admin/pgAdmin/Pricing"));
 const EditPG = lazy(() => import("../admin/pgAdmin/components/EditPG"));
 const Bookings = lazy(() => import("../admin/pgAdmin/Bookings"));
 const Students = lazy(() => import("../admin/pgAdmin/Students"));
+const Notifications = lazy(() => import("../admin/pgAdmin/Notifications"));
 const BookingDetails = lazy(() => import("../admin/pgAdmin/BookingDetails"));
-const OwnerAnalytics = lazy(() => import("../admin/pgAdmin/OwnerAnalytics"));
 
 const SuperAdminDashboard = lazy(() => import("../admin/superAdmin/SuperAdminDashboard"));
 const ManageOwners = lazy(() => import("../admin/superAdmin/ManageOwners"));
@@ -101,19 +106,36 @@ const AppRoutes = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/owner/bookings"
-            element={
-              <ProtectedRoute role="owner">
-                <OwnerBookings />
-              </ProtectedRoute>
-            }
-          />
+
           <Route
             path="/student/dashboard"
             element={
               <ProtectedRoute role="student">
                 <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/saved-pgs"
+            element={
+              <ProtectedRoute role="student">
+                <SavedPGs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/settings"
+            element={
+              <ProtectedRoute role="student">
+                <StudentSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-pg"
+            element={
+              <ProtectedRoute role="student">
+                <MyPG />
               </ProtectedRoute>
             }
           />
@@ -177,10 +199,11 @@ const AppRoutes = () => {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="add-pg" element={<AddPG />} />
             <Route path="my-pgs" element={<MyPGs />} />
+            <Route path="pricing" element={<Pricing />} />
             <Route path="edit-pg/:id" element={<EditPG />} />
             <Route path="bookings" element={<Bookings />} />
             <Route path="students" element={<Students />} />
-            <Route path="analytics" element={<OwnerAnalytics />} />
+            <Route path="notifications" element={<Notifications />} />
           </Route>
           <Route path="*" element={<Navigate to="/pgs" replace />} />
         </Routes>

@@ -1,10 +1,10 @@
-import { useState, memo, useMemo } from "react";
+import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { IMAGE_BASE_URL } from "../../services/api";
 import api from "../../services/api"; // Ensure you import your API service
 
 const PGCard = ({ pg }) => {
-  // Local state to track if this PG is saved by the user
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
   const defaultImages = [
@@ -21,15 +21,14 @@ const PGCard = ({ pg }) => {
 
   const location = [pg?.area, pg?.city].filter(Boolean).join(", ");
 
-  const amenities = useMemo(() => {
-    try {
-      return typeof pg?.amenities === "string"
-        ? JSON.parse(pg.amenities)
-        : pg?.amenities || [];
-    } catch {
-      return [];
-    }
-  }, [pg?.amenities]);
+  let amenities;
+  try {
+    amenities = typeof pg?.amenities === "string"
+      ? JSON.parse(pg.amenities)
+      : pg?.amenities || [];
+  } catch {
+    amenities = [];
+  }
 
   // Handler for the Heart Icon
   const handleSaveToggle = async (e) => {
@@ -54,8 +53,14 @@ const PGCard = ({ pg }) => {
   
   return (
     <Link to={`/pg/${pg.id}`} className="group flex flex-col cursor-pointer">
-      {/* Image Container (Airbnb Style Aspect Ratio) */}
-      <div className="relative w-full aspect-[20/19] overflow-hidden rounded-2xl bg-gray-200 mb-3">
+      {/* Image Container (Airbnb Style Aspect Ratio) with Backside Skeleton */}
+      <div className="relative w-full aspect-[20/19] overflow-hidden rounded-2xl bg-gray-200 dark:bg-gray-800 mb-3">
+        
+        {/* Animated Skeleton Shimmer (At Exact Backside) */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 animate-pulse z-0" />
+        )}
+
         <img
           src={imageUrl}
           alt={pg.title}
@@ -63,11 +68,15 @@ const PGCard = ({ pg }) => {
           height={256}
           loading="lazy"
           decoding="async"
+          onLoad={() => setImageLoaded(true)}
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = fallbackImg;
+            setImageLoaded(true);
           }}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${
+            imageLoaded ? "opacity-100" : "opacity-0"
+          }`}
         />
 
         {/* Favorite Heart Icon (Top Right) */}

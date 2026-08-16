@@ -45,7 +45,7 @@ export const createPGController = async (req, res) => {
 
     // Uploaded Image Logic Extracted
     let processedImages = [];
-    let profile_image = null;
+    let profile_image = "default-pg.webp";
 
     if (req.files && req.files.length > 0) {
       try {

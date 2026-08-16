@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 import {
   Mail,
   Phone,
@@ -16,27 +16,13 @@ const StudentDetails = () => {
   const studentId = searchParams.get("id");
   const [student, setStudent] = useState(null);
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(studentId));
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!studentId) {
-      setError("No student ID provided.");
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    setError("");
-    const token = localStorage.getItem("token");
+    if (!studentId) return;
 
-    axios.get(
-      `http://localhost:8000/api/superadmin/student/${studentId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    api.get(`/superadmin/student/${studentId}`)
       .then((response) => {
         setStudent(response.data.student || response.data.data || response.data);
         setBookings(response.data.bookings || []);
@@ -51,6 +37,14 @@ const StudentDetails = () => {
         setLoading(false);
       });
   }, [studentId]);
+
+  if (!studentId) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-red-400 text-xl font-bold">
+        No student ID provided.
+      </div>
+    );
+  }
 
   if (loading) {
     return (

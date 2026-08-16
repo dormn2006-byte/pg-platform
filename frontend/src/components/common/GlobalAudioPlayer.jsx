@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Music, Pause, Play, SkipForward } from "lucide-react";
-import { AudioContext } from "../../context/AudioContext";
+import { AudioContext } from "../../context/audioContextValue";
 
 const GlobalAudioPlayer = () => {
   const audioContext = useContext(AudioContext);

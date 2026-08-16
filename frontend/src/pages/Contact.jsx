@@ -2,7 +2,7 @@ import { useState } from "react";
 import PublicLayout from "../layouts/PublicLayout";
 import Container from "../layouts/Container";
 import HeroVisual from "../components/Home/HeroVisual";
-import { User, Phone, MessageSquare, Sparkles, MessageCircle, Clock, MapPin, CheckCircle2 } from "lucide-react";
+import { User, Phone, MessageSquare, Sparkles, MessageCircle, Clock } from "lucide-react";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
