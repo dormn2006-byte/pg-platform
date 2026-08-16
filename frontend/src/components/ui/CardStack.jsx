@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { m, AnimatePresence, LazyMotion, domAnimation, useReducedMotion } from "framer-motion";
 import { SquareArrowOutUpRight, Star } from "lucide-react";
 
@@ -59,10 +59,11 @@ export function CardStack({
   const [active, setActive] = useState(() => wrapIndex(initialIndex, len));
   const [hovering, setHovering] = useState(false);
 
-  // keep active in bounds if items change
-  useEffect(() => {
+  const [prevLen, setPrevLen] = useState(len);
+  if (len !== prevLen) {
+    setPrevLen(len);
     setActive((a) => wrapIndex(a, len));
-  }, [len]);
+  }
 
   useEffect(() => {
     if (!len) return;
@@ -293,6 +294,7 @@ export function CardStack({
 function DefaultFanCard({ item, active }) {
   // Ensure we have a valid rating (fallback to 5 if undefined)
   const rating = item.rating || 5;
+
 
   return (
     <div className="relative flex h-full w-full flex-col justify-between rounded-3xl bg-white p-6 sm:p-8">

@@ -1,28 +1,34 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Filter, MapPin } from "lucide-react";
+import {
+  Search,
+  Filter,
+  MapPin,
+  ExternalLink,
+  Edit3,
+  Trash2,
+  Plus,
+  Building2,
+  ShieldCheck,
+  Clock,
+  AlertTriangle,
+  Eye,
+  Bed,
+  Users
+} from "lucide-react";
 import api, { IMAGE_BASE_URL } from "../../services/api";
 
-const statusStyles = {
-  approved: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  pending: "bg-amber-100 text-amber-700 border-amber-200",
-  rejected: "bg-rose-100 text-rose-700 border-rose-200",
-  blocked: "bg-gray-100 text-gray-700 border-gray-200",
-};
-
 const MyPGs = () => {
+  const navigate = useNavigate();
   const [pgPages, setPgPages] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [activeTab, setActiveTab] = useState("all");
 
   const fetchMyPGs = useCallback(async () => {
     try {
-      console.log("Fetching owner PGs...");
+      setLoading(true);
       const { data } = await api.get("/pg/owner/my-pgs");
-      console.log("Owner PG response:", data);
       setPgPages(data?.pgs || []);
     } catch (error) {
       console.error("Error fetching PGs:", error);
@@ -35,202 +41,217 @@ const MyPGs = () => {
     fetchMyPGs();
   }, [fetchMyPGs]);
 
-  const totalPages = pgPages.length;
-  const approvedPages = pgPages.filter((pg) => pg.status === "approved").length;
-  const pendingPages = pgPages.filter((pg) => pg.status === "pending").length;
-  const rejectedPages = pgPages.filter((pg) => pg.status === "rejected").length;
+  // Counts for status tabs
+  const counts = useMemo(() => ({
+    all: pgPages.length,
+    approved: pgPages.filter((p) => p.status === "approved").length,
+    pending: pgPages.filter((p) => p.status === "pending").length,
+    rejected: pgPages.filter((p) => p.status === "rejected").length,
+  }), [pgPages]);
 
-  const filteredPGs = pgPages.filter((pg) => {
-    const matchesSearch = pg.title
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase());
+  // Filtered properties
+  const filteredPGs = useMemo(() => {
+    return pgPages.filter((pg) => {
+      const matchesSearch =
+        pg.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pg.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pg.area?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesTab = activeTab === "all" ? true : pg.status?.toLowerCase() === activeTab;
+      return matchesSearch && matchesTab;
+    });
+  }, [pgPages, searchTerm, activeTab]);
 
-    const matchesStatus =
-      statusFilter === "all"
-        ? true
-        : pg.status?.toLowerCase() === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
+  const handleDelete = useCallback(async (pgId, title) => {
+    if (window.confirm(`Are you sure you want to delete property: "${title}"?`)) {
+      try {
+        await api.delete(`/pg/delete/${pgId}`);
+        fetchMyPGs();
+      } catch (error) {
+        alert(error?.response?.data?.message || "Failed to delete PG");
+      }
+    }
+  }, [fetchMyPGs]);
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-col gap-5 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm md:p-8 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-cyan-600">
-            PG Pages Management
-          </p>
-          <h1 className="mt-2 text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">
-            My PG Pages
-          </h1>
-          <p className="mt-2 text-sm text-gray-500 sm:text-base">
-            Manage your uploaded properties, edit listings, and monitor approval statuses.
-          </p>
+    <div className="space-y-6 max-w-[1600px] mx-auto">
+      
+      {/* Big Bold Search & Category Action Bar */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] p-5 shadow-sm">
+        
+        {/* Large Prominent Filter Tabs */}
+        <div className="flex items-center gap-2.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+          {[
+            { id: "all", label: "All Properties", count: counts.all },
+            { id: "approved", label: "Approved Live", count: counts.approved },
+            { id: "pending", label: "Pending Review", count: counts.pending },
+            { id: "rejected", label: "Needs Revision", count: counts.rejected },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2.5 rounded-2xl px-5 py-3.5 text-sm font-black transition-all shrink-0 ${
+                activeTab === tab.id
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25"
+                  : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10"
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className={`rounded-xl px-2.5 py-0.5 text-xs font-black ${
+                activeTab === tab.id ? "bg-white/20 text-white" : "bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-gray-200"
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
         </div>
 
-        <Link
-          to="/owner/add-pg"
-          className="inline-flex shrink-0 items-center justify-center rounded-2xl bg-black px-6 py-3.5 text-sm font-bold text-white transition-transform hover:scale-[1.02] hover:shadow-lg"
-        >
-          + Add New PG
-        </Link>
-      </div>
-
-      {/* Analytics Stats Grid */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
-        <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Total Pages</p>
-          <h2 className="mt-2 text-3xl font-black text-gray-900 md:mt-3 md:text-4xl">{totalPages}</h2>
-        </div>
-        <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Approved</p>
-          <h2 className="mt-2 text-3xl font-black text-emerald-600 md:mt-3 md:text-4xl">{approvedPages}</h2>
-        </div>
-        <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Pending</p>
-          <h2 className="mt-2 text-3xl font-black text-amber-500 md:mt-3 md:text-4xl">{pendingPages}</h2>
-        </div>
-        <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Rejected</p>
-          <h2 className="mt-2 text-3xl font-black text-rose-500 md:mt-3 md:text-4xl">{rejectedPages}</h2>
-        </div>
-      </div>
-
-      {/* High-Visibility Search & Filter Bar */}
-      <div className="rounded-3xl border border-gray-200 bg-white p-4 shadow-sm md:p-5">
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <div className="relative flex-1">
+        {/* Large Search Field & Add PG Button */}
+        <div className="flex items-center gap-3 w-full lg:w-auto">
+          <div className="relative flex-1 lg:w-72">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="text"
-              placeholder="Search PG by name..."
+              placeholder="Search properties..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-2xl border border-gray-200 bg-gray-50 py-3.5 pl-12 pr-4 text-sm font-semibold text-gray-900 outline-none transition focus:border-black focus:bg-white focus:ring-1 focus:ring-black placeholder:text-gray-400"
+              className="w-full rounded-2xl border border-gray-200 dark:border-white/15 bg-gray-50 dark:bg-white/5 py-3.5 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-[#141b2d]"
             />
           </div>
 
-          <div className="relative sm:w-64">
-            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full appearance-none rounded-2xl border border-gray-200 bg-gray-50 py-3.5 pl-12 pr-10 text-sm font-semibold text-gray-900 outline-none transition focus:border-black focus:bg-white focus:ring-1 focus:ring-black"
-            >
-              <option value="all">All Statuses</option>
-              <option value="approved">Approved</option>
-              <option value="pending">Pending</option>
-              <option value="rejected">Rejected</option>
-              <option value="blocked">Blocked</option>
-            </select>
-          </div>
+          <Link
+            to="/owner/add-pg"
+            className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-500/25 transition-all shrink-0"
+          >
+            <Plus size={18} />
+            <span>Add PG</span>
+          </Link>
         </div>
       </div>
 
-      {/* Loading & Empty States */}
-      {loading && (
-        <div className="rounded-3xl bg-white py-12 text-center shadow-sm">
-          <p className="text-sm font-bold text-gray-500">Loading your properties...</p>
+      {/* Property Grid Showcase - Big & Clear */}
+      {loading ? (
+        <div className="rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] p-16 text-center shadow-sm">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 dark:border-gray-800 border-t-blue-500 mx-auto mb-4"></div>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Loading property listings...</p>
         </div>
-      )}
-
-      {!loading && pgPages.length === 0 && (
-        <div className="flex flex-col items-center justify-center rounded-3xl bg-white py-16 text-center shadow-sm">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-            <MapPin className="text-gray-400" size={28} />
-          </div>
-          <h3 className="text-lg font-black text-gray-900">No properties found</h3>
-          <p className="mt-1 text-sm text-gray-500">Create your first PG listing to get started.</p>
+      ) : filteredPGs.length === 0 ? (
+        <div className="rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] p-16 text-center shadow-sm">
+          <Building2 size={48} className="text-gray-400 mx-auto mb-4" />
+          <h3 className="text-xl font-black text-gray-900 dark:text-white">No properties found</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Try switching status filters or adding a new PG listing.</p>
+          <Link
+            to="/owner/add-pg"
+            className="inline-flex items-center gap-2 mt-5 rounded-2xl bg-blue-600 px-6 py-3.5 text-sm font-black text-white hover:bg-blue-500 transition shadow-md"
+          >
+            <Plus size={18} />
+            <span>Add New Property</span>
+          </Link>
         </div>
-      )}
-
-      {/* Optimized Desktop Grid & Mobile Stack Layout */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {!loading &&
-          filteredPGs.map((pg) => (
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredPGs.map((pg) => (
             <div
               key={pg.id}
-              className="group flex flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition hover:border-gray-300 hover:shadow-xl"
+              className="group flex flex-col rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300"
             >
-              {/* Image Hero Section */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+              {/* Image Banner */}
+              <div className="relative h-56 w-full overflow-hidden bg-gray-100 dark:bg-white/5">
                 <img
                   src={
                     pg.profile_image
                       ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
-                      : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%230D3A1D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2393B733' font-family='sans-serif' font-weight='bold' font-size='24'%3EDormn Verified Stay%3C/text%3E%3C/svg%3E"
+                      : "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80"
                   }
                   alt={pg.title}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                
-                {/* Floating Badges */}
-                <div className="absolute left-3 top-3">
-                  <span
-                    className={`rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-wider shadow-sm backdrop-blur-md ${
-                      statusStyles[pg.status?.toLowerCase()] || statusStyles.pending
-                    }`}
-                  >
-                    {pg.status?.toUpperCase() || "PENDING"}
+
+                {/* Big Status Badge */}
+                <div className="absolute left-4 top-4">
+                  <span className={`rounded-xl px-3.5 py-1.5 text-xs font-black uppercase tracking-wider shadow-lg backdrop-blur-md border ${
+                    pg.status === "approved"
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
+                      : pg.status === "rejected"
+                      ? "bg-rose-500/20 text-rose-400 border-rose-500/40"
+                      : "bg-amber-500/20 text-amber-400 border-amber-500/40"
+                  }`}>
+                    {pg.status === "approved" ? "APPROVED LIVE" : pg.status?.toUpperCase() || "PENDING"}
                   </span>
                 </div>
-                <div className="absolute right-3 top-3">
-                  <span className="rounded-full bg-black/60 px-3 py-1.5 text-[10px] font-bold text-white shadow-sm backdrop-blur-md">
-                    ID: {pg.id}
+
+                {/* ID Pill */}
+                <div className="absolute right-4 top-4">
+                  <span className="rounded-xl bg-black/80 border border-white/20 px-3 py-1.5 text-xs font-black text-white shadow-md backdrop-blur-md">
+                    ID #{pg.id}
+                  </span>
+                </div>
+
+                {/* Price Tag Overlay */}
+                <div className="absolute bottom-4 right-4 rounded-2xl bg-black/85 backdrop-blur-md border border-white/15 px-4 py-2 text-right shadow-lg">
+                  <span className="text-[10px] font-black text-gray-300 uppercase block tracking-wider">Monthly Rent</span>
+                  <span className="text-base font-black text-emerald-400">
+                    ₹{Number(pg.price || 0).toLocaleString("en-IN")}<span className="text-xs font-normal text-gray-300">/mo</span>
                   </span>
                 </div>
               </div>
 
-              {/* Card Body */}
-              <div className="flex flex-1 flex-col p-5">
-                <h2 className="truncate text-xl font-black tracking-tight text-gray-900">
-                  {pg.title}
-                </h2>
-                <div className="mt-1.5 flex items-center gap-1.5 text-sm text-gray-500">
-                  <MapPin size={14} className="shrink-0" />
-                  <span className="truncate">{pg.area}, {pg.city}</span>
+              {/* Main Card Content - Big & Bold */}
+              <div className="flex flex-1 flex-col p-6 space-y-4">
+                <div>
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white leading-tight truncate">
+                    {pg.title}
+                  </h3>
+                  <p className="flex items-center gap-1.5 text-sm font-bold text-gray-500 dark:text-gray-400 mt-1.5">
+                    <MapPin size={16} className="text-blue-500 shrink-0" />
+                    <span>{pg.area || pg.city}, {pg.city}</span>
+                  </p>
+                </div>
+
+                {/* Info Pills */}
+                <div className="flex items-center gap-2 flex-wrap pt-1">
+                  <span className="flex items-center gap-1.5 rounded-xl bg-gray-100 dark:bg-white/5 px-3 py-1.5 text-xs font-black text-gray-800 dark:text-gray-200">
+                    <Bed size={14} className="text-blue-500" />
+                    {pg.available_rooms || 2} Rooms Available
+                  </span>
+                  <span className="flex items-center gap-1.5 rounded-xl bg-gray-100 dark:bg-white/5 px-3 py-1.5 text-xs font-black text-gray-800 dark:text-gray-200">
+                    <Users size={14} className="text-cyan-500" />
+                    {pg.pg_type || "Boys"} PG
+                  </span>
                 </div>
               </div>
 
-              {/* Card Actions (Bottom Sticky) */}
-              <div className="flex items-center gap-2 border-t border-gray-100 bg-gray-50/50 p-4">
+              {/* Large Action Buttons Toolbar */}
+              <div className="grid grid-cols-3 gap-2.5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] p-4">
                 <button
                   onClick={() => navigate(`/pg/${pg.id}`)}
-                  className="flex-1 rounded-xl bg-black py-2.5 text-[13px] font-bold text-white transition hover:opacity-80"
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-blue-600 hover:bg-blue-500 py-3 text-xs font-black text-white transition shadow-md"
                 >
-                  View
+                  <Eye size={16} />
+                  <span>View</span>
                 </button>
 
                 <button
                   onClick={() => navigate(`/owner/edit-pg/${pg.id}`)}
-                  className="flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-[13px] font-bold text-gray-700 transition hover:bg-gray-50 hover:text-black"
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 dark:border-white/15 bg-white dark:bg-white/5 py-3 text-xs font-black text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition"
                 >
-                  Edit
+                  <Edit3 size={16} />
+                  <span>Edit</span>
                 </button>
 
                 <button
-                  onClick={async () => {
-                    const confirmed = window.confirm(`Are you sure you want to delete ${pg.title}?`);
-                    if (confirmed) {
-                      try {
-                        await api.delete(`/pg/delete/${pg.id}`);
-                        alert("PG deleted successfully");
-                        fetchMyPGs();
-                      } catch (error) {
-                        console.error("Delete PG Error:", error);
-                        alert(error?.response?.data?.message || "Failed to delete PG");
-                      }
-                    }
-                  }}
-                  className="flex-1 rounded-xl border border-rose-200 bg-rose-50 py-2.5 text-[13px] font-bold text-rose-600 transition hover:bg-rose-100 hover:text-rose-700"
+                  onClick={() => handleDelete(pg.id, pg.title)}
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 py-3 text-xs font-black text-rose-500 hover:bg-rose-500/20 transition"
                 >
-                  Delete
+                  <Trash2 size={16} />
+                  <span>Delete</span>
                 </button>
               </div>
+
             </div>
           ))}
-      </div>
+        </div>
+      )}
+
     </div>
   );
 };

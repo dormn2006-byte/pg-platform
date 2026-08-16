@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import API, { IMAGE_BASE_URL } from "../services/api";
@@ -36,6 +36,52 @@ const getAmenityIcon = (name) => {
   if (cleanName.includes("water")) return "💧";
 
   return "✨";
+};
+
+const formatImageUrl = (url) => {
+  if (!url || typeof url !== "string") return null;
+  const clean = url.trim();
+  if (clean.startsWith("http://") || clean.startsWith("https://") || clean.startsWith("data:")) {
+    return clean;
+  }
+  const cleanPath = clean.startsWith("/") ? clean : `/${clean}`;
+  if (cleanPath.startsWith("/uploads/")) {
+    return `${IMAGE_BASE_URL}${cleanPath}`;
+  }
+  return `${IMAGE_BASE_URL}/uploads${cleanPath}`;
+};
+
+const DEFAULT_DETAILS_FALLBACKS = [
+  "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80",
+];
+
+const parseListField = (value) => {
+  if (!value) return [];
+
+  let list;
+  if (typeof value === "string") {
+    try {
+      list = JSON.parse(value);
+    } catch {
+      list = value.split(",");
+    }
+  } else if (Array.isArray(value)) {
+    list = value;
+  } else {
+    list = [value];
+  }
+
+  if (!Array.isArray(list)) list = [list];
+
+  return list
+    .map((item) =>
+      typeof item === "string"
+        ? item.replace(/[\]"']/g, "").trim()
+        : String(item).trim()
+    )
+    .filter(Boolean);
 };
 
 const PgDetails = () => {
@@ -83,14 +129,6 @@ const PgDetails = () => {
             price: Number(pgData.price) || 0,
             label: "Starting Price"
           });
-
-          if (pgData?.gallery?.length > 0) {
-            setActiveImage(`${IMAGE_BASE_URL}/uploads/${pgData.gallery[0].image_url}`);
-          } else if (pgData?.profile_image) {
-            setActiveImage(`${IMAGE_BASE_URL}/uploads/${pgData.profile_image}`);
-          } else {
-            setActiveImage("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%230D3A1D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2393B733' font-family='sans-serif' font-weight='bold' font-size='24'%3EDormn Verified Stay%3C/text%3E%3C/svg%3E");
-          }
         }
       } catch (err) {
         console.error("PG Details Error:", err);
@@ -103,82 +141,55 @@ const PgDetails = () => {
     fetchPG();
   }, [id]);
 
-  // Robust Amenity Cleaning Logic
-  const cleanAmenities = useMemo(() => {
-    if (!pg?.amenities) return [];
+  const cleanAmenities = parseListField(pg?.amenities);
+  const cleanRules = parseListField(pg?.rules);
 
-    let list = [];
-
-    if (typeof pg.amenities === "string") {
-      try {
-        list = JSON.parse(pg.amenities);
-      } catch {
-        list = pg.amenities.split(",");
-      }
-    } else if (Array.isArray(pg.amenities)) {
-      list = pg.amenities;
-    }
-
-    if (!Array.isArray(list)) list = [list];
-
-    return list
-      .map((item) =>
-        typeof item === "string"
-          ? item.replace(/[\[\]"']/g, "").trim()
-          : String(item).trim()
-      )
-      .filter(Boolean);
-  }, [pg?.amenities]);
-
-  // Robust House Rules Cleaning Logic
-  const cleanRules = useMemo(() => {
-    if (!pg?.rules) return [];
-
-    let list = [];
-
-    if (typeof pg.rules === "string") {
-      try {
-        list = JSON.parse(pg.rules);
-      } catch {
-        list = pg.rules.split(",");
-      }
-    } else if (Array.isArray(pg.rules)) {
-      list = pg.rules;
-    }
-
-    if (!Array.isArray(list)) list = [list];
-
-    return list
-      .map((rule) =>
-        typeof rule === "string"
-          ? rule.replace(/[\[\]"']/g, "").trim()
-          : String(rule).trim()
-      )
-      .filter(Boolean);
-  }, [pg?.rules]);
-
-  const galleryImages = useMemo(() => {
+  const galleryImages = (() => {
     if (!pg) return [];
-    return pg.gallery && pg.gallery.length > 0
-      ? pg.gallery.map((img) => `${IMAGE_BASE_URL}/uploads/${img.image_url}`)
-      : [
-          pg.profile_image
-            ? `${IMAGE_BASE_URL}/uploads/${pg.profile_image}`
-            : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%230D3A1D'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2393B733' font-family='sans-serif' font-weight='bold' font-size='24'%3EDormn Verified Stay%3C/text%3E%3C/svg%3E",
-        ];
-  }, [pg]);
+    const rawList = [];
+
+    // 1. Check pg.images (JSON string or Array)
+    if (pg.images) {
+      try {
+        const parsed = typeof pg.images === "string" ? JSON.parse(pg.images) : pg.images;
+        if (Array.isArray(parsed)) rawList.push(...parsed);
+      } catch {
+        rawList.push(pg.images);
+      }
+    }
+
+    // 2. Check pg.gallery array
+    if (Array.isArray(pg.gallery) && pg.gallery.length > 0) {
+      pg.gallery.forEach((g) => {
+        if (g?.image_url) rawList.push(g.image_url);
+      });
+    }
+
+    // 3. Check pg.profile_image / pg.image
+    if (pg.profile_image) rawList.push(pg.profile_image);
+    if (pg.image) rawList.push(pg.image);
+
+    const formatted = rawList.map(formatImageUrl).filter(Boolean);
+    if (formatted.length > 0) return formatted;
+
+    return DEFAULT_DETAILS_FALLBACKS;
+  })();
+
+  const displayActiveImage = galleryImages.includes(activeImage)
+    ? activeImage
+    : galleryImages[0];
 
   // Gallery Controls
   const showNextImage = () => {
     if (galleryImages.length <= 1) return;
-    const currentIndex = galleryImages.indexOf(activeImage);
+    const currentIndex = galleryImages.indexOf(displayActiveImage);
     const nextIndex = (currentIndex + 1) % galleryImages.length;
     setActiveImage(galleryImages[nextIndex]);
   };
 
   const showPreviousImage = () => {
     if (galleryImages.length <= 1) return;
-    const currentIndex = galleryImages.indexOf(activeImage);
+    const currentIndex = galleryImages.indexOf(displayActiveImage);
     const prevIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
     setActiveImage(galleryImages[prevIndex]);
   };
@@ -207,24 +218,40 @@ const PgDetails = () => {
     }
   };
 
+  const [mainImageLoaded, setMainImageLoaded] = useState(false);
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAF9F5] text-[#3A2935] text-lg font-bold">
-        Loading PG Details...
+      <div className="min-h-screen bg-[#FAF9F5] dark:bg-[#000000] font-sans selection:bg-[#93B733] selection:text-white pb-20">
+        <Navbar />
+        <section className="relative z-10 mx-auto max-w-[1440px] 2xl:max-w-[1600px] px-4 py-8 sm:px-6 md:px-8 lg:px-10 md:py-12">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
+            <div className="flex flex-col gap-8">
+              <div className="rounded-[2rem] border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-[#0d0d0d] p-3 shadow-sm md:rounded-[2.5rem]">
+                <div className="h-[300px] md:h-[480px] w-full rounded-[1.5rem] md:rounded-[2rem] bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 animate-pulse" />
+                <div className="mt-3 grid grid-cols-4 gap-3">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="h-16 sm:h-20 md:h-24 w-full rounded-xl bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
 
   if (error || !pg) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white text-red-500 font-bold text-lg">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF9F5] dark:bg-[#000000] text-red-500 font-bold text-lg">
         {error || "PG Not Found"}
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#FAF9F5] text-[#3A2935] font-sans selection:bg-[#93B733] selection:text-white pb-20">
+    <div className="min-h-screen overflow-x-hidden bg-[#FAF9F5] dark:bg-[#000000] text-[#3A2935] dark:text-white font-sans selection:bg-[#93B733] selection:text-white pb-20">
       {/* Navbar */}
       <Navbar />
 
@@ -236,12 +263,25 @@ const PgDetails = () => {
           <div className="flex flex-col gap-8">
             
             {/* Gallery (Bento Box Style) */}
-            <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-2 shadow-sm md:rounded-[2.5rem] md:p-3">
-              <div className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
+            <div className="rounded-[2rem] border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-[#0d0d0d] p-2 shadow-sm md:rounded-[2.5rem] md:p-3">
+              <div className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] bg-gray-200 dark:bg-gray-800">
+                
+                {/* Backside Shimmer Skeleton */}
+                {!mainImageLoaded && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 animate-pulse z-0" />
+                )}
+
                 <img
-                  src={activeImage || galleryImages[0]}
+                  src={displayActiveImage}
                   alt="PG"
-                  className="h-[300px] w-full object-cover transition-transform duration-700 hover:scale-105 md:h-[480px]"
+                  onLoad={() => setMainImageLoaded(true)}
+                  className={`h-[300px] w-full object-cover transition-all duration-700 hover:scale-105 md:h-[480px] ${
+                    mainImageLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                  onError={(e) => {
+                    e.currentTarget.src = DEFAULT_DETAILS_FALLBACKS[0];
+                    setMainImageLoaded(true);
+                  }}
                 />
                 {galleryImages.length > 1 && (
                   <>
@@ -260,7 +300,7 @@ const PgDetails = () => {
                     </button>
 
                     <div className="absolute bottom-4 right-4 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white">
-                      {galleryImages.indexOf(activeImage) + 1} / {galleryImages.length}
+                      {galleryImages.indexOf(displayActiveImage) + 1} / {galleryImages.length}
                     </div>
                   </>
                 )}
@@ -272,7 +312,7 @@ const PgDetails = () => {
                     key={index}
                     onClick={() => setActiveImage(img)}
                     className={`overflow-hidden rounded-xl border-2 transition-all duration-300 ${
-                      activeImage === img
+                      displayActiveImage === img
                         ? "border-[#93B733] shadow-md opacity-100"
                         : "border-transparent opacity-70 hover:opacity-100"
                     }`}
@@ -281,6 +321,9 @@ const PgDetails = () => {
                       src={img}
                       alt="preview"
                       className="h-16 w-full object-cover sm:h-20 md:h-24"
+                      onError={(e) => {
+                        e.currentTarget.src = DEFAULT_DETAILS_FALLBACKS[index % DEFAULT_DETAILS_FALLBACKS.length];
+                      }}
                     />
                   </button>
                 ))}

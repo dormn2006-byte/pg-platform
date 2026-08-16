@@ -52,11 +52,83 @@ const SectionSlider = ({ title, subtitle, pgs }) => {
 };
 
 const SkeletonCard = () => (
-  <div className="w-full aspect-[4/3] rounded-2xl bg-gray-200 animate-pulse" />
+  <div className="flex flex-col gap-3.5 w-full">
+    <div className="w-full aspect-[20/19] rounded-2xl bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 animate-pulse" />
+    <div className="flex flex-col gap-2 px-1">
+      <div className="h-4 w-3/4 rounded-md bg-gray-200 dark:bg-gray-800 animate-pulse" />
+      <div className="h-3 w-1/2 rounded-md bg-gray-200 dark:bg-gray-800 animate-pulse" />
+      <div className="h-4 w-1/3 rounded-md bg-gray-200 dark:bg-gray-800 animate-pulse mt-1" />
+    </div>
+  </div>
 );
 
+// Custom Select Component for Professional UI
+const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find(opt => opt.value === value);
+  const displayValue = selectedOption ? selectedOption.label : placeholder;
+
+  return (
+    <div 
+      ref={dropdownRef} 
+      className="relative w-full h-[52px]"
+    >
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex h-full w-full cursor-pointer items-center gap-3 rounded-2xl border bg-gray-50 px-4 shadow-sm transition-all ${
+          isOpen ? "border-[#93B733] bg-white ring-1 ring-[#93B733]" : "border-gray-200 hover:border-gray-300"
+        }`}
+      >
+        <Icon size={18} className={`${isOpen ? "text-[#93B733]" : "text-gray-400"} flex-shrink-0 transition-colors`} />
+        <span className={`flex-1 text-sm font-medium ${value ? "text-[#3A2935]" : "text-gray-500"}`}>
+          {displayValue}
+        </span>
+        <ChevronDown size={16} className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+      </div>
+
+      {isOpen && (
+        <div className="absolute left-0 top-[58px] z-50 w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl animate-[fadeIn_0.15s_ease-out_forwards]">
+          <div className="max-h-[240px] overflow-y-auto p-1.5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200">
+            <div 
+              onClick={() => { onChange(""); setIsOpen(false); }}
+              className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                !value ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+              }`}
+            >
+              {placeholder}
+            </div>
+            {options.map((opt) => (
+              <div
+                key={opt.value}
+                onClick={() => { onChange(opt.value); setIsOpen(false); }}
+                className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                  value === opt.value ? "bg-[#93B733]/10 text-[#93B733]" : "text-[#3A2935] hover:bg-gray-50"
+                }`}
+              >
+                {opt.label}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ExplorePGs = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [activeFilter, setActiveFilter] = useState("All");
   const [search, setSearch] = useState(searchParams.get("search") || searchParams.get("location") || "");
   
@@ -73,7 +145,6 @@ const ExplorePGs = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [pgListings, setPgListings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   const minSliderLimit = 3000;
   const maxSliderLimit = 50000;
@@ -87,24 +158,13 @@ const ExplorePGs = () => {
         const response = await API.get("/pg/all");
         setPgListings(response.data?.pgs || []);
       } catch (err) {
-        setError("Failed to load PG listings");
+        console.error("Failed to load PG listings:", err);
       } finally {
         setLoading(false);
       }
     };
     fetchPGs();
   }, []);
-
-  // Sync URL params with filter state
-  useEffect(() => {
-    setSearch(searchParams.get("search") || searchParams.get("location") || searchParams.get("city") || "");
-    const typeParam = searchParams.get("type");
-    if (typeParam) {
-      if (typeParam.toLowerCase() === "boys") setActiveFilter("Boys");
-      else if (typeParam.toLowerCase() === "girls") setActiveFilter("Girls");
-      else if (typeParam.toLowerCase() === "coed") setActiveFilter("COED");
-    }
-  }, [searchParams]);
 
   // Dynamic Cascading Options based on loaded listings
   const availableCities = useMemo(() => {
@@ -183,97 +243,10 @@ const ExplorePGs = () => {
 
   const isDiscoverMode = !search.trim() && !filters.pgType && !filters.city && !filters.area && !filters.landmark && activeFilter === "All" && currentMin === minSliderLimit && currentMax === maxSliderLimit;
 
-// Custom Select Component for Professional UI
-const CustomSelect = ({ value, onChange, options, placeholder, icon: Icon }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const selectedOption = options.find(opt => opt.value === value);
-  const displayValue = selectedOption ? selectedOption.label : placeholder;
-
-  return (
-    <div 
-      ref={dropdownRef} 
-      className="relative w-full h-[52px]"
-    >
-      <div 
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex h-full w-full cursor-pointer items-center gap-3 rounded-2xl border bg-gray-50 px-4 shadow-sm transition-all ${
-          isOpen ? "border-[#93B733] bg-white ring-1 ring-[#93B733]" : "border-gray-200 hover:border-gray-300"
-        }`}
-      >
-        <Icon size={18} className={`${isOpen ? "text-[#93B733]" : "text-gray-400"} flex-shrink-0 transition-colors`} />
-        <span className={`flex-1 text-sm font-medium ${value ? "text-[#3A2935]" : "text-gray-500"}`}>
-          {displayValue}
-        </span>
-        <ChevronDown size={16} className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-      </div>
-
-      {/* Dropdown Menu */}
-      {isOpen && (
-        <div className="absolute left-0 top-[58px] z-50 w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl animate-[fadeIn_0.15s_ease-out_forwards]">
-          <div className="max-h-[240px] overflow-y-auto p-1.5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200">
-            <div 
-              onClick={() => { onChange(""); setIsOpen(false); }}
-              className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                !value ? "bg-[#93B733]/10 text-[#93B733]" : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-              }`}
-            >
-              {placeholder}
-            </div>
-            {options.map((opt) => (
-              <div
-                key={opt.value}
-                onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                className={`cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  value === opt.value ? "bg-[#93B733]/10 text-[#93B733]" : "text-[#3A2935] hover:bg-gray-50"
-                }`}
-              >
-                {opt.label}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
   return (
     <PublicLayout>
       <style>{`
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .dual-range::-webkit-slider-thumb {
-          pointer-events: auto;
-          appearance: none;
-          width: 18px;
-          height: 18px;
-          background: #93B733;
-          border-radius: 50%;
-          cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-          border: 2px solid white;
-        }
-        .dual-range::-moz-range-thumb {
-          pointer-events: auto;
-          width: 18px;
-          height: 18px;
-          background: #93B733;
-          border-radius: 50%;
-          cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-          border: 2px solid white;
-        }
       `}</style>
       
       <div className="bg-[#FAF9F5] min-h-screen font-sans pb-20 selection:bg-[#93B733] selection:text-white">

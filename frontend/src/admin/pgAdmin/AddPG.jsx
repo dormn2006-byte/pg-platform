@@ -191,30 +191,6 @@ const AddPG = () => {
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Header */}
-        <div className="rounded-[2rem] border border-gray-200 bg-white p-7 shadow-sm">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-600">
-                Dormn OWNER PANEL
-              </p>
-              <h1 className="mt-3 text-4xl font-black tracking-tight text-black md:text-5xl">
-                Add New PG
-              </h1>
-              <p className="mt-4 max-w-3xl text-base leading-7 text-gray-600">
-                Submit your PG details, upload room images and provide complete
-                information for admin approval.
-              </p>
-              <p className="mt-2 text-sm font-medium text-amber-600">Fields marked important should be completed before submission.</p>
-            </div>
-
-            <button type="button" className="flex items-center justify-center gap-3 rounded-2xl bg-black px-6 py-4 text-sm font-bold text-white transition hover:scale-[1.02]">
-              <Save size={18} />
-              Save Draft
-            </button>
-          </div>
-        </div>
-
         {/* Main Form */}
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           {/* Left Side */}

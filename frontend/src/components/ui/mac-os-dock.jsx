@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 
 const MacOSDock = ({ apps, onAppClick, openApps = [], className = '' }) => {
   const [mouseX, setMouseX] = useState(null);
@@ -22,18 +22,20 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '' }) => {
   const getLabelWidth = () => {
     if (typeof window === 'undefined') return 150;
     const w = window.innerWidth;
-    return w < 400 ? 80 : w < 480 ? 90 : w < 1024 ? 100 : 150;
+    return w < 380 ? 60 : w < 480 ? 70 : w < 1024 ? 80 : 150;
   };
 
   const getResponsiveConfig = useCallback(() => {
     if (typeof window === 'undefined') {
       return { baseIconSize: 72, maxScale: 1.5, effectWidth: 300, baseSpacing: 16, isBottom: false };
     }
-    const d = Math.min(window.innerWidth, window.innerHeight);
-    const mob = window.innerWidth < 1024;
-    if (d < 400) return { baseIconSize: 42, maxScale: 1.2, effectWidth: d * 0.4, baseSpacing: 6, isBottom: mob };
-    if (d < 480) return { baseIconSize: 48, maxScale: 1.3, effectWidth: d * 0.4, baseSpacing: 7, isBottom: mob };
-    if (d < 768) return { baseIconSize: 54, maxScale: 1.35, effectWidth: d * 0.35, baseSpacing: 8, isBottom: mob };
+    const w = window.innerWidth;
+    const mob = w < 1024;
+    
+    // Dynamically adjust to fit 6-7 icons on mobile without overflowing
+    if (w < 380) return { baseIconSize: 34, maxScale: 1.15, effectWidth: w * 0.4, baseSpacing: 4, isBottom: mob };
+    if (w < 480) return { baseIconSize: 38, maxScale: 1.2, effectWidth: w * 0.4, baseSpacing: 6, isBottom: mob };
+    if (w < 768) return { baseIconSize: 48, maxScale: 1.3, effectWidth: w * 0.35, baseSpacing: 8, isBottom: mob };
     return { baseIconSize: 56, maxScale: 1.3, effectWidth: 320, baseSpacing: 12, isBottom: mob };
   }, []);
 
@@ -69,11 +71,14 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '' }) => {
     });
   }, [apps, baseIconSize, baseSpacing]);
 
+  const animateToTargetRef = useRef();
+
   useEffect(() => {
     const s = apps.map(() => 1);
     const p = calculatePositions(s, expandedAppId);
     scalesRef.current = s;
     positionsRef.current = p;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentScales(s);
     setCurrentPositions(p);
   }, [apps, calculatePositions, config, expandedAppId]);
@@ -98,16 +103,22 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '' }) => {
     scalesRef.current = ns;
     positionsRef.current = np;
     if (changed) { setCurrentScales(ns); setCurrentPositions(np); }
-    if (changed || mouseX !== null) animationFrameRef.current = requestAnimationFrame(animateToTarget);
+    if (changed || mouseX !== null) {
+      animationFrameRef.current = requestAnimationFrame(animateToTargetRef.current);
+    }
   }, [mouseX, calculateTargetMagnification, calculatePositions, expandedAppId]);
+
+  useEffect(() => {
+    animateToTargetRef.current = animateToTarget;
+  }, [animateToTarget]);
 
   useEffect(() => {
     if (mouseX !== null) {
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = requestAnimationFrame(animateToTarget);
+      animationFrameRef.current = requestAnimationFrame(animateToTargetRef.current);
     }
     return () => { if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current); };
-  }, [animateToTarget, mouseX]);
+  }, [mouseX]);
 
   const updateDockRect = useCallback(() => {
     if (dockRef.current) dockRectRef.current = dockRef.current.getBoundingClientRect();
@@ -214,7 +225,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '' }) => {
   return (
     <div
       ref={dockRef}
-      className={`backdrop-blur-xl flex items-center ${className}`}
+      className={`mac-os-dock-container backdrop-blur-xl flex items-center ${className}`}
       style={dockStyle}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}

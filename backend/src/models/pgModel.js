@@ -352,12 +352,17 @@ export const searchPGs = async (filters) => {
 // OWNER ANALYTICS MODEL (FIXED)
 // ==========================================
 export const getOwnerAnalyticsData = async (ownerId) => {
+  // Fetch owner subscription tier directly from database
+  const [userRows] = await db.execute(`SELECT subscription_tier FROM users WHERE id = ?`, [ownerId]);
+  const subscriptionTier = userRows[0]?.subscription_tier || "Pro Tier";
+
   // 1. Fetch all PGs owned by this user
   const pgsQuery = `SELECT * FROM pgs WHERE owner_id = ?`;
   const [pgs] = await db.execute(pgsQuery, [ownerId]);
 
   if (pgs.length === 0) {
     return {
+      subscriptionTier,
       totalPGs: 0,
       approvedPGs: 0,
       pendingPGs: 0,
@@ -375,7 +380,6 @@ export const getOwnerAnalyticsData = async (ownerId) => {
   const pgIds = pgs.map(p => p.id);
 
   // 2. Fetch all bookings for these PGs
-  // FIX: Sorted by b.id DESC instead of non-existent b.created_at
   const placeholders = pgIds.map(() => '?').join(',');
   const bookingsQuery = `
     SELECT b.*, p.title AS pg_title, p.city 
@@ -402,6 +406,7 @@ export const getOwnerAnalyticsData = async (ownerId) => {
   };
 
   return {
+    subscriptionTier,
     totalPGs: pgs.length,
     approvedPGs: pgs.filter(p => p.status === 'approved').length,
     pendingPGs: pgs.filter(p => p.status === 'pending').length,

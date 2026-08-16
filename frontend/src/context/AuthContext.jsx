@@ -1,24 +1,21 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem("user");
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const [token, setToken] = useState(
     localStorage.getItem("token") || null
   );
-
-  // Load saved user from localStorage
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-
-    if (savedUser) {
-
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
 
   // Login Function
   const login = (userData, jwtToken) => {
