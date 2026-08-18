@@ -7,14 +7,16 @@ import {
   BookOpenCheck,
   Users,
   LogOut,
+  CreditCard,
+  ClipboardList,
   X,
   ShieldCheck,
-  CreditCard,
   PanelLeftOpen,
   PanelLeftClose,
   ChevronUp,
   User,
   Zap,
+  BarChart3,
   Settings as SettingsIcon
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
@@ -51,6 +53,24 @@ const navItems = [
     path: "/owner/students",
     icon: Users,
   },
+
+  {
+    title: "KYC Forms",
+    path: "/owner/kyc-forms",
+    icon: ClipboardList,
+  },
+  {
+    title: "Payments", 
+    path: "/owner/payments",
+    icon: CreditCard,
+  },
+  // NEW: Added Analytics option below Students
+  {
+    title: "Analytics",
+    path: "/owner/analytics",
+    icon: BarChart3,
+  },
+
 ];
 
 const AdminSidebar = ({ closeSidebar, toggleCollapse, isCollapsed = false }) => {

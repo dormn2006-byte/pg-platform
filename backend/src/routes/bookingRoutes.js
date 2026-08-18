@@ -9,6 +9,8 @@ import {
   updateBookingStatusController,
 } from "../controllers/bookingController.js";
 
+import { getMyPgs } from "../controllers/bookingController.js";
+
 import {
   protect,
   ownerOnly,
@@ -38,9 +40,11 @@ router.get(
   getOwnerBookingsController
 );
 
+router.get("/my-pgs", protect, getMyPgs);
+
 // Update Booking Status (Owner)
 router.put(
-  "/status/:id",
+  "/:id/status",  // <-- Flipped!
   protect,
   ownerOnly,
   updateBookingStatusController

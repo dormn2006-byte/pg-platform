@@ -180,6 +180,7 @@ const Navbar = () => {
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0D3A1D] text-white font-black text-sm uppercase shadow-sm">
                       {user.name ? user.name.charAt(0) : (user.email ? user.email.charAt(0) : "U")}
                     </div>
+
                     <div className="hidden sm:flex flex-col text-left leading-tight">
                       <span className="text-xs font-black text-[#0D3A1D] truncate max-w-[100px]">
                         {user.name || "My Account"}
@@ -190,6 +191,11 @@ const Navbar = () => {
                     </div>
                     <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${isProfileMenuOpen ? "rotate-180" : ""}`} />
                   </button>
+
+                    <Link to="/my-pgs" className="text-sm font-bold text-gray-600 hover:text-[#93B733]">
+  My PGs
+</Link>
+
 
                   {isProfileMenuOpen && (
                     <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-gray-200/80 bg-white/95 backdrop-blur-xl p-2 shadow-xl z-50 animate-[fadeIn_0.15s_ease-out_forwards]">

@@ -38,6 +38,11 @@ const menuItems = [
     icon: "📊",
   },
   {
+    name: "Payments",
+    path: "/pg-admin/payments",
+    icon: "💳",
+  },
+  {
     name: "Settings",
     path: "/pg-admin/settings",
     icon: "⚙️",
