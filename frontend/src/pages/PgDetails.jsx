@@ -1,7 +1,21 @@
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useMemo } from "react";
+import {  useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import API, { IMAGE_BASE_URL } from "../services/api";
+
+// Function to load Razorpay SDK dynamically
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 // Amenity Icon Mapper for a cleaner UI
 const getAmenityIcon = (name) => {
@@ -86,6 +100,7 @@ const parseListField = (value) => {
 
 const PgDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [pg, setPg] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -99,6 +114,21 @@ const PgDetails = () => {
     price: 0,
     label: "Starting Price",
   });
+
+  // --- NEW: COUPON STATE ---
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [couponError, setCouponError] = useState("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+
+  // Reset coupon if user changes room type to prevent mismatched discount values
+  useEffect(() => {
+    setCouponCode("");
+    setAppliedCoupon(null);
+    setDiscountAmount(0);
+    setCouponError("");
+  }, [selectedRoom.price]);
 
   useEffect(() => {
     const fetchPG = async () => {
@@ -218,7 +248,131 @@ const PgDetails = () => {
     }
   };
 
+
   const [mainImageLoaded, setMainImageLoaded] = useState(false);
+
+  // --- NEW: COUPON VERIFICATION LOGIC ---
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    
+    // Auth Check
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please log in to your account to apply a coupon.");
+      return;
+    }
+
+    const roomPrice = selectedRoom.price || pg?.price;
+    if (!roomPrice) {
+      setCouponError("Please select a valid room first.");
+      return;
+    }
+
+    setIsApplyingCoupon(true);
+    setCouponError("");
+
+    try {
+      const response = await API.post("/payments/apply-coupon", {
+        code: couponCode.trim().toUpperCase(),
+        original_amount: roomPrice
+      });
+
+      if (response.data.success) {
+        setAppliedCoupon(couponCode.trim().toUpperCase());
+        setDiscountAmount(response.data.discount_applied);
+      }
+    } catch (error) {
+      console.error("Apply Coupon Error:", error);
+      setCouponError(error?.response?.data?.message || "Invalid or expired coupon");
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  // --- UPDATED RAZORPAY PAYMENT LOGIC ---
+  const handlePayment = async () => {
+    // Auth Check (Fixes 401 unhandled crash)
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please log in to your account to book this PG.");
+      return;
+    }
+
+    const roomPrice = selectedRoom.price || pg?.price;
+    
+    if (!roomPrice) {
+      alert("Please select a valid room type first.");
+      return;
+    }
+
+    const res = await loadRazorpayScript();
+    if (!res) {
+      alert("Razorpay SDK failed to load. Please check your internet connection.");
+      return;
+    }
+
+    try {
+      // Call backend to create order, passing coupon code securely
+      const response = await API.post("/payments/create-order", {
+        pg_id: Number(id),
+        owner_id: pg.owner_id,
+        amount_in_rupees: roomPrice,
+        coupon_code: appliedCoupon // Tell backend to apply this coupon
+      });
+      
+      const orderData = response.data;
+
+      if (!orderData.success) {
+        alert("Failed to initialize payment: " + orderData.message);
+        return;
+      }
+
+      // Configure Razorpay Modal
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
+        amount: orderData.amount, 
+        currency: orderData.currency,
+        name: "Dormn Platform",
+        description: `Booking for ${pg.title}`,
+        order_id: orderData.order_id, 
+        
+        handler: async function (response) {
+          try {
+            // 1. Send the success IDs to our backend to securely lock it in the database
+            const verifyRes = await API.post("/payments/verify", {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              booking_id: orderData.booking_id 
+            });
+
+            if (verifyRes.data.success) {
+              // 2. Redirect instantly to the new My PGs dashboard!
+              navigate("/my-pgs"); 
+            }
+          } catch (err) {
+            console.error("Verification failed", err);
+            alert("Payment completed, but verification failed. Please contact support.");
+          }
+        },
+        
+        prefill: {
+          name: "Student", 
+          email: "student@example.com", 
+        },
+        theme: {
+          color: "#4F46E5" 
+        }
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+
+    } catch (error) {
+      console.error("Payment setup failed:", error);
+      alert(error?.response?.data?.message || "Something went wrong setting up the payment.");
+    }
+  };
 
   if (loading) {
     return (
@@ -249,6 +403,11 @@ const PgDetails = () => {
       </div>
     );
   }
+
+  const currentRoomPrice = selectedRoom.price || pg?.price || 0;
+  const finalDisplayPrice = appliedCoupon 
+    ? Math.max(currentRoomPrice - discountAmount, 1) 
+    : currentRoomPrice;
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#FAF9F5] dark:bg-[#000000] text-[#3A2935] dark:text-white font-sans selection:bg-[#93B733] selection:text-white pb-20">
@@ -493,7 +652,56 @@ const PgDetails = () => {
                   </div>
                 )}
 
+                {/* --- NEW: COUPON SECTION --- */}
+                <div className="mt-6 border-b-2 border-gray-100 pb-6">
+                  <h3 className="font-bold text-xs text-gray-500 mb-3 uppercase tracking-wider">Have a Coupon?</h3>
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl p-3">
+                      <div>
+                        <p className="text-xs font-bold text-green-700">{appliedCoupon} Applied!</p>
+                        <p className="text-[10px] text-green-600 font-medium">You saved ₹{discountAmount.toLocaleString()}</p>
+                      </div>
+                      <button 
+                        onClick={() => { setAppliedCoupon(null); setDiscountAmount(0); setCouponCode(""); }} 
+                        className="text-xs font-bold text-red-500 hover:text-red-700 transition"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex gap-2">
+                        <input 
+                          type="text" 
+                          value={couponCode} 
+                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                          placeholder="Enter code" 
+                          className="flex-1 border-2 border-gray-200 rounded-xl px-3 py-2 text-sm font-bold text-[#3A2935] focus:outline-none focus:border-indigo-500 uppercase transition"
+                        />
+                        <button 
+                          onClick={handleApplyCoupon} 
+                          disabled={isApplyingCoupon || !couponCode.trim()}
+                          className="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold transition hover:bg-gray-800 disabled:opacity-50"
+                        >
+                          {isApplyingCoupon ? "..." : "Apply"}
+                        </button>
+                      </div>
+                      {couponError && <p className="text-red-500 text-[10px] font-bold mt-1.5">{couponError}</p>}
+                    </div>
+                  )}
+                </div>
+
+                {/* --- UPDATED ACTION BUTTONS --- */}
                 <div className="mt-6 space-y-3">
+                  
+                  {/* UPDATED RAZORPAY PAYMENT BUTTON (Shows Dynamic Price) */}
+                  <button
+                    onClick={handlePayment}
+                    className="w-full rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-indigo-700"
+                  >
+                    Book PG Now (Pay ₹{finalDisplayPrice.toLocaleString()})
+                  </button>
+
                   <button
                     onClick={handleBookVisit}
                     className="w-full rounded-2xl bg-[#93B733] px-5 py-4 text-sm font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-[#82a32d]"

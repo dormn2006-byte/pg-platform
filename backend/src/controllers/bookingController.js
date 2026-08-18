@@ -6,6 +6,7 @@ import {
 } from "../models/bookingModel.js";
 
 import { getPGById } from "../models/pgModel.js";
+import pool from "../config/db.js";
 
 // Create Booking Request
 export const createBookingController = async (req, res) => {
@@ -152,5 +153,46 @@ export const updateBookingStatusController = async (
       success: false,
       message: "Internal Server Error",
     });
+  }
+};
+
+// Get all PGs booked by the logged-in student
+export const getMyPgs = async (req, res) => {
+  try {
+    const student_id = req.user.id; // From the protect middleware
+
+    // This SQL query is 100% aligned with your actual MySQL database columns
+    const [bookings] = await pool.execute(
+      `SELECT 
+        b.id AS booking_id, 
+        b.status AS booking_status, 
+        b.payment_status, 
+        b.booking_date, 
+        b.selected_room_type,
+        p.id AS pg_id, 
+        p.title, 
+        p.city, 
+        p.area, 
+        p.address,
+        p.profile_image, 
+        pay.amount AS amount_paid, 
+        pay.razorpay_payment_id,
+        pay.created_at AS payment_date
+       FROM bookings b
+       JOIN pgs p ON b.pg_id = p.id
+       LEFT JOIN payments pay ON b.id = pay.booking_id AND pay.status = 'successful'
+       WHERE b.student_id = ? AND (b.payment_status = 'paid' OR b.status = 'approved')
+       ORDER BY b.booking_date DESC
+       LIMIT 1`,
+      [student_id]
+    );
+
+    res.status(200).json({ 
+      success: true, 
+      booking: bookings.length > 0 ? bookings[0] : null 
+    });
+  } catch (error) {
+    console.error("Fetch My Pgs Error:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch your enrolled PG" });
   }
 };

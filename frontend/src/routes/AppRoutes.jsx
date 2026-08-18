@@ -5,8 +5,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "../pages/Home";
 import ProtectedRoute from "./ProtectedRoute";
 
+
 const ExplorePGs = lazy(() => import("../pages/ExplorePGs"));
 const PgDetails = lazy(() => import("../pages/PgDetails"));
+import MyPgs from '../pages/MyPgs';
 const GlobalAudioPlayer = lazy(() => import("../components/common/GlobalAudioPlayer"));
 
 // Lazy-loaded routes to keep initial bundle size light
@@ -39,6 +41,12 @@ const Students = lazy(() => import("../admin/pgAdmin/Students"));
 const Notifications = lazy(() => import("../admin/pgAdmin/Notifications"));
 const BookingDetails = lazy(() => import("../admin/pgAdmin/BookingDetails"));
 
+
+const OwnerPayments = lazy(() => import("../admin/pgAdmin/OwnerPayments"));
+const TenantRegistrations = lazy(() => import("../admin/pgAdmin/TenantRegistrations"));
+
+
+
 const SuperAdminDashboard = lazy(() => import("../admin/superAdmin/SuperAdminDashboard"));
 const ManageOwners = lazy(() => import("../admin/superAdmin/ManageOwners"));
 const ManagePGs = lazy(() => import("../admin/superAdmin/ManagePGs"));
@@ -46,6 +54,7 @@ const ManageStudents = lazy(() => import("../admin/superAdmin/ManageStudents"));
 const OwnerDetails = lazy(() => import("../admin/superAdmin/OwnerDetails"));
 const PGAdminDetails = lazy(() => import("../admin/superAdmin/PGDetails"));
 const StudentDetails = lazy(() => import("../admin/superAdmin/StudentDetails"));
+
 
 // Simple loading indicator for lazy routes
 const PageLoader = () => (
@@ -76,7 +85,8 @@ const AppRoutes = () => {
           <Route path="/pg/:id" element={<PgDetails />} />
           <Route path="/blogs" element={<BlogList />} />
           <Route path="/blogs/pg-near-amity-university-noida" element={<AmityPGGuide />} />
-          <Route path="/blogs/pg-in-sector-62-noida" element={<Sector62Guide />} />       
+          <Route path="/blogs/pg-in-sector-62-noida" element={<Sector62Guide />} /> 
+          <Route path="/my-pgs" element={<MyPgs />} />      
 
           {/* Auth Routes */}
           <Route path="/auth" element={<Auth />} />
@@ -203,7 +213,14 @@ const AppRoutes = () => {
             <Route path="edit-pg/:id" element={<EditPG />} />
             <Route path="bookings" element={<Bookings />} />
             <Route path="students" element={<Students />} />
+
             <Route path="notifications" element={<Notifications />} />
+
+            
+            <Route path="payments" element={<OwnerPayments />} />
+            <Route path="kyc-forms" element={<TenantRegistrations />} />
+            
+
           </Route>
           <Route path="*" element={<Navigate to="/pgs" replace />} />
         </Routes>
