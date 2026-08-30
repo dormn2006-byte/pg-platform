@@ -8,7 +8,6 @@ import ProtectedRoute from "./ProtectedRoute";
 
 const ExplorePGs = lazy(() => import("../pages/ExplorePGs"));
 const PgDetails = lazy(() => import("../pages/PgDetails"));
-import MyPgs from '../pages/MyPgs';
 const GlobalAudioPlayer = lazy(() => import("../components/common/GlobalAudioPlayer"));
 
 // Lazy-loaded routes to keep initial bundle size light
@@ -21,6 +20,7 @@ const MyBookings = lazy(() => import("../pages/MyBookings"));
 const StudentDashboard = lazy(() => import("../pages/StudentDashboard"));
 const SavedPGs = lazy(() => import("../pages/SavedPGs"));
 const StudentSettings = lazy(() => import("../pages/StudentSettings"));
+const MyPG = lazy(() => import("../pages/MyPG"));
 
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("../pages/TermsConditions"));
@@ -44,6 +44,8 @@ const BookingDetails = lazy(() => import("../admin/pgAdmin/BookingDetails"));
 
 const OwnerPayments = lazy(() => import("../admin/pgAdmin/OwnerPayments"));
 const TenantRegistrations = lazy(() => import("../admin/pgAdmin/TenantRegistrations"));
+const OwnerRequests = lazy(() => import("../admin/pgAdmin/OwnerRequests"));
+const PgAnalyticsDetails = lazy(() => import("../admin/pgAdmin/PgAnalyticsDetails"));
 
 
 
@@ -86,7 +88,11 @@ const AppRoutes = () => {
           <Route path="/blogs" element={<BlogList />} />
           <Route path="/blogs/pg-near-amity-university-noida" element={<AmityPGGuide />} />
           <Route path="/blogs/pg-in-sector-62-noida" element={<Sector62Guide />} /> 
-          <Route path="/my-pgs" element={<MyPgs />} />      
+          <Route path="/events" element={<MyPG defaultTab="events" />} />
+          <Route path="/gym" element={<MyPG defaultTab="gym" />} />
+          <Route path="/dr-dormn" element={<MyPG defaultTab="dr-dormn" />} />
+          <Route path="/my-pg" element={<MyPG />} />
+          <Route path="/my-pgs" element={<MyPG />} />      
 
           {/* Auth Routes */}
           <Route path="/auth" element={<Auth />} />
@@ -138,6 +144,14 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute role="student">
                 <StudentSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-pg"
+            element={
+              <ProtectedRoute role="student">
+                <MyPG />
               </ProtectedRoute>
             }
           />
@@ -211,7 +225,9 @@ const AppRoutes = () => {
             <Route path="my-pgs" element={<MyPGs />} />
             <Route path="pricing" element={<Pricing />} />
             <Route path="edit-pg/:id" element={<EditPG />} />
+            <Route path="pg-analytics/:pgId" element={<PgAnalyticsDetails />} />
             <Route path="bookings" element={<Bookings />} />
+            <Route path="requests" element={<OwnerRequests />} />
             <Route path="students" element={<Students />} />
 
             <Route path="notifications" element={<Notifications />} />

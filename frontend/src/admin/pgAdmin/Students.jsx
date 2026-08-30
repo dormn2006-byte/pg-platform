@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Users, Mail, Phone, Building2, Search, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { Users, Mail, Phone, Building2, Search, CheckCircle2, Clock, XCircle, CreditCard, BedDouble, AlertCircle, IndianRupee } from "lucide-react";
 import api from "../../services/api";
 
 const Students = () => {
@@ -24,26 +24,57 @@ const Students = () => {
     fetchStudents();
   }, [fetchStudents]);
 
+  // Filter out paused bookings and deduplicate (same student + same PG → keep latest only)
+  const visibleStudents = useMemo(() => {
+    const filtered = students.filter((s) => s.status !== "paused");
+    const grouped = {};
+    filtered.forEach((s) => {
+      const studentKey = (s.student_email || s.email || s.student_name || String(s.student_id || s.user_id || '')).toLowerCase().trim();
+      const pgKey = (s.title || s.pg_title || s.pg_name || String(s.pg_id || '')).toLowerCase().trim();
+      const key = `${studentKey}_${pgKey}`;
+
+      const sTime = new Date(s.created_at || 0).getTime() || Number(s.id) || 0;
+      const gTime = grouped[key] ? (new Date(grouped[key].created_at || 0).getTime() || Number(grouped[key].id) || 0) : -1;
+
+      if (!grouped[key] || sTime > gTime) {
+        grouped[key] = s;
+      }
+    });
+    return Object.values(grouped);
+  }, [students]);
+
   // Dynamic status counts
   const counts = useMemo(() => ({
-    all: students.length,
-    approved: students.filter((s) => s.status === "approved").length,
-    pending: students.filter((s) => s.status === "pending").length,
-    rejected: students.filter((s) => s.status === "rejected").length,
-  }), [students]);
+    all: visibleStudents.length,
+    paid: visibleStudents.filter((s) => s.status === "approved" && s.payment_status === "paid").length,
+    unpaid: visibleStudents.filter((s) => s.status === "approved" && s.payment_status !== "paid").length,
+    pending: visibleStudents.filter((s) => s.status === "pending").length,
+    rejected: visibleStudents.filter((s) => s.status === "rejected").length,
+  }), [visibleStudents]);
 
   // Filtered List
   const filteredStudents = useMemo(() => {
-    return students.filter((s) => {
+    return visibleStudents.filter((s) => {
       const studentName = s.student_name || "";
       const studentEmail = s.student_email || "";
       const matchesSearch =
         studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         studentEmail.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesTab = activeTab === "all" ? true : s.status?.toLowerCase() === activeTab;
+      
+      let matchesTab = true;
+      if (activeTab === "paid") {
+        matchesTab = s.status === "approved" && s.payment_status === "paid";
+      } else if (activeTab === "unpaid") {
+        matchesTab = s.status === "approved" && s.payment_status !== "paid";
+      } else if (activeTab === "pending") {
+        matchesTab = s.status === "pending";
+      } else if (activeTab === "rejected") {
+        matchesTab = s.status === "rejected";
+      }
+
       return matchesSearch && matchesTab;
     });
-  }, [students, searchTerm, activeTab]);
+  }, [visibleStudents, searchTerm, activeTab]);
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
@@ -54,10 +85,11 @@ const Students = () => {
         {/* Large Status Filter Tabs */}
         <div className="flex items-center gap-2.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
           {[
-            { id: "all", label: "All Students", count: counts.all },
-            { id: "approved", label: "Active Tenants", count: counts.approved },
+            { id: "all", label: "All Applicants", count: counts.all },
+            { id: "paid", label: "Paid & Verified", count: counts.paid },
+            { id: "unpaid", label: "Approved (Unpaid)", count: counts.unpaid },
             { id: "pending", label: "Pending Approval", count: counts.pending },
-            { id: "rejected", label: "Declined Applications", count: counts.rejected },
+            { id: "rejected", label: "Declined", count: counts.rejected },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -83,7 +115,7 @@ const Students = () => {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           <input
             type="text"
-            placeholder="Search student name or email..."
+            placeholder="Search tenant name or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full rounded-2xl border border-gray-200 dark:border-white/15 bg-gray-50 dark:bg-white/5 py-3.5 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-[#141b2d]"
@@ -91,16 +123,16 @@ const Students = () => {
         </div>
       </div>
 
-      {/* Student Cards Showcase - Big, Clear & Bold */}
+      {/* Tenant Cards Showcase - Big, Clear & Bold */}
       {loading ? (
         <div className="rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] p-16 text-center shadow-sm">
           <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 dark:border-gray-800 border-t-blue-500 mx-auto mb-4"></div>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Loading student directory...</p>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Loading tenant directory...</p>
         </div>
       ) : filteredStudents.length === 0 ? (
         <div className="rounded-3xl border border-gray-200 dark:border-white/15 bg-white dark:bg-[#0c1220] p-16 text-center shadow-sm">
           <Users size={48} className="text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-black text-gray-900 dark:text-white">No students found</h3>
+          <h3 className="text-xl font-black text-gray-900 dark:text-white">No tenants found</h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Adjust search or filters to see resident records.</p>
         </div>
       ) : (
@@ -114,28 +146,40 @@ const Students = () => {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-4">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 text-xl font-black text-white shadow-md">
-                    {(s.student_name || "S").charAt(0).toUpperCase()}
+                    {(s.student_name || "T").charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <h3 className="text-lg font-black text-gray-900 dark:text-white leading-tight truncate">
-                      {s.student_name || "Student Applicant"}
+                      {s.student_name || "Tenant Applicant"}
                     </h3>
                     <span className="text-xs font-bold text-gray-400">ID #{s.student_id || s.id}</span>
                   </div>
                 </div>
 
-                <span className={`rounded-xl px-3.5 py-1.5 text-xs font-black uppercase tracking-wider border ${
-                  s.status === "approved"
-                    ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
-                    : s.status === "rejected"
-                    ? "bg-rose-500/20 text-rose-400 border-rose-500/40"
-                    : "bg-amber-500/20 text-amber-400 border-amber-500/40"
-                }`}>
-                  {s.status === "approved" ? "ACTIVE RESIDENT" : s.status?.toUpperCase() || "PENDING"}
-                </span>
+                {s.status === "approved" ? (
+                  s.payment_status === "paid" ? (
+                    <span className="rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-wider border bg-emerald-500/20 text-emerald-400 border-emerald-500/40 flex items-center gap-1 shrink-0">
+                      <CheckCircle2 size={13} />
+                      <span>PAID & ACTIVE</span>
+                    </span>
+                  ) : (
+                    <span className="rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-wider border bg-amber-500/20 text-amber-400 border-amber-500/40 flex items-center gap-1 shrink-0">
+                      <AlertCircle size={13} />
+                      <span>APPROVED (UNPAID)</span>
+                    </span>
+                  )
+                ) : s.status === "rejected" ? (
+                  <span className="rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-wider border bg-rose-500/20 text-rose-400 border-rose-500/40 shrink-0">
+                    DECLINED
+                  </span>
+                ) : (
+                  <span className="rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-wider border bg-blue-500/20 text-blue-400 border-blue-500/40 shrink-0">
+                    PENDING REVIEW
+                  </span>
+                )}
               </div>
 
-              {/* PG Assignment Info Box */}
+              {/* PG Assignment & Payment Info Box */}
               <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.03] p-4 space-y-2.5">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-400 font-bold uppercase text-[10px]">Property Stay</span>
@@ -143,6 +187,33 @@ const Students = () => {
                     <Building2 size={15} />
                     {s.title || s.pg_title || "PG Accommodations"}
                   </span>
+                </div>
+
+                <div className="flex items-center justify-between text-xs border-t border-gray-200/60 dark:border-white/10 pt-2.5">
+                  <span className="text-gray-400 font-bold uppercase text-[10px]">Room Plan</span>
+                  <span className="font-bold text-gray-900 dark:text-gray-200 flex items-center gap-1">
+                    <BedDouble size={13} className="text-purple-500" />
+                    {s.selected_room_type || "Standard Room"}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-xs border-t border-gray-200/60 dark:border-white/10 pt-2.5">
+                  <span className="text-gray-400 font-bold uppercase text-[10px]">Payment Status</span>
+                  {s.payment_status === "paid" ? (
+                    <span className="font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <CreditCard size={13} />
+                      <span>Paid ₹{(Number(s.booked_price || s.price || 0)).toLocaleString()}</span>
+                    </span>
+                  ) : s.status === "approved" ? (
+                    <span className="font-black text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                      <Clock size={13} />
+                      <span>Unpaid (₹{(Number(s.booked_price || s.price || 0)).toLocaleString()} Due)</span>
+                    </span>
+                  ) : (
+                    <span className="font-bold text-gray-500 flex items-center gap-1">
+                      <span>₹{(Number(s.booked_price || s.price || 0)).toLocaleString()} (Pending)</span>
+                    </span>
+                  )}
                 </div>
 
                 {s.student_email && (

@@ -14,7 +14,8 @@ import {
   AlertTriangle,
   Eye,
   Bed,
-  Users
+  Users,
+  X
 } from "lucide-react";
 import api, { IMAGE_BASE_URL } from "../../services/api";
 
@@ -24,6 +25,7 @@ const MyPGs = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+  const [selectedPgForView, setSelectedPgForView] = useState(null);
 
   const fetchMyPGs = useCallback(async () => {
     try {
@@ -223,8 +225,8 @@ const MyPGs = () => {
               {/* Large Action Buttons Toolbar */}
               <div className="grid grid-cols-3 gap-2.5 border-t border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] p-4">
                 <button
-                  onClick={() => navigate(`/pg/${pg.id}`)}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-blue-600 hover:bg-blue-500 py-3 text-xs font-black text-white transition shadow-md"
+                  onClick={() => navigate(`/owner/pg-analytics/${pg.id}`)}
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-blue-600 hover:bg-blue-500 py-3 text-xs font-black text-white transition shadow-md cursor-pointer"
                 >
                   <Eye size={16} />
                   <span>View</span>
@@ -232,7 +234,7 @@ const MyPGs = () => {
 
                 <button
                   onClick={() => navigate(`/owner/edit-pg/${pg.id}`)}
-                  className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 dark:border-white/15 bg-white dark:bg-white/5 py-3 text-xs font-black text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 dark:border-white/15 bg-white dark:bg-white/5 py-3 text-xs font-black text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition cursor-pointer"
                 >
                   <Edit3 size={16} />
                   <span>Edit</span>
@@ -240,7 +242,7 @@ const MyPGs = () => {
 
                 <button
                   onClick={() => handleDelete(pg.id, pg.title)}
-                  className="flex items-center justify-center gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 py-3 text-xs font-black text-rose-500 hover:bg-rose-500/20 transition"
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 py-3 text-xs font-black text-rose-500 hover:bg-rose-500/20 transition cursor-pointer"
                 >
                   <Trash2 size={16} />
                   <span>Delete</span>

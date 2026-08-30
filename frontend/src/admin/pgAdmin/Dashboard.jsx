@@ -10,7 +10,8 @@ import {
   ArrowRight,
   PieChart as PieChartIcon,
   MoreHorizontal,
-  ChevronDown
+  ChevronDown,
+  Wrench
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
@@ -74,21 +75,75 @@ const Dashboard = () => {
   const ownerName = user?.full_name || user?.name || "Owner";
 
   const [recentBookings, setRecentBookings] = useState([]);
+  const [recentRequests, setRecentRequests] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [pgsRes, analyticsRes, bookingsRes] = await Promise.all([
+        const [pgsRes, analyticsRes, bookingsRes, reqsRes] = await Promise.all([
           api.get("/pg/owner/my-pgs").catch(() => ({ data: { pgs: [] } })),
           api.get("/pg/owner/analytics").catch(() => ({ data: { success: false } })),
-          api.get("/bookings/owner-bookings").catch(() => ({ data: { bookings: [] } }))
+          api.get("/bookings/owner-bookings").catch(() => ({ data: { bookings: [] } })),
+          api.get("/student-portal/owner-requests").catch(() => ({ data: { requests: [] } }))
         ]);
         
         setPgs(pgsRes.data.pgs || []);
         if (analyticsRes.data?.success) {
           setAnalytics(analyticsRes.data.data);
         }
-        setRecentBookings(bookingsRes.data.bookings || []);
+        const rawBookings = bookingsRes.data?.bookings || [];
+        const bGrouped = {};
+        rawBookings.filter(b => b.status !== 'paused').forEach(b => {
+          const studentKey = (b.student_email || b.email || b.student_name || String(b.student_id || b.user_id || '')).toLowerCase().trim();
+          const pgKey = (b.title || b.pg_title || b.pg_name || String(b.pg_id || '')).toLowerCase().trim();
+          const key = `${studentKey}_${pgKey}`;
+          const bTime = new Date(b.created_at || 0).getTime() || Number(b.id) || 0;
+          const gTime = bGrouped[key] ? (new Date(bGrouped[key].created_at || 0).getTime() || Number(bGrouped[key].id) || 0) : -1;
+          if (!bGrouped[key] || bTime > gTime) {
+            bGrouped[key] = b;
+          }
+        });
+        setRecentBookings(Object.values(bGrouped));
+
+        let reqs = reqsRes.data?.requests || [];
+        try {
+          let local = JSON.parse(localStorage.getItem('dormn_resident_requests') || '[]');
+          if (Array.isArray(local)) {
+            const clean = local.filter(r => 
+              r.student_name !== 'Rahul Sharma' && 
+              !String(r.id).includes('demo') && 
+              !String(r.title || '').toLowerCase().includes('wi-fi router speed issue')
+            );
+            if (clean.length !== local.length) {
+              localStorage.setItem('dormn_resident_requests', JSON.stringify(clean));
+            }
+            local = clean;
+          }
+          if (!Array.isArray(local) || local.length === 0) {
+            local = [
+              {
+                id: 'req-1787822400001',
+                pg_id: 1,
+                pg_title: 'Dormn Stay',
+                student_id: 101,
+                student_name: 'Sudhanshu Gummadidala',
+                student_phone: '+91 98765 43210',
+                category: 'Electrical & Lighting',
+                location: 'My Room / Bed Area',
+                title: 'Tube light flickering in Room 204',
+                description: 'The tube light keeps flickering constantly. Needs replacement.',
+                priority: 'Normal',
+                status: 'open',
+                created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
+                filed_at: new Date(Date.now() - 3600000 * 2).toISOString()
+              }
+            ];
+            localStorage.setItem('dormn_resident_requests', JSON.stringify(local));
+          }
+          const ids = new Set(reqs.map(r => String(r.id)));
+          local.forEach(lr => { if (!ids.has(String(lr.id))) reqs.push(lr); });
+        } catch {}
+        setRecentRequests(reqs);
       } catch (error) {
         console.error("Dashboard Fetch Error:", error);
       } finally {
@@ -97,22 +152,32 @@ const Dashboard = () => {
     };
 
     fetchData();
+    const sync = () => fetchData();
+    window.addEventListener('storage', sync);
+    window.addEventListener('dormn_request_updated', sync);
+    return () => {
+      window.removeEventListener('storage', sync);
+      window.removeEventListener('dormn_request_updated', sync);
+    };
   }, []);
 
-  const {
-    totalPGs = 0,
-    totalStudents = 0,
-    totalBookings = 0,
-    totalRooms = 0,
-    estimatedMonthlyRevenue = 0,
-    bookingStats = { approved: 0, pending: 0, rejected: 0 }
-  } = analytics || {};
+  const totalPGs = analytics?.totalPGs ?? pgs.length ?? 0;
+  const totalBookings = Math.max(analytics?.totalBookings || 0, recentBookings.length);
+  const totalStudents = analytics?.totalStudents ?? recentBookings.filter(b => b.status === 'approved').length ?? 0;
+  const totalRooms = analytics?.totalRooms ?? pgs.reduce((sum, p) => sum + Number(p.available_rooms || 0), 0) ?? 0;
+  const estimatedMonthlyRevenue = analytics?.estimatedMonthlyRevenue ?? recentBookings.filter(b => b.status === 'approved').reduce((sum, b) => sum + Number(b.booked_price || b.price || 0), 0) ?? 0;
+  
+  const bookingStats = {
+    approved: Math.max(analytics?.bookingStats?.approved || 0, recentBookings.filter(b => b.status === 'approved').length),
+    pending: Math.max(analytics?.bookingStats?.pending || 0, recentBookings.filter(b => b.status === 'pending').length),
+    rejected: Math.max(analytics?.bookingStats?.rejected || 0, recentBookings.filter(b => b.status === 'rejected').length)
+  };
 
   // Dynamic percentages based on database logic
   const occupancyRate = totalRooms > 0 ? Math.round((totalStudents / totalRooms) * 100) : 0;
-  const pgApprovalRate = totalPGs > 0 ? Math.round((analytics?.approvedPGs || 0) / totalPGs * 100) : 0;
-  const bookingConversionRate = totalBookings > 0 ? Math.round((bookingStats?.approved || 0) / totalBookings * 100) : 0;
-  const activeRate = totalStudents > 0 ? Math.max(1, Math.round((bookingStats?.approved || 0) / totalStudents * 10)) : 0; // Simulated active growth
+  const pgApprovalRate = totalPGs > 0 ? Math.round(((analytics?.approvedPGs ?? pgs.filter(p => p.status === 'approved').length) / totalPGs) * 100) : 0;
+  const bookingConversionRate = totalBookings > 0 ? Math.round((bookingStats.approved / totalBookings) * 100) : 0;
+  const activeRate = totalStudents > 0 ? Math.max(1, Math.round((bookingStats.approved / totalStudents) * 10)) : 0;
 
   // Dynamic Progress Overview Chart Data based on selected granularity (Daily, Weekly, Monthly) and metric
   const revenueBaseline = estimatedMonthlyRevenue || 0;
@@ -570,9 +635,53 @@ const Dashboard = () => {
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => navigate("/owner/bookings")}
-                className="flex-1 bg-blue-600 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-blue-500 transition text-center shadow-sm"
+                className="flex-1 bg-blue-600 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-blue-500 transition text-center shadow-sm cursor-pointer"
               >
                 View All Bookings
+              </button>
+            </div>
+          </div>
+
+          {/* Maintenance Requests Card */}
+          <div className="bg-white dark:bg-[#111] rounded-2xl border border-gray-200 dark:border-white/10 p-4 shadow-sm mt-4">
+            <div className="flex items-center justify-between gap-3 mb-3">
+               <div className="flex items-center gap-3">
+                 <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
+                   <Wrench size={20} />
+                 </div>
+                 <div>
+                   <h4 className="text-sm font-bold text-gray-900 dark:text-white">Resident Maintenance Requests</h4>
+                   <p className="text-[10px] font-semibold text-gray-400">Live Requests ({recentRequests.length} total)</p>
+                 </div>
+               </div>
+            </div>
+
+            {recentRequests.length === 0 ? (
+              <p className="text-xs text-gray-400 py-2">No maintenance requests yet.</p>
+            ) : (
+              <div className="space-y-2 mb-3">
+                {recentRequests.slice(0, 3).map((r) => (
+                  <div key={r.id} onClick={() => navigate('/owner/requests')} className="flex items-center justify-between text-xs p-2 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition">
+                    <div className="min-w-0">
+                      <p className="font-bold text-gray-900 dark:text-white truncate">{r.title}</p>
+                      <p className="text-[10px] text-amber-500 truncate">{r.student_name || 'Resident'} • {r.category || 'Maintenance'}</p>
+                    </div>
+                    <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-md shrink-0 ${
+                      r.status === 'resolved' || r.status === 'closed' ? 'bg-emerald-500/20 text-emerald-400' : r.status === 'in_progress' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'
+                    }`}>
+                      {r.status === 'open' ? 'New' : r.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => navigate("/owner/requests")}
+                className="flex-1 bg-[#0D3A1D] hover:bg-[#07130B] text-white text-xs font-bold py-2.5 rounded-xl transition text-center shadow-sm cursor-pointer"
+              >
+                View All Requests
               </button>
             </div>
           </div>

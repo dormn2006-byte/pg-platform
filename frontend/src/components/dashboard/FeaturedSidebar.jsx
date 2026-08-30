@@ -112,7 +112,7 @@ const SlidingPgPageSidebar = memo(({ pgList }) => {
     let source = [];
     if (pgList && Array.isArray(pgList) && pgList.length > 0) {
       const filtered = pgList.filter(p => p.is_sponsored || p.is_featured || p.sponsored || p.featured);
-      source = filtered;
+      source = filtered.length > 0 ? filtered : pgList;
     }
     if (!source || source.length === 0) {
       source = DEFAULT_MOCK_PGS;
@@ -208,7 +208,8 @@ export const MobileSponsoredSlider = memo(({ pgList }) => {
   const sponsoredPgs = useMemo(() => {
     let source = [];
     if (pgList && Array.isArray(pgList) && pgList.length > 0) {
-      source = pgList.filter(p => p.is_sponsored || p.is_featured || p.sponsored || p.featured);
+      const filtered = pgList.filter(p => p.is_sponsored || p.is_featured || p.sponsored || p.featured);
+      source = filtered.length > 0 ? filtered : pgList;
     }
     if (!source || source.length === 0) {
       source = DEFAULT_MOCK_PGS;

@@ -1,21 +1,13 @@
 
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useMemo } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useEffect, useState, useMemo, useContext, useCallback } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import API, { IMAGE_BASE_URL } from "../services/api";
-
-// Function to load Razorpay SDK dynamically
-const loadRazorpayScript = () => {
-  return new Promise((resolve) => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
-};
+import { AuthContext } from "../context/AuthContext";
+import {
+  Phone, MessageSquare, CheckCircle2, Clock, ChevronRight,
+  X, Sparkles, Building2, MapPin, AlertCircle, ShieldCheck, User, ExternalLink
+} from "lucide-react";
 
 // Amenity Icon Mapper for a cleaner UI
 const getAmenityIcon = (name) => {
@@ -101,6 +93,7 @@ const parseListField = (value) => {
 const PgDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   const [pg, setPg] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -115,20 +108,40 @@ const PgDetails = () => {
     label: "Starting Price",
   });
 
-  // --- NEW: COUPON STATE ---
-  const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState(null);
-  const [discountAmount, setDiscountAmount] = useState(0);
-  const [couponError, setCouponError] = useState("");
-  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  // Track if user already booked this PG and is under verification
+  const [existingBooking, setExistingBooking] = useState(null);
 
-  // Reset coupon if user changes room type to prevent mismatched discount values
+  // Check if current user already has a pending or active booking for this PG
   useEffect(() => {
-    setCouponCode("");
-    setAppliedCoupon(null);
-    setDiscountAmount(0);
-    setCouponError("");
-  }, [selectedRoom.price]);
+    const checkExistingBooking = async () => {
+      const token = localStorage.getItem("token");
+      if (!token || !user) { setExistingBooking(null); return; }
+      try {
+        const res = await API.get("/bookings/my-bookings");
+        const list = res.data?.bookings || res.data || [];
+        const found = Array.isArray(list) && list.find(
+          (b) => (Number(b.pg_id) === Number(id) || (b.title || b.pg_name || '').toLowerCase().trim() === (pg?.title || '').toLowerCase().trim()) && 
+                 (b.status === "pending" || b.status === "approved" || b.payment_status === "paid")
+        );
+        setExistingBooking(found || null);
+      } catch (err) { console.error("Check existing booking error:", err); }
+    };
+    checkExistingBooking();
+  }, [id, user, pg?.title]);
+
+  const bookingStatusMeta = useMemo(() => {
+    if (!existingBooking) return null;
+    const isApprovedUnpaid = existingBooking.status === 'approved' && existingBooking.payment_status !== 'paid';
+    const isPaid = existingBooking.payment_status === 'paid';
+    return {
+      title: isApprovedUnpaid ? 'Booking Approved by Owner!' : isPaid ? 'Active Resident Stay' : 'Booking Request Under Review',
+      sub: isApprovedUnpaid ? 'Your booking for this PG has been APPROVED by the owner! Pay rent now in My PG to unlock full portal access.' : isPaid ? 'You are currently an active resident at this PG.' : 'You have already submitted a booking request for this PG. Status: PENDING OWNER APPROVAL.',
+      btnBg: isApprovedUnpaid ? 'bg-emerald-600 hover:bg-emerald-700' : isPaid ? 'bg-[#0D3A1D] hover:bg-[#092814]' : 'bg-amber-600 hover:bg-amber-700',
+      btnText: isApprovedUnpaid ? 'Already Approved (Pay Now in My PG)' : isPaid ? 'Already Active Stay (View Resident Portal)' : 'Already Requested (View Request Status)'
+    };
+  }, [existingBooking]);
+
+  // (Coupon and payment moved to My Requests page after owner approval)
 
   useEffect(() => {
     const fetchPG = async () => {
@@ -224,155 +237,86 @@ const PgDetails = () => {
     setActiveImage(galleryImages[prevIndex]);
   };
 
-  const handleCallOwner = () => {
-    const phone = pg?.owner_phone || pg?.phone;
-    if (phone) {
-      window.location.href = `tel:${phone}`;
-    } else {
-      alert("Owner contact details are not available.");
+  // State for sleek Booking Success Modal & Auth prompt
+  const [bookingSuccessModal, setBookingSuccessModal] = useState(false);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Memoized Real-time Owner Phone Number Details
+  const { cleanPhoneDigits, formattedWaNumber, displayPhone } = useMemo(() => {
+    const raw = pg?.owner_phone || pg?.phone || "";
+    const digits = String(raw).replace(/\D/g, "");
+    return {
+      cleanPhoneDigits: digits,
+      formattedWaNumber: digits.length === 10 ? `91${digits}` : digits,
+      displayPhone: raw
+        ? digits.length === 10
+          ? `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`
+          : raw
+        : null,
+    };
+  }, [pg?.owner_phone, pg?.phone]);
+
+  // Real-time WhatsApp Redirect with customized prefilled message
+  const handleWhatsAppRedirect = useCallback(() => {
+    if (!cleanPhoneDigits) {
+      alert("Owner contact number is not provided for this listing.");
+      return;
     }
-  };
+    const message = encodeURIComponent(
+      `Hi ${pg?.owner_name || "Owner"}, I found your property "${pg?.title}" on Dormn and I am interested in the ${selectedRoom.label || "room"}. Could you please share more details?`
+    );
+    window.open(`https://wa.me/${formattedWaNumber}?text=${message}`, "_blank");
+  }, [cleanPhoneDigits, formattedWaNumber, pg?.owner_name, pg?.title, selectedRoom.label]);
+
+  // Real-time Call Redirect
+  const handleCallRedirect = useCallback(() => {
+    if (!cleanPhoneDigits) {
+      alert("Owner contact number is not provided for this listing.");
+      return;
+    }
+    window.location.href = `tel:${cleanPhoneDigits}`;
+  }, [cleanPhoneDigits]);
 
   const handleBookVisit = async () => {
+    // Auth Check
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (existingBooking) {
+      if (existingBooking.status === "approved" && existingBooking.payment_status !== "paid") {
+        navigate("/my-pg");
+      } else if (existingBooking.payment_status === "paid") {
+        navigate("/my-pg");
+      } else {
+        navigate("/my-bookings");
+      }
+      return;
+    }
+
     try {
+      setBookingLoading(true);
       await API.post("/bookings/create", {
         pg_id: Number(id),
         message: `Interested in booking a visit for ${selectedRoom.label}`,
         selected_room_type: selectedRoom.label,
         booked_price: selectedRoom.price,
       });
-      alert("Booking request sent successfully!");
+      setExistingBooking({ status: "pending", pg_id: Number(id) });
+      setBookingSuccessModal(true);
     } catch (error) {
       console.error("Booking Error:", error);
-      alert(error?.response?.data?.message || "Failed to create booking");
+      alert(error?.response?.data?.message || "Failed to create booking request. Please try again.");
+    } finally {
+      setBookingLoading(false);
     }
   };
 
 
   const [mainImageLoaded, setMainImageLoaded] = useState(false);
-
-  // --- NEW: COUPON VERIFICATION LOGIC ---
-  const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) return;
-    
-    // Auth Check
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Please log in to your account to apply a coupon.");
-      return;
-    }
-
-    const roomPrice = selectedRoom.price || pg?.price;
-    if (!roomPrice) {
-      setCouponError("Please select a valid room first.");
-      return;
-    }
-
-    setIsApplyingCoupon(true);
-    setCouponError("");
-
-    try {
-      const response = await API.post("/payments/apply-coupon", {
-        code: couponCode.trim().toUpperCase(),
-        original_amount: roomPrice
-      });
-
-      if (response.data.success) {
-        setAppliedCoupon(couponCode.trim().toUpperCase());
-        setDiscountAmount(response.data.discount_applied);
-      }
-    } catch (error) {
-      console.error("Apply Coupon Error:", error);
-      setCouponError(error?.response?.data?.message || "Invalid or expired coupon");
-    } finally {
-      setIsApplyingCoupon(false);
-    }
-  };
-
-  // --- UPDATED RAZORPAY PAYMENT LOGIC ---
-  const handlePayment = async () => {
-    // Auth Check (Fixes 401 unhandled crash)
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Please log in to your account to book this PG.");
-      return;
-    }
-
-    const roomPrice = selectedRoom.price || pg?.price;
-    
-    if (!roomPrice) {
-      alert("Please select a valid room type first.");
-      return;
-    }
-
-    const res = await loadRazorpayScript();
-    if (!res) {
-      alert("Razorpay SDK failed to load. Please check your internet connection.");
-      return;
-    }
-
-    try {
-      // Call backend to create order, passing coupon code securely
-      const response = await API.post("/payments/create-order", {
-        pg_id: Number(id),
-        owner_id: pg.owner_id,
-        amount_in_rupees: roomPrice,
-        coupon_code: appliedCoupon // Tell backend to apply this coupon
-      });
-      
-      const orderData = response.data;
-
-      if (!orderData.success) {
-        alert("Failed to initialize payment: " + orderData.message);
-        return;
-      }
-
-      // Configure Razorpay Modal
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
-        amount: orderData.amount, 
-        currency: orderData.currency,
-        name: "Dormn Platform",
-        description: `Booking for ${pg.title}`,
-        order_id: orderData.order_id, 
-        
-        handler: async function (response) {
-          try {
-            // 1. Send the success IDs to our backend to securely lock it in the database
-            const verifyRes = await API.post("/payments/verify", {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              booking_id: orderData.booking_id 
-            });
-
-            if (verifyRes.data.success) {
-              // 2. Redirect instantly to the new My PGs dashboard!
-              navigate("/my-pgs"); 
-            }
-          } catch (err) {
-            console.error("Verification failed", err);
-            alert("Payment completed, but verification failed. Please contact support.");
-          }
-        },
-        
-        prefill: {
-          name: "Student", 
-          email: "student@example.com", 
-        },
-        theme: {
-          color: "#4F46E5" 
-        }
-      };
-
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.open();
-
-    } catch (error) {
-      console.error("Payment setup failed:", error);
-      alert(error?.response?.data?.message || "Something went wrong setting up the payment.");
-    }
-  };
 
   if (loading) {
     return (
@@ -405,9 +349,6 @@ const PgDetails = () => {
   }
 
   const currentRoomPrice = selectedRoom.price || pg?.price || 0;
-  const finalDisplayPrice = appliedCoupon 
-    ? Math.max(currentRoomPrice - discountAmount, 1) 
-    : currentRoomPrice;
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#FAF9F5] dark:bg-[#000000] text-[#3A2935] dark:text-white font-sans selection:bg-[#93B733] selection:text-white pb-20">
@@ -519,62 +460,19 @@ const PgDetails = () => {
               </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-2.5 text-sm font-bold text-[#3A2935]">
+                <div className="flex items-center gap-2 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-white/[0.04] px-4 py-2.5 text-sm font-bold text-[#3A2935] dark:text-white">
                   <span className="text-[#93B733]">★</span> {pg.rating || "New"} Ratings
                 </div>
-                <div className="flex items-center gap-2 rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-2.5 text-sm font-bold text-[#3A2935]">
+                <div className="flex items-center gap-2 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-white/[0.04] px-4 py-2.5 text-sm font-bold text-[#3A2935] dark:text-white">
                   <span className="text-xl">🏠</span> {String(pg.pg_type || "PG").toUpperCase()}
                 </div>
               </div>
 
-              <p className="mt-8 text-sm leading-relaxed text-gray-600 md:text-base md:leading-8 whitespace-pre-line">
+              <p className="mt-8 text-sm leading-relaxed text-gray-600 dark:text-gray-300 md:text-base md:leading-8 whitespace-pre-line">
                 {pg.description || "No description provided for this listing."}
               </p>
             </div>
 
-            {/* Amenities Section */}
-            <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm md:rounded-[2.5rem] md:p-10">
-              <h2 className="text-2xl font-black text-[#3A2935]">What this place offers</h2>
-              {cleanAmenities.length > 0 ? (
-                <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
-                  {cleanAmenities.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 rounded-xl border-2 border-gray-100 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:border-gray-200 hover:bg-gray-100"
-                    >
-                      <span className="text-xl">{getAmenityIcon(item)}</span>
-                      <span className="capitalize">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-4 text-sm font-medium text-gray-400">
-                  Standard amenities included.
-                </p>
-              )}
-            </div>
-
-            {/* Rules Section */}
-            <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm md:rounded-[2.5rem] md:p-10">
-              <h2 className="text-2xl font-black text-[#3A2935]">Rules & Policies</h2>
-              {cleanRules.length > 0 ? (
-                <div className="mt-6 space-y-3">
-                  {cleanRules.map((rule, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 rounded-xl bg-gray-50 px-5 py-4 text-sm font-medium text-gray-700"
-                    >
-                      <span className="h-2 w-2 rounded-full bg-[#93B733] flex-shrink-0"></span>
-                      {rule}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-4 text-sm font-medium text-gray-400">
-                  Standard house rules apply.
-                </p>
-              )}
-            </div>
           </div>
 
           {/* RIGHT SIDE: Booking & Actions */}
@@ -615,7 +513,7 @@ const PgDetails = () => {
                             {options.ac_price && (
                               <button
                                 onClick={() => setSelectedRoom({
-                                  type, isAc: true, price: Number(options.ac_price), label: `${type} Sharing (AC)`
+                                   type, isAc: true, price: Number(options.ac_price), label: `${type} Sharing (AC)`
                                 })}
                                 className={`p-3 text-left rounded-xl border-2 transition-all ${
                                   selectedRoom.type === type && selectedRoom.isAc 
@@ -652,89 +550,75 @@ const PgDetails = () => {
                   </div>
                 )}
 
-                {/* --- NEW: COUPON SECTION --- */}
-                <div className="mt-6 border-b-2 border-gray-100 pb-6">
-                  <h3 className="font-bold text-xs text-gray-500 mb-3 uppercase tracking-wider">Have a Coupon?</h3>
-                  {appliedCoupon ? (
-                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl p-3">
-                      <div>
-                        <p className="text-xs font-bold text-green-700">{appliedCoupon} Applied!</p>
-                        <p className="text-[10px] text-green-600 font-medium">You saved ₹{discountAmount.toLocaleString()}</p>
-                      </div>
-                      <button 
-                        onClick={() => { setAppliedCoupon(null); setDiscountAmount(0); setCouponCode(""); }} 
-                        className="text-xs font-bold text-red-500 hover:text-red-700 transition"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="flex gap-2">
-                        <input 
-                          type="text" 
-                          value={couponCode} 
-                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                          placeholder="Enter code" 
-                          className="flex-1 border-2 border-gray-200 rounded-xl px-3 py-2 text-sm font-bold text-[#3A2935] focus:outline-none focus:border-indigo-500 uppercase transition"
-                        />
-                        <button 
-                          onClick={handleApplyCoupon} 
-                          disabled={isApplyingCoupon || !couponCode.trim()}
-                          className="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold transition hover:bg-gray-800 disabled:opacity-50"
-                        >
-                          {isApplyingCoupon ? "..." : "Apply"}
-                        </button>
-                      </div>
-                      {couponError && <p className="text-red-500 text-[10px] font-bold mt-1.5">{couponError}</p>}
-                    </div>
-                  )}
-                </div>
-
-                {/* --- UPDATED ACTION BUTTONS --- */}
+                {/* --- ACTION BUTTONS --- */}
                 <div className="mt-6 space-y-3">
                   
-                  {/* UPDATED RAZORPAY PAYMENT BUTTON (Shows Dynamic Price) */}
-                  <button
-                    onClick={handlePayment}
-                    className="w-full rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-indigo-700"
-                  >
-                    Book PG Now (Pay ₹{finalDisplayPrice.toLocaleString()})
-                  </button>
+                  {bookingStatusMeta && (
+                    <div className="rounded-2xl border-2 border-emerald-400 dark:border-emerald-500/40 bg-emerald-50/70 dark:bg-emerald-500/10 p-4 text-xs font-bold text-emerald-900 dark:text-emerald-200 shadow-sm">
+                      <div className="flex items-center gap-2 font-black text-emerald-800 dark:text-emerald-300 text-sm">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <span>{bookingStatusMeta.title}</span>
+                      </div>
+                      <p className="mt-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">{bookingStatusMeta.sub}</p>
+                    </div>
+                  )}
 
                   <button
                     onClick={handleBookVisit}
-                    className="w-full rounded-2xl bg-[#93B733] px-5 py-4 text-sm font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-[#82a32d]"
+                    disabled={bookingLoading}
+                    className={`w-full rounded-2xl px-5 py-4 text-sm font-bold text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 ${bookingStatusMeta ? bookingStatusMeta.btnBg : 'bg-[#93B733] hover:bg-[#82a32d]'}`}
                   >
-                    Request a Visit
+                    {bookingLoading ? 'Submitting Request...' : bookingStatusMeta ? bookingStatusMeta.btnText : 'Request a Visit / Book Now'}
                   </button>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {/* WhatsApp Button - Theme Background (White / Black) with Official Real WhatsApp Logo */}
                     <button
-                      onClick={() => window.open(`https://wa.me/${pg?.owner_phone || pg?.phone}`, "_blank")}
-                      className="w-full border-2 border-gray-200 bg-white py-3.5 rounded-xl text-xs font-bold text-[#3A2935] transition hover:bg-gray-50 flex items-center justify-center gap-2"
+                      onClick={handleWhatsAppRedirect}
+                      className="group relative flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-emerald-500/40 dark:border-emerald-500/30 bg-white dark:bg-black hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 hover:border-[#25D366] dark:hover:border-[#25D366] shadow-xs transition-all duration-200 active:scale-[0.98]"
                     >
-                      <span className="text-green-600 text-sm leading-none">✆</span> WhatsApp
+                      <div className="flex items-center gap-2">
+                        <img 
+                          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                          alt="WhatsApp" 
+                          className="h-[20px] w-[20px] object-contain shrink-0"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <span className="text-xs font-black text-gray-900 dark:text-white tracking-tight">WhatsApp</span>
+                      </div>
+                      <span className="mt-1 text-[11px] font-bold text-[#25D366] truncate max-w-full">
+                        {displayPhone || "Chat Directly"}
+                      </span>
                     </button>
 
+                    {/* Call Owner Button - Theme Background (White / Black) with Official Call Logo */}
                     <button
-                      onClick={handleCallOwner}
-                      className="w-full rounded-xl border-2 border-gray-200 bg-white px-3 py-3.5 text-xs font-bold text-[#3A2935] transition hover:bg-gray-50"
+                      onClick={handleCallRedirect}
+                      className="group relative flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 border-blue-500/40 dark:border-blue-500/30 bg-white dark:bg-black hover:bg-blue-50/50 dark:hover:bg-blue-950/20 hover:border-[#0066FF] dark:hover:border-[#0066FF] shadow-xs transition-all duration-200 active:scale-[0.98]"
                     >
-                      Call Owner
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[#0066FF] text-white shadow-xs shrink-0">
+                          <Phone size={11} className="text-white fill-white" />
+                        </span>
+                        <span className="text-xs font-black text-gray-900 dark:text-white tracking-tight">Call Owner</span>
+                      </div>
+                      <span className="mt-1 text-[11px] font-bold text-[#0066FF] dark:text-[#38bdf8] truncate max-w-full">
+                        {displayPhone || "Direct Phone"}
+                      </span>
                     </button>
                   </div>
                 </div>
                 
-                <div className="mt-6 rounded-xl bg-gray-50 p-4 text-center text-xs font-medium text-gray-500">
-                  Owner Contact: <span className="font-bold text-[#3A2935]">{pg?.owner_phone || pg?.phone || "Not Available"}</span>
+                <div className="mt-6 rounded-xl bg-gray-50 dark:bg-white/[0.04] p-3.5 text-center text-xs font-medium text-gray-500 dark:text-gray-400">
+                  Owner Contact: <span className="font-black text-[#0D3A1D] dark:text-[#93B733]">{displayPhone || "Available upon request"}</span>
                 </div>
               </div>
 
               {/* Map / Location Card */}
-              <div className="rounded-[2rem] border-2 border-gray-100 bg-white p-6 shadow-sm md:rounded-[2.5rem] md:p-8">
-                <h3 className="text-xl font-black text-[#3A2935]">Exact Location</h3>
-                <p className="mt-3 text-sm font-medium leading-relaxed text-gray-600">
+              <div className="rounded-[2rem] border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-[#0d0d0d] p-6 shadow-sm md:rounded-[2.5rem] md:p-8">
+                <h3 className="text-xl font-black text-[#3A2935] dark:text-white">Exact Location</h3>
+                <p className="mt-3 text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-300">
                   {pg.address || `${pg.area || ""}, ${pg.city || ""}`}
                 </p>
 
@@ -743,27 +627,27 @@ const PgDetails = () => {
                     href={pg.google_map_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-gray-800"
+                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 dark:bg-white dark:text-black px-5 py-3.5 text-sm font-bold text-white transition hover:bg-gray-800"
                   >
-                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <svg className="w-4 h-4 text-white dark:text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                     Open Google Maps
                   </a>
                 ) : (
-                  <div className="mt-5 rounded-xl border-2 border-gray-100 bg-gray-50 p-3.5 text-center text-sm font-bold text-gray-400">
+                  <div className="mt-5 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#151515] p-3.5 text-center text-sm font-bold text-gray-400">
                     Map location not provided
                   </div>
                 )}
               </div>
 
               {/* Advertisement Space */}
-              <div className="rounded-[2rem] border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center transition-colors hover:border-gray-400">
+              <div className="rounded-[2rem] border-2 border-dashed border-gray-300 dark:border-gray-800 bg-gray-50 dark:bg-[#0d0d0d] p-8 text-center transition-colors hover:border-gray-400">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
                   Advertisement
                 </p>
-                <h3 className="mt-2 text-xl font-black text-[#3A2935]">
+                <h3 className="mt-2 text-xl font-black text-[#3A2935] dark:text-white">
                   Promote Your PG
                 </h3>
-                <button className="mt-4 rounded-xl border-2 border-[#3A2935] bg-white px-5 py-2.5 text-xs font-bold text-[#3A2935] transition hover:bg-[#3A2935] hover:text-white">
+                <button className="mt-4 rounded-xl border-2 border-[#3A2935] dark:border-white bg-white dark:bg-[#111] px-5 py-2.5 text-xs font-bold text-[#3A2935] dark:text-white transition hover:bg-[#3A2935] hover:text-white">
                   Learn More
                 </button>
               </div>
@@ -772,9 +656,187 @@ const PgDetails = () => {
           </div>
 
         </div>
+
+        {/* ── FULL-WIDTH LARGE SECTION: Side-by-Side Large Cards (What this place offers & Rules) ── */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Amenities Section - Full Scale */}
+          <div className="rounded-[2rem] border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-[#0d0d0d] p-6 shadow-sm md:rounded-[2.5rem] md:p-10 flex flex-col justify-start">
+            <h2 className="text-2xl md:text-3xl font-black text-[#3A2935] dark:text-white">What this place offers</h2>
+            {cleanAmenities.length > 0 ? (
+              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+                {cleanAmenities.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-white/[0.04] px-4 py-3.5 text-sm md:text-base font-semibold text-gray-700 dark:text-gray-200 transition hover:border-gray-200 dark:hover:border-gray-700 hover:bg-gray-100 dark:hover:bg-white/[0.07]"
+                  >
+                    <span className="text-xl md:text-2xl shrink-0">{getAmenityIcon(item)}</span>
+                    <span className="capitalize truncate">{item}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-4 text-sm font-medium text-gray-400">
+                Standard amenities included.
+              </p>
+            )}
+          </div>
+
+          {/* Rules & Policies Section - Full Scale */}
+          <div className="rounded-[2rem] border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-[#0d0d0d] p-6 shadow-sm md:rounded-[2.5rem] md:p-10 flex flex-col justify-start">
+            <h2 className="text-2xl md:text-3xl font-black text-[#3A2935] dark:text-white">Rules & Policies</h2>
+            {cleanRules.length > 0 ? (
+              <div className="mt-6 space-y-3">
+                {cleanRules.map((rule, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-3.5 rounded-2xl border-2 border-gray-100 dark:border-gray-800/80 bg-gray-50 dark:bg-white/[0.04] px-5 py-4 text-sm md:text-base font-medium text-gray-700 dark:text-gray-200"
+                  >
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#93B733] shrink-0 mt-1.5 md:mt-2"></span>
+                    <span className="leading-relaxed">{rule}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-4 text-sm font-medium text-gray-400">
+                Standard house rules apply.
+              </p>
+            )}
+          </div>
+
+        </div>
       </section>
+
+      {/* ── MODALS ── */}
+      {bookingSuccessModal && (
+        <BookingSuccessModal
+          pgTitle={pg.title}
+          roomLabel={selectedRoom.label}
+          price={currentRoomPrice}
+          onClose={() => setBookingSuccessModal(false)}
+          onTrack={() => navigate("/my-bookings")}
+        />
+      )}
+
+      {showAuthModal && (
+        <AuthPromptModal
+          pgId={id}
+          onClose={() => setShowAuthModal(false)}
+          onLogin={() => navigate("/auth?redirect=" + encodeURIComponent(`/pg/${id}`))}
+        />
+      )}
     </div>
   );
 };
+
+// ── MEMOIZED MODAL SUBCOMPONENTS (Optimized to avoid re-rendering on parent carousel/scroll) ──
+
+const BookingSuccessModal = ({ pgTitle, roomLabel, price, onClose, onTrack }) => (
+  <div 
+    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+    onClick={onClose}
+  >
+    <div 
+      className="relative w-full max-w-lg overflow-hidden rounded-[2.5rem] border-2 border-emerald-500/40 bg-white dark:bg-[#111111] p-6 sm:p-8 text-center shadow-2xl animate-in zoom-in-95 duration-200"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition"
+      >
+        <X size={20} />
+      </button>
+
+      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-tr from-emerald-500 to-[#93B733] text-white text-3xl shadow-lg shadow-emerald-500/25 mb-4">
+        🎉
+      </div>
+
+      <h3 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+        Request Sent Successfully!
+      </h3>
+      <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300 mt-2 max-w-md mx-auto leading-relaxed">
+        Your visit / booking application for <strong className="text-[#0D3A1D] dark:text-[#93B733]">{pgTitle}</strong> has been received by the property owner.
+      </p>
+
+      <div className="mt-6 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] p-4 text-left space-y-2.5 text-xs">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-white/10">
+          <span className="font-semibold text-gray-500 dark:text-gray-400">Selected Room</span>
+          <span className="font-black text-gray-900 dark:text-white">{roomLabel || "Base Room"}</span>
+        </div>
+        <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-white/10">
+          <span className="font-semibold text-gray-500 dark:text-gray-400">Monthly Rent</span>
+          <span className="font-black text-[#0D3A1D] dark:text-[#93B733]">₹{price?.toLocaleString()} / mo</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-gray-500 dark:text-gray-400">Application Status</span>
+          <span className="inline-flex items-center gap-1 font-extrabold text-amber-700 dark:text-amber-400 bg-amber-100/80 dark:bg-amber-500/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider text-[10px]">
+            <Clock size={12} /> Under Owner Review
+          </span>
+        </div>
+      </div>
+
+      <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-4 leading-relaxed">
+        Once the owner approves your application, you can view your approval and access the resident stay dashboard.
+      </p>
+
+      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+        <button
+          onClick={onTrack}
+          className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#93B733] hover:bg-[#82a32d] px-6 py-3.5 text-xs sm:text-sm font-bold text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
+        >
+          Track in My Requests <ChevronRight size={16} />
+        </button>
+        <button
+          onClick={onClose}
+          className="inline-flex items-center justify-center rounded-2xl border border-gray-300 dark:border-white/15 bg-white dark:bg-white/5 px-5 py-3.5 text-xs sm:text-sm font-bold text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/10 transition"
+        >
+          Back to Details
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+const AuthPromptModal = ({ onClose, onLogin }) => (
+  <div 
+    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+    onClick={onClose}
+  >
+    <div 
+      className="relative w-full max-w-md overflow-hidden rounded-[2.5rem] border border-gray-200 dark:border-white/10 bg-white dark:bg-[#111] p-6 sm:p-8 text-center shadow-2xl animate-in zoom-in-95 duration-200"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-white"
+      >
+        <X size={18} />
+      </button>
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#93B733]/15 text-[#93B733] text-2xl mb-4">
+        🔒
+      </div>
+      <h3 className="text-xl font-black text-gray-900 dark:text-white">
+        Login Required
+      </h3>
+      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
+        Please sign in or create an account to send a visit/booking request to the property owner.
+      </p>
+      <div className="mt-6 flex flex-col gap-2.5">
+        <button
+          onClick={onLogin}
+          className="w-full rounded-xl bg-[#0D3A1D] hover:bg-[#16502a] py-3 text-xs font-bold text-white transition shadow-sm"
+        >
+          Log In / Register
+        </button>
+        <button
+          onClick={onClose}
+          className="w-full rounded-xl border border-gray-200 dark:border-white/10 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+);
 
 export default PgDetails;

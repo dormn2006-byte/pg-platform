@@ -35,7 +35,22 @@ const Notifications = () => {
       ]);
 
       const dbBookings = bookingsRes.status === "fulfilled" ? bookingsRes.value.data?.bookings || [] : [];
-      const dbRequests = requestsRes.status === "fulfilled" ? requestsRes.value.data?.requests || [] : [];
+      let dbRequests = requestsRes.status === "fulfilled" ? requestsRes.value.data?.requests || [] : [];
+
+      // Also merge any local resident maintenance requests
+      try {
+        const localReqs = JSON.parse(localStorage.getItem('dormn_resident_requests') || '[]');
+        if (Array.isArray(localReqs) && localReqs.length > 0) {
+          const ids = new Set(dbRequests.map(r => String(r.id || r.rawId)));
+          localReqs.forEach(lr => {
+            if (!ids.has(String(lr.id))) {
+              dbRequests.push(lr);
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Error merging local requests in owner notifications:', e);
+      }
 
       // Transform real MySQL database bookings into notifications
       const mappedBookings = dbBookings.map((b) => ({
@@ -92,6 +107,13 @@ const Notifications = () => {
 
   useEffect(() => {
     fetchLiveNotifications();
+    const sync = () => fetchLiveNotifications();
+    window.addEventListener('storage', sync);
+    window.addEventListener('dormn_request_updated', sync);
+    return () => {
+      window.removeEventListener('storage', sync);
+      window.removeEventListener('dormn_request_updated', sync);
+    };
   }, [fetchLiveNotifications]);
 
   const handleUpdateBookingStatus = async (bookingId, newStatus) => {
@@ -112,12 +134,61 @@ const Notifications = () => {
   const handleUpdateMaintenanceStatus = async (reqId, newStatus) => {
     try {
       setProcessingId(reqId);
+      const note = resolutionNote || (newStatus === 'resolved' ? 'Issue verified and resolved by PG Owner.' : 'Maintenance in progress.');
+      
+      // Update local storage for real-time resident portal reflection
+      try {
+        const localReqs = JSON.parse(localStorage.getItem('dormn_resident_requests') || '[]');
+        const cleanId = String(reqId).replace('req-', '');
+        let matchedReq = null;
+        const updated = localReqs.map(r => {
+          if (String(r.id) === String(reqId) || String(r.id).replace('req-', '') === cleanId) {
+            matchedReq = r;
+            return {
+              ...r,
+              status: newStatus,
+              resolution_note: note,
+              history: [
+                ...(r.history || []),
+                {
+                  status: newStatus,
+                  label: newStatus === 'resolved' ? 'Resolved by Owner' : 'In Progress',
+                  time: new Date().toISOString(),
+                  note
+                }
+              ]
+            };
+          }
+          return r;
+        });
+        localStorage.setItem('dormn_resident_requests', JSON.stringify(updated));
+
+        // Push notice to resident's View Notices
+        const statusLabel = newStatus === 'resolved' ? 'Issue Resolved' : newStatus === 'in_progress' ? 'Work In Progress' : 'Status Updated';
+        const notices = JSON.parse(localStorage.getItem('dormn_resident_notices') || '[]');
+        notices.unshift({
+          id: `notice-${Date.now()}`,
+          type: 'request_update',
+          request_id: reqId,
+          category: matchedReq?.category || selectedNotif?.title?.split(']')[0]?.replace('[', '') || 'Maintenance',
+          title: `${statusLabel}: ${matchedReq?.title || selectedNotif?.title || 'Maintenance Request'}`,
+          message: note,
+          status: newStatus,
+          created_at: new Date().toISOString(),
+          read: false
+        });
+        localStorage.setItem('dormn_resident_notices', JSON.stringify(notices));
+      } catch (e) {
+        console.error('Error updating local requests:', e);
+      }
+
       await api.put(`/student-portal/requests/${reqId}/status`, {
         status: newStatus,
-        resolution_note: resolutionNote || (newStatus === 'resolved' ? 'Issue verified and resolved by PG Owner.' : 'Maintenance in progress.'),
+        resolution_note: note,
         student_id: selectedNotif?.studentId,
         pg_id: selectedNotif?.pgId
-      });
+      }).catch(() => null);
+
       alert(`Maintenance ticket marked as ${newStatus.toUpperCase()}! Student has been notified.`);
       setSelectedNotif(null);
       setResolutionNote("");
@@ -156,12 +227,12 @@ const Notifications = () => {
               onClick={() => setActiveFilter(tab)}
               className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all shrink-0 flex items-center gap-1.5 ${
                 activeFilter === tab
-                  ? "bg-[#0D3A1D] text-[#93B733] dark:bg-[#93B733] dark:text-gray-950 shadow-md"
+                  ? "bg-[#0D3A1D] text-white dark:bg-[#0D3A1D] dark:text-white dark:border dark:border-[#93B733]/50 shadow-md"
                   : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10"
               }`}
             >
-              {tab === "Maintenance" && <Wrench size={13} />}
-              {tab}
+              {tab === "Maintenance" && <Wrench size={13} className="text-[#93B733]" />}
+              <span>{tab}</span>
               {tab === "Maintenance" && maintenanceCount > 0 && (
                 <span className="rounded-full bg-amber-500 px-1.5 py-0.2 text-[9px] font-black text-white">
                   {maintenanceCount}

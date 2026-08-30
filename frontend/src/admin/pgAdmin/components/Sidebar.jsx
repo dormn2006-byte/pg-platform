@@ -23,19 +23,14 @@ const menuItems = [
     icon: "📅",
   },
   {
-    name: "Students",
+    name: "Tenants",
     path: "/pg-admin/students",
-    icon: "🎓",
+    icon: "👥",
   },
   {
     name: "Messages",
     path: "/pg-admin/messages",
     icon: "💬",
-  },
-  {
-    name: "Analytics",
-    path: "/pg-admin/analytics",
-    icon: "📊",
   },
   {
     name: "Payments",

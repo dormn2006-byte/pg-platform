@@ -3,6 +3,8 @@ import {
   getStudentBookings,
   getOwnerBookings,
   updateBookingStatus,
+  getStudentIdByBooking,
+  pauseOtherBookings,
 } from "../models/bookingModel.js";
 
 import { getPGById } from "../models/pgModel.js";
@@ -142,6 +144,14 @@ export const updateBookingStatusController = async (
       status,
     });
 
+    // Auto-pause: when a booking is approved, pause all other pending bookings by the same student
+    if (status === "approved") {
+      const studentId = await getStudentIdByBooking(id);
+      if (studentId) {
+        await pauseOtherBookings(studentId, id);
+      }
+    }
+
     return res.status(200).json({
       success: true,
       message: `Booking ${status} successfully`,
@@ -194,5 +204,49 @@ export const getMyPgs = async (req, res) => {
   } catch (error) {
     console.error("Fetch My Pgs Error:", error);
     res.status(500).json({ success: false, message: "Failed to fetch your enrolled PG" });
+  }
+};
+
+// Cancel Booking Request (Student can cancel their own pending bookings)
+export const cancelBookingController = async (req, res) => {
+  try {
+    const student_id = req.user.id;
+    const { id } = req.params;
+
+    // Verify this booking belongs to the student and is still pending
+    const [rows] = await pool.execute(
+      `SELECT id, status FROM bookings WHERE id = ? AND student_id = ?`,
+      [id, student_id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found or does not belong to you",
+      });
+    }
+
+    if (rows[0].status !== "pending") {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot cancel a booking that is already ${rows[0].status}`,
+      });
+    }
+
+    await updateBookingStatus({
+      booking_id: id,
+      status: "cancelled",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Booking request cancelled successfully",
+    });
+  } catch (error) {
+    console.log("Cancel Booking Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };

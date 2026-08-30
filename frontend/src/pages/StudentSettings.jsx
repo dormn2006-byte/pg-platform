@@ -1,11 +1,11 @@
- import { useNavigate, Link } from "react-router-dom";
- import { useState, useCallback, useContext, useEffect, useRef, memo, useMemo } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useState, useCallback, useContext, useEffect, useRef, memo, useMemo } from "react";
  import { AuthContext } from "../context/AuthContext";
  import MacOSDock from "../components/ui/mac-os-dock";
  import { ThemeSwitch } from "../components/ui/theme-switch-button";
  import { buildStudentDockApps } from "../constants/studentDockConfig";
  import {
-   User, BookOpen, Heart, Settings, Search, Home,
+   User, BookOpen, Heart, Settings, Search, Home, Building2,
    Shield, Bell, Eye, Trash2, Check, UserCircle, ChevronRight, LogOut
  } from "lucide-react";
  
@@ -133,8 +133,8 @@
                
                {showMenu && (
                  <div className="absolute right-0 mt-2 w-48 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-black shadow-lg py-1.5 z-50">
-                   <Link to="/" className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#0D3A1D] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-                     <Home size={16} /> Home
+                   <Link to="/my-pg" className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#0D3A1D] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+                     <Building2 size={16} /> My PG
                    </Link>
                    <Link to="/pgs" className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#0D3A1D] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                      <Search size={16} /> Explore PGs
