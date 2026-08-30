@@ -1,16 +1,91 @@
-import { useState } from "react";
-import { Check, Zap, Sparkles, Shield, ArrowRight, Clock, Headset, RefreshCw } from "lucide-react";
+import { useState, useContext, useMemo } from "react";
+import { Check, Zap, Sparkles, Shield, ArrowRight, Clock, Headset, RefreshCw, CreditCard, IndianRupee } from "lucide-react";
+import { AuthContext } from "../../context/AuthContext";
+import API from "../../services/api";
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 const Pricing = () => {
+  const { user } = useContext(AuthContext);
   const [isYearly, setIsYearly] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState("Pro");
+  const [selectedPlan, setSelectedPlan] = useState("Standard");
   const [showModal, setShowModal] = useState(false);
-  const [modalPlan, setModalPlan] = useState("");
+  const [activePlanObj, setActivePlanObj] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleSelectPlan = (planName) => {
-    setSelectedPlan(planName);
-    setModalPlan(planName);
+  const handleSelectPlan = (plan) => {
+    setActivePlanObj(plan);
     setShowModal(true);
+  };
+
+  const handleConfirmPlanPayment = async () => {
+    if (!activePlanObj) return;
+
+    const amountInRupees = isYearly ? activePlanObj.yearlyPrice * 12 : activePlanObj.monthlyPrice;
+
+    if (amountInRupees === 0 || activePlanObj.name === "Free") {
+      setSelectedPlan("Free");
+      setShowModal(false);
+      alert("Free Plan activated successfully!");
+      return;
+    }
+
+    const res = await loadRazorpayScript();
+    if (!res) {
+      alert("Razorpay SDK failed to load. Please check your internet connection.");
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_TO9ZZJaaKuESBz";
+      const options = {
+        key: razorpayKey,
+        amount: Math.round(amountInRupees * 100), // in paise
+        currency: "INR",
+        name: "Dormn Platform",
+        description: `Owner ${activePlanObj.name} Membership (${isYearly ? "Annual" : "Monthly"})`,
+        handler: async function (response) {
+          try {
+            setSelectedPlan(activePlanObj.name);
+            setShowModal(false);
+            alert(`🎉 Payment Successful! Your ${activePlanObj.name} Plan is now active.`);
+          } catch (err) {
+            console.error("Subscription update error:", err);
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+          }
+        },
+        prefill: {
+          name: user?.name || user?.full_name || "PG Owner",
+          email: user?.email || "",
+          contact: user?.phone || "",
+        },
+        theme: {
+          color: "#0D3A1D"
+        }
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    } catch (err) {
+      console.error("Subscription payment error:", err);
+      alert(`Failed to start payment: ${err.message || "Please check Razorpay configuration."}`);
+      setIsProcessing(false);
+    }
   };
 
   const plans = [
@@ -195,7 +270,7 @@ const Pricing = () => {
               {/* Action Button */}
               <div className="mt-8">
                 <button
-                  onClick={() => handleSelectPlan(plan.name)}
+                  onClick={() => handleSelectPlan(plan)}
                   style={isSelected && plan.buttonInlineStyle ? plan.buttonInlineStyle : {}}
                   className={`w-full rounded-2xl py-4 text-xs font-black tracking-wide transition-all duration-200 ${plan.buttonStyle}`}
                 >
@@ -240,32 +315,47 @@ const Pricing = () => {
         </div>
       </div>
 
-      {/* Plan Selection Confirmation Modal */}
-      {showModal && (
+      {/* Plan Selection Confirmation & Razorpay Checkout Modal */}
+      {showModal && activePlanObj && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-md p-4">
           <div className="w-full max-w-md rounded-3xl border border-gray-200 dark:border-emerald-500/30 bg-white dark:bg-[#0c1220] p-7 text-gray-900 dark:text-white shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              <Zap size={24} />
+              <CreditCard size={24} />
             </div>
-            <h3 className="text-xl font-black">Upgrade to {modalPlan} Plan</h3>
+            <h3 className="text-xl font-black">Upgrade to {activePlanObj.name} Plan</h3>
             <p className="mt-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-              You selected the <strong className="text-gray-900 dark:text-white">{modalPlan} Plan</strong> ({isYearly ? "Yearly Billing" : "Monthly Billing"}). Your owner account will instantly receive higher listing limits, priority rankings, and analytics tools.
+              You selected the <strong className="text-gray-900 dark:text-white">{activePlanObj.name} Plan</strong> ({isYearly ? "Annual Billing" : "Monthly Billing"}).
             </p>
+
+            <div className="my-5 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Total Payable</span>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  {isYearly ? "12 Months Access (20% OFF)" : "1 Month Access"}
+                </p>
+              </div>
+              <span className="text-2xl font-black text-[#93B733]">
+                ₹{Number(isYearly ? activePlanObj.yearlyPrice * 12 : activePlanObj.monthlyPrice).toLocaleString()}
+              </span>
+            </div>
+
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setShowModal(false)}
+                disabled={isProcessing}
                 className="flex-1 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition"
               >
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  setShowModal(false);
-                  alert(`Successfully switched to ${modalPlan} Plan!`);
-                }}
-                className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 py-3 text-xs font-black text-white hover:opacity-90 transition shadow-lg"
+                onClick={handleConfirmPlanPayment}
+                disabled={isProcessing}
+                className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 py-3.5 text-xs font-black text-white hover:opacity-90 transition shadow-lg flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
               >
-                Confirm Plan
+                <CreditCard size={14} />
+                {isProcessing
+                  ? "Initializing..."
+                  : `Pay ₹${Number(isYearly ? activePlanObj.yearlyPrice * 12 : activePlanObj.monthlyPrice).toLocaleString()}`}
               </button>
             </div>
           </div>

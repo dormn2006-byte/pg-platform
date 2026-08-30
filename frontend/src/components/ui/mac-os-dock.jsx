@@ -27,16 +27,15 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '' }) => {
 
   const getResponsiveConfig = useCallback(() => {
     if (typeof window === 'undefined') {
-      return { baseIconSize: 72, maxScale: 1.5, effectWidth: 300, baseSpacing: 16, isBottom: false };
+      return { baseIconSize: 56, maxScale: 1.35, effectWidth: 320, baseSpacing: 12, isBottom: true };
     }
     const w = window.innerWidth;
-    const mob = w < 1024;
     
-    // Dynamically adjust to fit 6-7 icons on mobile without overflowing
-    if (w < 380) return { baseIconSize: 34, maxScale: 1.15, effectWidth: w * 0.4, baseSpacing: 4, isBottom: mob };
-    if (w < 480) return { baseIconSize: 38, maxScale: 1.2, effectWidth: w * 0.4, baseSpacing: 6, isBottom: mob };
-    if (w < 768) return { baseIconSize: 48, maxScale: 1.3, effectWidth: w * 0.35, baseSpacing: 8, isBottom: mob };
-    return { baseIconSize: 56, maxScale: 1.3, effectWidth: 320, baseSpacing: 12, isBottom: mob };
+    // Dynamically adjust to fit icons cleanly without overflowing
+    if (w < 380) return { baseIconSize: 34, maxScale: 1.15, effectWidth: w * 0.4, baseSpacing: 4, isBottom: true };
+    if (w < 480) return { baseIconSize: 38, maxScale: 1.2, effectWidth: w * 0.4, baseSpacing: 6, isBottom: true };
+    if (w < 768) return { baseIconSize: 48, maxScale: 1.3, effectWidth: w * 0.35, baseSpacing: 8, isBottom: true };
+    return { baseIconSize: 56, maxScale: 1.35, effectWidth: 320, baseSpacing: 12, isBottom: true };
   }, []);
 
   const [config, setConfig] = useState(getResponsiveConfig);
@@ -86,7 +85,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '' }) => {
   const animateToTarget = useCallback(() => {
     const ts = calculateTargetMagnification(mouseX);
     const tp = calculatePositions(ts, expandedAppId);
-    const lf = mouseX !== null ? 0.22 : 0.14;
+    const lf = mouseX !== null ? 0.18 : 0.10;
     let changed = false;
 
     const ns = scalesRef.current.map((c, i) => {
@@ -180,15 +179,8 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '' }) => {
   }, [apps, getTouchX, findClosestApp]);
 
   const clickApp = useCallback((appId, index) => {
-    const el = iconRefs.current[index];
-    if (el) {
-      const h = isBottom ? Math.min(-8, -baseIconSize * 0.15) : Math.max(8, baseIconSize * 0.15);
-      el.style.transition = 'transform 0.2s ease-out';
-      el.style.transform = `translateY(${h}px)`;
-      setTimeout(() => { el.style.transform = 'translateY(0px)'; }, 200);
-    }
     onAppClick(appId);
-  }, [isBottom, baseIconSize, onAppClick]);
+  }, [onAppClick]);
 
   const handleTouchEnd = useCallback((e) => {
     if (e.cancelable) e.preventDefault();

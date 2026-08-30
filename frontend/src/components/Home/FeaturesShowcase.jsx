@@ -112,13 +112,13 @@ const FeaturesShowcase = () => {
                 {/* Dark green shiny ambient glow overlay at top right */}
                 <div className="absolute -right-8 -top-8 h-36 w-36 rounded-full bg-gradient-to-br from-[#0D3A1D]/40 via-[#93B733]/30 to-transparent blur-xl pointer-events-none transition-transform duration-500 group-hover:scale-125" />
                 
-                <div className="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#93B733]/10 border border-[#93B733]/20 group-hover:bg-[#93B733] transition-all duration-300 text-[#93B733] group-hover:text-white">
-                  <Icon className="h-6 w-6 transition-colors duration-300" />
+                <div className="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#93B733]/10 border border-[#93B733]/25 text-[#4E700F] dark:text-[#93B733] transition-all duration-300 group-hover:scale-110 group-hover:border-[#93B733]/50 shadow-xs">
+                  <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="relative z-10 text-lg font-black text-[#0D3A1D] tracking-tight mb-2">{feature.title}</h3>
-                <p className="relative z-10 text-xs md:text-sm font-medium leading-relaxed text-gray-600 line-clamp-3">{feature.description}</p>
+                <h3 className="relative z-10 text-lg font-black text-[#0D3A1D] dark:text-white tracking-tight mb-2">{feature.title}</h3>
+                <p className="relative z-10 text-xs md:text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-3">{feature.description}</p>
                 <div className="relative z-10 mt-auto pt-6">
-                  <div className="h-1 w-8 bg-[#93B733]/15 rounded-full group-hover:bg-[#93B733] transition-colors duration-300"></div>
+                  <div className="h-1 w-8 bg-[#93B733]/20 rounded-full group-hover:bg-[#93B733] group-hover:w-12 transition-all duration-300"></div>
                 </div>
               </div>
             );

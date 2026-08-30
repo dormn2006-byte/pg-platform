@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import api from "../../services/api";
 
@@ -66,6 +66,10 @@ const Auth = () => {
   const [loginMethod, setLoginMethod] = useState("password"); // 'password' or 'otp'
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
+
+  // Agreement Checkboxes for New Users
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
 
   // Unified Form Data
   const [formData, setFormData] = useState({
@@ -151,7 +155,14 @@ const Auth = () => {
           }
         }
       } else {
-        // Registration Logic (100% untouched)
+        // Validation: New user must check both Privacy Policy and Terms & Conditions
+        if (!agreeTerms || !agreePrivacy) {
+          setError("You must agree to both the Terms & Conditions and Privacy Policy to create your account.");
+          setLoading(false);
+          return;
+        }
+
+        // Registration Logic
         const payload = {
           full_name: formData.full_name,
           email: formData.email,
@@ -412,24 +423,64 @@ const Auth = () => {
                 </div>
               )}
 
-              {/* Legal Note for Signup */}
+              {/* Two Mandatory Legal Checkboxes for New User Registration */}
               {authMode === "signup" && (
-                <p className="text-[11px] text-gray-500 mt-2 leading-relaxed px-1">
-                  We'll call or text you to confirm your number. Standard message and data rates apply. <span className="font-bold text-[#0D3A1D] underline cursor-pointer hover:text-[#93B733] transition-colors">Privacy Policy</span>
-                </p>
+                <div className="space-y-3 pt-3 border-t border-gray-100">
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={agreeTerms}
+                      onChange={(e) => setAgreeTerms(e.target.checked)}
+                      className="mt-0.5 h-4.5 w-4.5 rounded border-gray-300 text-[#0D3A1D] accent-[#0D3A1D] focus:ring-[#93B733] cursor-pointer shrink-0"
+                    />
+                    <span className="text-xs text-gray-600 font-medium leading-snug select-none">
+                      I agree to the{" "}
+                      <Link
+                        to="/terms-and-conditions"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-[#0D3A1D] underline hover:text-[#93B733] transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Terms & Conditions
+                      </Link>
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={agreePrivacy}
+                      onChange={(e) => setAgreePrivacy(e.target.checked)}
+                      className="mt-0.5 h-4.5 w-4.5 rounded border-gray-300 text-[#0D3A1D] accent-[#0D3A1D] focus:ring-[#93B733] cursor-pointer shrink-0"
+                    />
+                    <span className="text-xs text-gray-600 font-medium leading-snug select-none">
+                      I have read and accept the{" "}
+                      <Link
+                        to="/privacy-policy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-[#0D3A1D] underline hover:text-[#93B733] transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Privacy Policy
+                      </Link>
+                    </span>
+                  </label>
+                </div>
               )}
 
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={loading}
-                className="mt-6 w-full rounded-2xl bg-[#93B733] px-6 py-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(147,183,51,0.3)] transition-all hover:scale-[1.02] hover:bg-[#82a32d] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                disabled={loading || (authMode === "signup" && (!agreeTerms || !agreePrivacy))}
+                className="mt-6 w-full rounded-2xl bg-[#93B733] px-6 py-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(147,183,51,0.3)] transition-all hover:scale-[1.02] hover:bg-[#82a32d] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
               >
                 {loading 
                   ? "Processing..." 
                   : authMode === "login" 
                     ? (loginMethod === "otp" && !otpSent ? "Send OTP via Email" : "Log in securely") 
-                    : "Agree and continue"
+                    : "Create Account"
                 }
               </button>
 

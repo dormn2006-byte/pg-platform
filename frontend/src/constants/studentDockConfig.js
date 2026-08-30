@@ -25,6 +25,4 @@ export const buildStudentDockApps = (userId) => [
   { id: "/my-bookings", name: "Requests", icon: '/icons/my_requests-removebg-preview.webp' },
   { id: "/saved-pgs", name: "Saved", icon: '/icons/saved_pg-removebg-preview.webp' },
   { id: "/student/settings", name: "Settings", icon: '/icons/settings-removebg-preview.webp' },
-  { id: "/pgs", name: "Explore", icon: '/icons/explore-removebg-preview.webp' },
-  { id: "/", name: "Home", icon: '/icons/home.webp' },
 ];

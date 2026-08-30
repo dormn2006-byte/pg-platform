@@ -7,6 +7,7 @@ import {
   getStudentBookingsController,
   getOwnerBookingsController,
   updateBookingStatusController,
+  cancelBookingController,
 } from "../controllers/bookingController.js";
 
 import { getMyPgs } from "../controllers/bookingController.js";
@@ -41,6 +42,13 @@ router.get(
 );
 
 router.get("/my-pgs", protect, getMyPgs);
+
+// Cancel Booking Request (Student cancels their own pending booking)
+router.put(
+  "/:id/cancel",
+  protect,
+  cancelBookingController
+);
 
 // Update Booking Status (Owner)
 router.put(

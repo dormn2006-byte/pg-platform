@@ -6,7 +6,7 @@ import {
   Camera, Pencil, Check, Home, Search, ShieldCheck,
   Brain, Clock, CheckCircle, BookOpen, ChevronRight,
   Phone, GraduationCap, MapPin, AlertCircle,
-  Code, Gamepad2, LayoutDashboard, Calendar, Settings, User, Heart
+  Code, Gamepad2, LayoutDashboard, Calendar, Settings, User, Heart, Building2
 } from "lucide-react";
 import { Camera as CameraIcon, Briefcase, GitBranch, MessageCircle, Globe } from "lucide-react";
 
@@ -67,15 +67,34 @@ const StudentDashboard = () => {
     const fetchData = async () => {
       try {
         const [profRes, bookRes, pgRes] = await Promise.all([
-          api.get("/student/profile"),
-          api.get("/bookings/my-bookings"),
-          api.get("/pg/all")
+          api.get("/student/profile").catch(() => ({ data: { profile: {} } })),
+          api.get("/bookings/my-bookings").catch(() => ({ data: { bookings: [] } })),
+          api.get("/pg/all").catch(() => ({ data: { pgs: [] } }))
         ]);
         
         setProfile(profRes.data?.profile || {});
         setSocials(profRes.data?.profile?.socials || {});
         
-        const b = bookRes.data?.bookings || bookRes.data || [];
+        const rawB = bookRes.data?.bookings || bookRes.data || [];
+        const rawArray = Array.isArray(rawB) ? rawB : [];
+        
+        // Deduplicate per PG
+        const uniqueMap = new Map();
+        rawArray.forEach((item) => {
+          const key = item.pg_id || item.id;
+          if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, item);
+          } else {
+            const existing = uniqueMap.get(key);
+            if (item.status === "approved" && existing.status !== "approved") {
+              uniqueMap.set(key, item);
+            } else if (new Date(item.booking_date || item.created_at || 0) > new Date(existing.booking_date || existing.created_at || 0)) {
+              uniqueMap.set(key, item);
+            }
+          }
+        });
+        const b = Array.from(uniqueMap.values());
+
         setBookings(b.slice(0, 5));
         setStats({
           total: b.length,
@@ -83,9 +102,10 @@ const StudentDashboard = () => {
           approved: b.filter(x => x.status === "approved").length
         });
         
-        setPgList(pgRes.data?.pgs || pgRes.data || []);
+        const rawPGs = pgRes.data?.pgs || pgRes.data || [];
+        setPgList(Array.isArray(rawPGs) ? rawPGs : []);
       } catch (err) {
-        console.error(err);
+        console.error("Student Dashboard Fetch Error:", err);
       }
     };
     if (token) fetchData();
@@ -140,8 +160,8 @@ const StudentDashboard = () => {
               </button>
               {showMenu && (
                 <div className="absolute right-0 mt-2 w-48 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-black shadow-lg py-1.5 z-50">
-                  <Link to="/" className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#0D3A1D] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
-                    <Home size={16} /> Home
+                  <Link to="/my-pg" className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#0D3A1D] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+                    <Building2 size={16} /> My PG
                   </Link>
                   <Link to="/pgs" className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#0D3A1D] dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                     <Search size={16} /> Explore PGs
@@ -304,7 +324,7 @@ const StudentDashboard = () => {
                             </span>
                           )}
                           <span className="rounded-full bg-[#93B733]/8 dark:bg-[#93B733]/15 px-4 py-2.5 text-sm sm:text-base font-bold text-[#4E700F] dark:text-[#93B733]">
-                            🏠 {currentDbPG || profile.currentPG || "Not staying in any PG"}
+                            {currentDbPG || profile.currentPG || (bookings.find(x => x.status === 'approved') ? `🏠 Staying at: ${bookings.find(x => x.status === 'approved')?.title || bookings.find(x => x.status === 'approved')?.pg_name}` : (bookings.find(x => x.status === 'pending') ? `⏳ Request Under Review: ${bookings.find(x => x.status === 'pending')?.title || bookings.find(x => x.status === 'pending')?.pg_name}` : "🏠 Not staying in any PG"))}
                           </span>
                         </>
                       )}

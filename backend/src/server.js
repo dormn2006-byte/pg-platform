@@ -1,3 +1,4 @@
+import "dotenv/config";
 import cluster from "cluster";
 import os from "os";
 import express from "express";
@@ -5,6 +6,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit"; // <-- 1. Import rate limiter
 import "./config/testConnection.js";
+import pool from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import pgRoutes from "./routes/pgRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
@@ -32,6 +34,20 @@ if (cluster.isPrimary) {
     console.log(`Worker process ${worker.process.pid} died. Spawning a new worker replacement...`);
     cluster.fork();
   });
+
+  // Auto-cancel paused bookings older than 30 minutes (runs every 5 min, only on primary)
+  setInterval(async () => {
+    try {
+      const [result] = await pool.execute(
+        `UPDATE bookings SET status = 'cancelled' WHERE status = 'paused' AND booking_date < NOW() - INTERVAL 30 MINUTE`
+      );
+      if (result.affectedRows > 0) {
+        console.log(`[Auto-Cancel] Cancelled ${result.affectedRows} paused booking(s)`);
+      }
+    } catch (err) {
+      console.error("[Auto-Cancel] Error:", err.message);
+    }
+  }, 5 * 60 * 1000);
 
 } else {
   const app = express();

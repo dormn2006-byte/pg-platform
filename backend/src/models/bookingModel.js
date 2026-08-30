@@ -73,7 +73,7 @@ export const getOwnerBookings = async (owner_id) => {
     FROM bookings
     JOIN pgs ON bookings.pg_id = pgs.id
     JOIN users ON bookings.student_id = users.id
-    WHERE bookings.owner_id = ?
+    WHERE bookings.owner_id = ? AND bookings.status != 'paused'
     ORDER BY bookings.booking_date DESC
   `;
 
@@ -98,5 +98,23 @@ export const updateBookingStatus = async ({
     booking_id,
   ]);
 
+  return result;
+};
+
+// Get student_id from a booking
+export const getStudentIdByBooking = async (booking_id) => {
+  const [rows] = await db.execute(
+    `SELECT student_id FROM bookings WHERE id = ?`,
+    [booking_id]
+  );
+  return rows.length > 0 ? rows[0].student_id : null;
+};
+
+// Pause all other pending bookings for a student (when one gets approved)
+export const pauseOtherBookings = async (student_id, exclude_booking_id) => {
+  const [result] = await db.execute(
+    `UPDATE bookings SET status = 'paused' WHERE student_id = ? AND id != ? AND status = 'pending'`,
+    [student_id, exclude_booking_id]
+  );
   return result;
 };

@@ -99,11 +99,11 @@ export const createPGController = async (req, res) => {
       pgId: result.insertId,
     });
   } catch (error) {
-    console.log("Create PG Error:", error);
+    console.error("Create PG Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: error.message || "Failed to create PG. Please check your submission details.",
     });
   }
 };

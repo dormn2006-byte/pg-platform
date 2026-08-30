@@ -43,7 +43,7 @@ router.post(
   "/create",
   protect,
   ownerOnly,
-  upload.array("images", 10),
+  upload.array("images", 20),
   createPGController
 );
 
@@ -58,7 +58,14 @@ router.get(
   getOwnerPGsController
 );
 
-// Get Single PG
+// Owner Analytics
+router.get("/owner/analytics", protect, ownerOnly, getOwnerAnalyticsController);
+
+// Saved PGs (must be ABOVE /:id to prevent Express matching "saved" as an ID)
+router.post("/save", protect, toggleSavePGController);
+router.get("/saved", protect, getSavedPGsController);
+
+// Get Single PG (keep /:id LAST among GET routes)
 router.get("/:id", getSinglePGController);
 
 // Update PG
@@ -76,9 +83,5 @@ router.delete(
   ownerOnly,
   deletePGController
 );
-router.post("/save", protect, toggleSavePGController);
-router.get("/saved", protect, getSavedPGsController);
-
-router.get("/owner/analytics", protect, ownerOnly, getOwnerAnalyticsController);
 
 export default router;

@@ -9,7 +9,10 @@ import {
   Mail,
   UserCheck,
   Eye,
-  BookOpenCheck
+  BookOpenCheck,
+  Clock,
+  CreditCard,
+  AlertCircle
 } from "lucide-react";
 import api from "../../services/api";
 
@@ -39,6 +42,24 @@ const Bookings = () => {
   const handleStatusChange = useCallback(async (bookingId, newStatus) => {
     try {
       await api.put(`/bookings/${bookingId}/status`, { status: newStatus });
+      try {
+        const notifs = JSON.parse(localStorage.getItem('dormn_resident_notifications') || '[]');
+        notifs.unshift({
+          id: `notif-${Date.now()}`,
+          type: 'booking_update',
+          category: 'Booking',
+          title: newStatus === 'approved' ? 'Booking Application Approved!' : `Booking Status: ${newStatus}`,
+          message: newStatus === 'approved' 
+            ? 'Your PG booking request has been approved by the PG owner. Proceed to pay rent & unlock portal.'
+            : `Your booking application status was updated to ${newStatus}.`,
+          status: newStatus,
+          created_at: new Date().toISOString(),
+          read: false
+        });
+        localStorage.setItem('dormn_resident_notifications', JSON.stringify(notifs));
+        window.dispatchEvent(new Event('storage'));
+        window.dispatchEvent(new CustomEvent('dormn_request_updated'));
+      } catch {}
       fetchBookings();
     } catch (error) {
       console.error("Update Error:", error);
@@ -46,13 +67,32 @@ const Bookings = () => {
     }
   }, [fetchBookings]);
 
+  // Filter out paused bookings and deduplicate (same student + same PG → keep latest only)
+  const visibleBookings = useMemo(() => {
+    const filtered = bookings.filter((b) => b.status !== "paused");
+    const grouped = {};
+    filtered.forEach(b => {
+      const studentKey = (b.student_email || b.email || b.student_name || String(b.student_id || b.user_id || '')).toLowerCase().trim();
+      const pgKey = (b.title || b.pg_title || b.pg_name || String(b.pg_id || '')).toLowerCase().trim();
+      const key = `${studentKey}_${pgKey}`;
+
+      const bTime = new Date(b.created_at || 0).getTime() || Number(b.id) || 0;
+      const gTime = grouped[key] ? (new Date(grouped[key].created_at || 0).getTime() || Number(grouped[key].id) || 0) : -1;
+
+      if (!grouped[key] || bTime > gTime) {
+        grouped[key] = b;
+      }
+    });
+    return Object.values(grouped);
+  }, [bookings]);
+
   // Counts for decision tabs
-  const pendingCount = useMemo(() => bookings.filter((b) => b.status === "pending").length, [bookings]);
-  const approvedCount = useMemo(() => bookings.filter((b) => b.status === "approved").length, [bookings]);
+  const pendingCount = useMemo(() => visibleBookings.filter((b) => b.status === "pending").length, [visibleBookings]);
+  const approvedCount = useMemo(() => visibleBookings.filter((b) => b.status === "approved").length, [visibleBookings]);
 
   // Filtered List
   const filteredBookings = useMemo(() => {
-    return bookings.filter((b) => {
+    return visibleBookings.filter((b) => {
       const studentName = b.student_name || "";
       const pgTitle = b.title || b.pg_title || "";
       const matchesSearch =
@@ -63,7 +103,7 @@ const Bookings = () => {
 
       return matchesSearch && matchesStatus;
     });
-  }, [bookings, searchTerm, selectedStatus]);
+  }, [visibleBookings, searchTerm, selectedStatus]);
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
@@ -192,13 +232,31 @@ const Bookings = () => {
                     </button>
                   </>
                 ) : (
-                  <span className={`inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 text-xs font-black uppercase tracking-wider border ${
+                  <span className={`inline-flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-black uppercase tracking-wider border ${
                     b.status === "approved"
-                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
+                      ? b.payment_status === "paid"
+                        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
+                        : "bg-amber-500/20 text-amber-400 border-amber-500/40"
                       : "bg-rose-500/20 text-rose-400 border-rose-500/40"
                   }`}>
-                    {b.status === "approved" ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
-                    <span>{b.status}</span>
+                    {b.status === "approved" ? (
+                      b.payment_status === "paid" ? (
+                        <>
+                          <CheckCircle2 size={15} />
+                          <span>PAID & CONFIRMED</span>
+                        </>
+                      ) : (
+                        <>
+                          <Clock size={15} />
+                          <span>APPROVED (AWAITING PAYMENT)</span>
+                        </>
+                      )
+                    ) : (
+                      <>
+                        <XCircle size={15} />
+                        <span>DECLINED</span>
+                      </>
+                    )}
                   </span>
                 )}
 
